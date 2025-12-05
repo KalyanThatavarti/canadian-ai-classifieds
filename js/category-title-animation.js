@@ -11,7 +11,8 @@ if (categoryTitle) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate');
-                observer.unobserve(entry.target);
+            } else {
+                entry.target.classList.remove('animate');
             }
         });
     }, {
@@ -29,7 +30,8 @@ if (safetyTitle) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate');
-                observer.unobserve(entry.target);
+            } else {
+                entry.target.classList.remove('animate');
             }
         });
     }, {
@@ -47,7 +49,8 @@ if (listingsTitle) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate');
-                observer.unobserve(entry.target);
+            } else {
+                entry.target.classList.remove('animate');
             }
         });
     }, {

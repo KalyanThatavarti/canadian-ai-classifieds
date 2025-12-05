@@ -11,13 +11,15 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/hero-slider.css">
-    <link rel="stylesheet" href="css/hero-slider.css">
+    <link rel="stylesheet" href="css/luxury-cards.css">
+
 </head>
 
 <body>
@@ -30,107 +32,112 @@
         <div class="floating-particle"></div>
     </div>
 
-<!-- Hero Section with Image Slider -->
-<section class="hero-slider" id="hero">
-    <!-- Background Image Slider -->
-    <div class="slider-container">
-        <div class="slider-image active" style="background-image: url('images/hero_background_1_1764894403215.png');">
+    <!-- Hero Section with Image Slider -->
+    <section class="hero-slider" id="hero">
+        <!-- Background Image Slider -->
+        <div class="slider-container">
+            <div class="slider-image active"
+                style="background-image: url('images/hero_background_1_1764894403215.png');">
+            </div>
+            <div class="slider-image" style="background-image: url('images/hero_background_2_1764894425544.png');">
+            </div>
+            <div class="slider-image" style="background-image: url('images/hero_background_3_1764894443145.png');">
+            </div>
         </div>
-        <div class="slider-image" style="background-image: url('images/hero_background_2_1764894425544.png');"></div>
-        <div class="slider-image" style="background-image: url('images/hero_background_3_1764894443145.png');"></div>
-    </div>
 
-    <!-- Gradient Overlay -->
-    <div class="hero-overlay"></div>
+        <!-- Gradient Overlay -->
+        <div class="hero-overlay"></div>
 
-    <!-- Hero Content -->
-    <div class="container hero-content-wrapper">
-        <div class="hero-text-content">
+        <!-- Hero Content -->
+        <div class="container hero-content-wrapper">
+            <div class="hero-text-content">
 
-            <!-- Badge -->
-            <div class="hero-badge fade-in-up">
-                <span class="pulse-dot"></span>
-                <span class="badge-text">Verified Platform • Safe Transactions</span>
-            </div>
-
-            <!-- Headline -->
-            <h1 class="hero-heading fade-in-up">
-                Canada's Premier AI Classifieds
-                <span class="hero-subheading">Post & Sell in 60 Seconds Across All Provinces</span>
-            </h1>
-
-            <!-- Description -->
-            <p class="hero-description fade-in-up">
-                Join thousands of Canadians buying and selling locally with AI-powered listings, verified profiles, and
-                instant local matching.
-            </p>
-
-            <!-- Stats Row -->
-            <div class="hero-stats fade-in-up">
-                <div class="stat-item">
-                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                        </path>
-                    </svg>
-                    <span>10,000+ Active Users</span>
+                <!-- Badge -->
+                <div class="hero-badge fade-in-up">
+                    <span class="pulse-dot"></span>
+                    <span class="badge-text">Verified Platform • Safe Transactions</span>
                 </div>
-                <div class="stat-item">
-                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                        </path>
-                    </svg>
-                    <span>AI-Verified Safety</span>
-                </div>
-                <div class="stat-item">
-                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <span>All Canadian Cities</span>
-                </div>
-            </div>
 
-            <!-- CTA Buttons -->
-            <div class="hero-ctas fade-in-up">
-                <button class="btn btn-hero-primary">
-                    <span>POST YOUR AD NOW</span>
-                    <svg class="btn-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-                </button>
-                <button class="btn btn-hero-secondary">Browse Listings</button>
-            </div>
+                <!-- Headline -->
+                <h1 class="hero-heading fade-in-up">
+                    Canada's Premier AI Classifieds
+                    <span class="hero-subheading">Post & Sell in 60 Seconds Across All Provinces</span>
+                </h1>
 
-            <!-- Promo Box -->
-            <div class="hero-promo-box fade-in-up">
-                <div class="promo-header">
-                    <svg class="promo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                        </path>
-                    </svg>
-                    <span class="promo-title">FREE AI AD GENERATION</span>
-                </div>
-                <p class="promo-text">Upload a photo and let AI write your ad description instantly. No typing required!
+                <!-- Description -->
+                <p class="hero-description fade-in-up">
+                    Join thousands of Canadians buying and selling locally with AI-powered listings, verified profiles,
+                    and
+                    instant local matching.
                 </p>
+
+                <!-- Stats Row -->
+                <div class="hero-stats fade-in-up">
+                    <div class="stat-item">
+                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        <span>10,000+ Active Users</span>
+                    </div>
+                    <div class="stat-item">
+                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                            </path>
+                        </svg>
+                        <span>AI-Verified Safety</span>
+                    </div>
+                    <div class="stat-item">
+                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span>All Canadian Cities</span>
+                    </div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="hero-ctas fade-in-up">
+                    <button class="btn btn-hero-primary">
+                        <span>POST YOUR AD NOW</span>
+                        <svg class="btn-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </button>
+                    <button class="btn btn-hero-secondary">Browse Listings</button>
+                </div>
+
+                <!-- Promo Box -->
+                <div class="hero-promo-box fade-in-up">
+                    <div class="promo-header">
+                        <svg class="promo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                            </path>
+                        </svg>
+                        <span class="promo-title">FREE AI AD GENERATION</span>
+                    </div>
+                    <p class="promo-text">Upload a photo and let AI write your ad description instantly. No typing
+                        required!
+                    </p>
+                </div>
+
             </div>
-
         </div>
-    </div>
 
-    <!-- Slider Navigation Dots -->
-    <div class="slider-dots">
-        <button class="dot active" data-slide="0" aria-label="Go to slide 1"></button>
-        <button class="dot" data-slide="1" aria-label="Go to slide 2"></button>
-        <button class="dot" data-slide="2" aria-label="Go to slide 3"></button>
-    </div>
-</section>
+        <!-- Slider Navigation Dots -->
+        <div class="slider-dots">
+            <button class="dot active" data-slide="0" aria-label="Go to slide 1"></button>
+            <button class="dot" data-slide="1" aria-label="Go to slide 2"></button>
+            <button class="dot" data-slide="2" aria-label="Go to slide 3"></button>
+        </div>
+    </section>
 
     <!-- How It Works Section -->
     <section class="section how-it-works" id="how-it-works">
@@ -249,7 +256,7 @@
             <p class="section-subtitle">AI matches you with nearby buyers and sellers within 2–5 km.</p>
             <div class="listings-carousel">
                 <div class="listing-card fade-in-up">
-                    <div class="listing-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="listing-image" style="background: linear-gradient(135deg, #E8DDD3);">
                         <span class="listing-badge">2.3 km away</span>
                     </div>
                     <div class="listing-info">
@@ -259,7 +266,7 @@
                     </div>
                 </div>
                 <div class="listing-card fade-in-up">
-                    <div class="listing-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="listing-image" style="background: linear-gradient(135deg, #F2EBE3);">
                         <span class="listing-badge">3.1 km away</span>
                     </div>
                     <div class="listing-info">
@@ -269,7 +276,7 @@
                     </div>
                 </div>
                 <div class="listing-card fade-in-up">
-                    <div class="listing-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="listing-image" style="background: linear-gradient(135deg, #EDE3D9);">
                         <span class="listing-badge">1.8 km away</span>
                     </div>
                     <div class="listing-info">
@@ -279,7 +286,7 @@
                     </div>
                 </div>
                 <div class="listing-card fade-in-up">
-                    <div class="listing-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="listing-image" style="background: linear-gradient(135deg, #F5F0E8);">
                         <span class="listing-badge">4.2 km away</span>
                     </div>
                     <div class="listing-info">

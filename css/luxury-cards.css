@@ -1,0 +1,154 @@
+/* ===== Luxury Card Color Updates - Sophisticated Neutrals ===== */
+
+/* 1. How It Works - Glass Cards */
+.how-it-works .glass-card:nth-child(1) {
+    background: rgba(245, 240, 232, 0.90) !important;
+    /* #F5F0E8 - Warm ivory */
+}
+
+.how-it-works .glass-card:nth-child(2) {
+    background: rgba(229, 221, 213, 0.90) !important;
+    /* #E5DDD5 - Dusty rose */
+}
+
+.how-it-works .glass-card:nth-child(3) {
+    background: rgba(240, 230, 220, 0.90) !important;
+    /* #F0E6DC - Champagne */
+}
+
+/* 2. Popular Categories - Category Tiles */
+.featured-categories .category-tile:nth-child(1) {
+    background: rgba(232, 221, 211, 0.90) !important;
+    /* #E8DDD3 - Soft taupe */
+}
+
+.featured-categories .category-tile:nth-child(2) {
+    background: rgba(242, 235, 227, 0.90) !important;
+    /* #F2EBE3 - Creamy beige */
+}
+
+.featured-categories .category-tile:nth-child(3) {
+    background: rgba(237, 227, 217, 0.90) !important;
+    /* #EDE3D9 - Pearl gray */
+}
+
+.featured-categories .category-tile:nth-child(4) {
+    background: rgba(245, 240, 232, 0.90) !important;
+    /* #F5F0E8 - Warm ivory */
+}
+
+.featured-categories .category-tile:nth-child(5) {
+    background: rgba(229, 221, 213, 0.90) !important;
+    /* #E5DDD5 - Dusty rose */
+}
+
+.featured-categories .category-tile:nth-child(6) {
+    background: rgba(240, 230, 220, 0.90) !important;
+    /* #F0E6DC - Champagne */
+}
+
+.featured-categories .category-tile:nth-child(7) {
+    background: rgba(232, 221, 211, 0.90) !important;
+    /* #E8DDD3 - Soft taupe */
+}
+
+.featured-categories .category-tile:nth-child(8) {
+    background: rgba(242, 235, 227, 0.90) !important;
+    /* #F2EBE3 - Creamy beige */
+}
+
+/* 3. A Safer Marketplace - Safety Features */
+.ai-safety .safety-feature:nth-child(1) {
+    background: rgba(237, 227, 217, 0.90) !important;
+    /* #EDE3D9 - Pearl gray */
+}
+
+.ai-safety .safety-feature:nth-child(2) {
+    background: rgba(245, 240, 232, 0.90) !important;
+    /* #F5F0E8 - Warm ivory */
+}
+
+.ai-safety .safety-feature:nth-child(3) {
+    background: rgba(229, 221, 213, 0.90) !important;
+    /* #E5DDD5 - Dusty rose */
+}
+
+.ai-safety .safety-feature:nth-child(4) {
+    background: rgba(240, 230, 220, 0.90) !important;
+    /* #F0E6DC - Champagne */
+}
+
+/* ===== Luxury Text Enhancements ===== */
+
+/* Enhanced card titles */
+.card-title {
+    font-weight: var(--font-weight-extrabold) !important;
+    color: #222222 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced card descriptions */
+.card-description {
+    font-size: 1.0625rem !important;
+    font-weight: var(--font-weight-medium) !important;
+    color: #444444 !important;
+}
+
+/* Enhanced category tile names */
+.category-name {
+    font-weight: var(--font-weight-bold) !important;
+    color: #222222 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced safety feature titles */
+.feature-text h4 {
+    font-weight: var(--font-weight-bold) !important;
+    color: #222222 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced safety feature descriptions */
+.feature-text p {
+    font-weight: var(--font-weight-medium) !important;
+    color: #444444 !important;
+}
+
+/* Enhanced listing card titles */
+.listing-title {
+    font-weight: var(--font-weight-bold) !important;
+    color: #222222 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced listing prices */
+.listing-price {
+    text-shadow: 0 1px 3px rgba(74, 144, 226, 0.1);
+}
+
+/* ===== Safety Image Animation ===== */
+
+/* Floating animation with subtle glow */
+.safety-image {
+    animation: floatWithGlow 6s ease-in-out infinite;
+    transition: filter 0.3s ease;
+}
+
+.safety-image:hover {
+    animation-play-state: paused;
+    filter: drop-shadow(0 20px 45px rgba(74, 144, 226, 0.3));
+}
+
+@keyframes floatWithGlow {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+        filter: drop-shadow(0 15px 35px rgba(74, 144, 226, 0.15)) drop-shadow(0 0 20px rgba(74, 144, 226, 0.1));
+    }
+
+    50% {
+        transform: translateY(-20px);
+        filter: drop-shadow(0 25px 45px rgba(74, 144, 226, 0.2)) drop-shadow(0 0 30px rgba(74, 144, 226, 0.15));
+    }
+}
