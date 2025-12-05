@@ -1,0 +1,117 @@
+# Hero Banner Update Instructions
+
+## New Hero HTML
+
+Replace the current hero section (lines 31-50 in index.html) with this code:
+
+```html
+    <!-- Hero Section with Image Slider -->
+    <section class="hero-slider" id="hero">
+        <!-- Background Image Slider -->
+        <div class="slider-container">
+            <div class="slider-image active" style="background-image: url('images/hero_background_1_1764894403215.png');"></div>
+            <div class="slider-image" style="background-image: url('images/hero_background_2_1764894425544.png');"></div>
+            <div class="slider-image" style="background-image: url('images/hero_background_3_1764894443145.png');"></div>
+        </div>
+
+        <!-- Gradient Overlay -->
+        <div class="hero-overlay"></div>
+
+        <!-- Hero Content -->
+        <div class="container hero-content-wrapper">
+            <div class="hero-text-content">
+                
+                <!-- Badge -->
+                <div class="hero-badge fade-in-up">
+                    <span class="pulse-dot"></span>
+                    <span class="badge-text">Verified Platform • Safe Transactions</span>
+                </div>
+
+                <!-- Headline -->
+                <h1 class="hero-heading fade-in-up">
+                    Canada's Premier AI Classifieds
+                    <span class="hero-subheading">Post & Sell in 60 Seconds Across All Provinces</span>
+                </h1>
+
+                <!-- Description -->
+                <p class="hero-description fade-in-up">
+                    Join thousands of Canadians buying and selling locally with AI-powered listings, verified profiles, and instant local matching.
+                </p>
+
+                <!-- Stats Row -->
+                <div class="hero-stats fade-in-up">
+                    <div class="stat-item">
+                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span>10,000+ Active Users</span>
+                    </div>
+                    <div class="stat-item">
+                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span>AI-Verified Safety</span>
+                    </div>
+                    <div class="stat-item">
+                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span>All Canadian Cities</span>
+                    </div>
+                </div>
+
+                <!--CTA Buttons -->
+                <div class="hero-ctas fade-in-up">
+                    <button class="btn btn-hero-primary">
+                        <span>POST YOUR AD NOW</span>
+                        <svg class="btn-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </button>
+                    <button class="btn btn-hero-secondary">Browse Listings</button>
+                </div>
+
+                <!-- Promo Box -->
+                <div class="hero-promo-box fade-in-up">
+                    <div class="promo-header">
+                        <svg class="promo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                        <span class="promo-title">FREE AI AD GENERATION</span>
+                    </div>
+                    <p class="promo-text">Upload a photo and let AI write your ad description instantly. No typing required!</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Slider Navigation Dots -->
+        <div class="slider-dots">
+            <button class="dot active" data-slide="0" aria-label="Go to slide 1"></button>
+            <button class="dot" data-slide="1" aria-label="Go to slide 2"></button>
+            <button class="dot" data-slide="2" aria-label="Go to slide 3"></button>
+        </div>
+    </section>
+```
+
+## Add CSS Link
+
+Add this line in the `<head>` section after the existing styles.css link (around line 18):
+
+```html
+<link rel="stylesheet" href="css/hero-slider.css">
+```
+
+## Add JavaScript
+
+Add this line before the closing `</body>` tag (around line 276):
+
+```html
+<script src="js/hero-slider.js"></script>
+```
+
+## Summary
+
+Your new hero banner will have:
+- ✅ Full-screen background image slider (3 images rotating every 5 seconds)
+- ✅ Dark gradient overlay for text readability  
+- ✅ Animated badge with pulsing dot
+- ✅ Large headline with subheading
+- ✅ Stats row with icons
+- ✅ Two CTA buttons (rounded, modern styling)
+- ✅ Promo box with AI ad generation message
+- ✅ Slider navigation dots at bottom
+- ✅ Smooth fade-in animations for all elements
+- ✅ Fully responsive design
+
+All styled to match your Canadian AI Classifieds branding!
