@@ -1,81 +1,81 @@
 /* ===== Luxury Card Color Updates - Sophisticated Neutrals ===== */
 
 /* 1. How It Works - Glass Cards */
-.how-it-works .glass-card:nth-child(1) {
-    background: rgba(245, 240, 232, 0.90) !important;
-    /* #F5F0E8 - Warm ivory */
+.how-it-works .cards-grid .glass-card:nth-child(1) {
+    background: rgba(217, 233, 207, 0.90) !important;
+    /* #D9E9CF - Light green */
 }
 
-.how-it-works .glass-card:nth-child(2) {
-    background: rgba(229, 221, 213, 0.90) !important;
-    /* #E5DDD5 - Dusty rose */
+.how-it-works .cards-grid .glass-card:nth-child(2) {
+    background: rgba(203, 220, 235, 0.90) !important;
+    /* #CBDCEB - Light blue */
 }
 
-.how-it-works .glass-card:nth-child(3) {
-    background: rgba(240, 230, 220, 0.90) !important;
-    /* #F0E6DC - Champagne */
+.how-it-works .cards-grid .glass-card:nth-child(3) {
+    background: rgba(245, 211, 228, 0.90) !important;
+    /* #F5D3E4 - Light pink */
 }
 
 /* 2. Popular Categories - Category Tiles */
 .featured-categories .category-tile:nth-child(1) {
-    background: rgba(232, 221, 211, 0.90) !important;
-    /* #E8DDD3 - Soft taupe */
+    background: rgba(217, 233, 207, 0.90) !important;
+    /* #D9E9CF - Light green */
 }
 
 .featured-categories .category-tile:nth-child(2) {
-    background: rgba(242, 235, 227, 0.90) !important;
-    /* #F2EBE3 - Creamy beige */
+    background: rgba(203, 220, 235, 0.90) !important;
+    /* #CBDCEB - Light blue */
 }
 
 .featured-categories .category-tile:nth-child(3) {
-    background: rgba(237, 227, 217, 0.90) !important;
-    /* #EDE3D9 - Pearl gray */
+    background: rgba(245, 211, 228, 0.90) !important;
+    /* #F5D3E4 - Light pink */
 }
 
 .featured-categories .category-tile:nth-child(4) {
-    background: rgba(245, 240, 232, 0.90) !important;
-    /* #F5F0E8 - Warm ivory */
+    background: rgba(217, 233, 207, 0.90) !important;
+    /* #D9E9CF - Light green */
 }
 
 .featured-categories .category-tile:nth-child(5) {
-    background: rgba(229, 221, 213, 0.90) !important;
-    /* #E5DDD5 - Dusty rose */
+    background: rgba(203, 220, 235, 0.90) !important;
+    /* #CBDCEB - Light blue */
 }
 
 .featured-categories .category-tile:nth-child(6) {
-    background: rgba(240, 230, 220, 0.90) !important;
-    /* #F0E6DC - Champagne */
+    background: rgba(245, 211, 228, 0.90) !important;
+    /* #F5D3E4 - Light pink */
 }
 
 .featured-categories .category-tile:nth-child(7) {
-    background: rgba(232, 221, 211, 0.90) !important;
-    /* #E8DDD3 - Soft taupe */
+    background: rgba(217, 233, 207, 0.90) !important;
+    /* #D9E9CF - Light green */
 }
 
 .featured-categories .category-tile:nth-child(8) {
-    background: rgba(242, 235, 227, 0.90) !important;
-    /* #F2EBE3 - Creamy beige */
+    background: rgba(203, 220, 235, 0.90) !important;
+    /* #CBDCEB - Light blue */
 }
 
 /* 3. A Safer Marketplace - Safety Features */
 .ai-safety .safety-feature:nth-child(1) {
-    background: rgba(237, 227, 217, 0.90) !important;
-    /* #EDE3D9 - Pearl gray */
+    background: rgba(217, 233, 207, 0.90) !important;
+    /* #D9E9CF - Light green */
 }
 
 .ai-safety .safety-feature:nth-child(2) {
-    background: rgba(245, 240, 232, 0.90) !important;
-    /* #F5F0E8 - Warm ivory */
+    background: rgba(203, 220, 235, 0.90) !important;
+    /* #CBDCEB - Light blue */
 }
 
 .ai-safety .safety-feature:nth-child(3) {
-    background: rgba(229, 221, 213, 0.90) !important;
-    /* #E5DDD5 - Dusty rose */
+    background: rgba(245, 211, 228, 0.90) !important;
+    /* #F5D3E4 - Light pink */
 }
 
 .ai-safety .safety-feature:nth-child(4) {
-    background: rgba(240, 230, 220, 0.90) !important;
-    /* #F0E6DC - Champagne */
+    background: rgba(217, 233, 207, 0.90) !important;
+    /* #D9E9CF - Light green */
 }
 
 /* ===== Luxury Text Enhancements ===== */
