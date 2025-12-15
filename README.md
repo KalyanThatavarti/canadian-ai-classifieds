@@ -18,6 +18,17 @@ A modern, ultra-premium classifieds website for the Canadian public, powered by 
 - **Accessibility**: WCAG 2.1 compliant with semantic HTML
 - **Performance**: Optimized assets and lazy loading
 
+## 📚 Documentation
+
+For detailed feature documentation, see the [docs](docs/) folder:
+- **[Feature Documentation](docs/FEATURES.md)** - Complete guide to all implemented features
+  - Premium Glassmorphic Header
+  - Hero Section with Image Slider
+  - AI-Powered Search Bar
+  - Luxury Card Components
+  - Responsive Design
+  - Browser Support & Performance
+
 ## 🏗️ Tech Stack
 
 - **Frontend**: HTML5, CSS3 (Vanilla), JavaScript (ES6+)
@@ -36,14 +47,24 @@ A modern, ultra-premium classifieds website for the Canadian public, powered by 
 canadian-classifieds/
 ├── index.html              # Main homepage
 ├── css/
-│   └── styles.css          # All styles with glassmorphism design
+│   ├── styles.css          # Global styles
+│   ├── header.css          # Premium glassmorphic header
+│   ├── hero-slider.css     # Hero section with image slider
+│   ├── luxury-cards.css    # Card components
+│   └── search-bar.css      # AI-powered search bar
 ├── js/
-│   ├── app.js             # Main application logic
-│   └── firebase-config.js  # Firebase configuration and helpers
+│   ├── app.js              # Main application logic
+│   ├── firebase-config.js  # Firebase configuration
+│   ├── header.js           # Header interactions
+│   ├── hero-slider.js      # Image slider functionality
+│   └── category-title-animation.js  # Category animations
 ├── images/
-│   ├── hero-phone.png     # Hero section illustration
-│   └── ai-safety.png      # AI safety illustration
-└── README.md              # This file
+│   ├── hero_background_*.png  # Hero slider images
+│   └── ai-safety.png       # AI safety illustration
+├── docs/
+│   ├── README.md           # Documentation index
+│   └── FEATURES.md         # Complete feature documentation
+└── README.md               # This file
 ```
 
 ## 🚀 Getting Started
