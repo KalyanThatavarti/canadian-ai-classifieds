@@ -301,10 +301,23 @@ body {
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    25% { transform: translateY(-10px); }
-    50% { transform: translateY(-5px); }
-    75% { transform: translateY(-8px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-10px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+    75% {
+        transform: translateY(-8px);
+    }
 }
 
 .card-title {
@@ -673,9 +686,11 @@ body {
         opacity: 0;
         transform: scale(0.3) translateY(20px);
     }
+
     50% {
         opacity: 1;
     }
+
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -696,9 +711,11 @@ body {
         opacity: 0;
         transform: scale(3) translateY(-20px);
     }
+
     50% {
         opacity: 1;
     }
+
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -719,13 +736,16 @@ body {
         opacity: 0;
         transform: translateX(200px) translateY(-100px) rotate(180deg) scale(0.3);
     }
+
     60% {
         opacity: 1;
         transform: translateX(-20px) translateY(10px) rotate(-10deg) scale(1.1);
     }
+
     80% {
         transform: translateX(10px) translateY(-5px) rotate(5deg) scale(0.95);
     }
+
     100% {
         opacity: 1;
         transform: translateX(0) translateY(0) rotate(0deg) scale(1);
@@ -734,7 +754,7 @@ body {
 
 
 /* Tighter section spacing for better flow */
-.section + .section {
+.section+.section {
     padding-top: var(--spacing-md);
 }
 
