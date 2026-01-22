@@ -13,9 +13,9 @@ const sampleListings = [
         subcategory: 'phones',
         condition: 'Like New',
         images: [
-            'https://images.unsplash.com/photo-1663499482523-1c0e1c63e7be?w=800',
-            'https://images.unsplash.com/photo-1678652632152-a720b49083c7?w=800',
-            'https://images.unsplash.com/photo-1592286927505-2fd0f87d0da1?w=800'
+            'https://picsum.photos/800/600?random=1',
+            'https://picsum.photos/800/600?random=2',
+            'https://picsum.photos/800/600?random=3'
         ],
         location: {
             city: 'Toronto',
@@ -47,9 +47,9 @@ const sampleListings = [
         subcategory: 'computers',
         condition: 'Excellent',
         images: [
-            'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800',
-            'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800',
-            'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800'
+            'https://picsum.photos/800/600?random=4',
+            'https://picsum.photos/800/600?random=5',
+            'https://picsum.photos/800/600?random=6'
         ],
         location: {
             city: 'Vancouver',
@@ -81,8 +81,8 @@ const sampleListings = [
         subcategory: 'audio',
         condition: 'Like New',
         images: [
-            'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=800',
-            'https://images.unsplash.com/photo-1545127398-14699f92334b?w=800'
+            'https://picsum.photos/800/600?random=7',
+            'https://picsum.photos/800/600?random=8'
         ],
         location: {
             city: 'Montreal',
@@ -116,9 +116,9 @@ const sampleListings = [
         subcategory: 'cars',
         condition: 'Excellent',
         images: [
-            'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800',
-            'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800',
-            'https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800'
+            'https://picsum.photos/800/600?random=9',
+            'https://picsum.photos/800/600?random=10',
+            'https://picsum.photos/800/600?random=11'
         ],
         location: {
             city: 'Calgary',
@@ -150,8 +150,8 @@ const sampleListings = [
         subcategory: 'cars',
         condition: 'Good',
         images: [
-            'https://images.unsplash.com/photo-1581540222194-0def2dda95b8?w=800',
-            'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800'
+            'https://picsum.photos/800/600?random=12',
+            'https://picsum.photos/800/600?random=13'
         ],
         location: {
             city: 'Ottawa',
@@ -185,9 +185,9 @@ const sampleListings = [
         subcategory: 'living-room',
         condition: 'Like New',
         images: [
-            'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800',
-            'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=800',
-            'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800'
+            'https://picsum.photos/800/600?random=14',
+            'https://picsum.photos/800/600?random=15',
+            'https://picsum.photos/800/600?random=16'
         ],
         location: {
             city: 'Toronto',
@@ -219,8 +219,8 @@ const sampleListings = [
         subcategory: 'dining',
         condition: 'Good',
         images: [
-            'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=800',
-            'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800'
+            'https://picsum.photos/800/600?random=17',
+            'https://picsum.photos/800/600?random=18'
         ],
         location: {
             city: 'Edmonton',
@@ -254,9 +254,9 @@ const sampleListings = [
         subcategory: 'apartments',
         condition: 'Excellent',
         images: [
-            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
-            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800',
-            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800'
+            'https://picsum.photos/800/600?random=19',
+            'https://picsum.photos/800/600?random=20',
+            'https://picsum.photos/800/600?random=21'
         ],
         location: {
             city: 'Vancouver',
@@ -290,8 +290,8 @@ const sampleListings = [
         subcategory: 'outerwear',
         condition: 'Like New',
         images: [
-            'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800',
-            'https://images.unsplash.com/photo-1548126032-079caa350269?w=800'
+            'https://picsum.photos/800/600?random=22',
+            'https://picsum.photos/800/600?random=23'
         ],
         location: {
             city: 'Winnipeg',
@@ -325,8 +325,8 @@ const sampleListings = [
         subcategory: 'photography',
         condition: 'New',
         images: [
-            'https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800',
-            'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800'
+            'https://picsum.photos/800/600?random=24',
+            'https://picsum.photos/800/600?random=25'
         ],
         location: {
             city: 'Halifax',
@@ -360,8 +360,8 @@ const sampleListings = [
         subcategory: 'technology',
         condition: 'New',
         images: [
-            'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800',
-            'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800'
+            'https://picsum.photos/800/600?random=26',
+            'https://picsum.photos/800/600?random=27'
         ],
         location: {
             city: 'Toronto',
@@ -395,8 +395,8 @@ const sampleListings = [
         subcategory: 'musical-instruments',
         condition: 'Good',
         images: [
-            'https://images.unsplash.com/photo-1510915228340-29c85a43dcfe?w=800',
-            'https://images.unsplash.com/photo-1564186763535-ebb21d6f919d?w=800'
+            'https://picsum.photos/800/600?random=28',
+            'https://picsum.photos/800/600?random=29'
         ],
         location: {
             city: 'Quebec City',

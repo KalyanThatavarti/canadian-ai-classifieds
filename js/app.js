@@ -39,13 +39,13 @@ function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
-            
+
             // Skip if href is just "#"
             if (href === '#' || !href) return;
-            
+
             e.preventDefault();
             const target = document.querySelector(href);
-            
+
             if (target) {
                 target.scrollIntoView({
                     behavior: 'smooth',
@@ -85,29 +85,58 @@ function initButtonInteractions() {
 // ===== Event Handlers =====
 function handlePostAdClick(e) {
     console.log('📝 Post Ad button clicked');
-    // TODO: Integrate with Firebase Authentication and redirect to post page
-    alert('🎉 Post Ad feature coming soon! You\'ll be able to create ads in 60 seconds with AI.');
+
+    // Check if UI components are loaded
+    if (window.UIComponents) {
+        window.UIComponents.showModal(
+            'Create listings in 60 seconds with AI-powered descriptions! This feature will be available soon.',
+            '🎉 Post Your Ad',
+            {
+                confirmText: 'Got it!',
+                cancelText: null
+            }
+        );
+    } else {
+        alert('🎉 Post Ad feature coming soon! You\'ll be able to create ads in 60 seconds with AI.');
+    }
 }
 
 function handleBrowseClick(e) {
     console.log('🔍 Browse Listings button clicked');
-    // TODO: Redirect to listings page
-    alert('🔍 Browse feature coming soon! You\'ll see listings near you.');
+
+    // Redirect to browse page
+    window.location.href = 'pages/browse-listings.html';
 }
 
 function handleCategoryClick(e) {
     const categoryName = e.currentTarget.querySelector('.category-name').textContent;
     console.log(`📂 Category clicked: ${categoryName}`);
-    // TODO: Filter listings by category
-    alert(`Viewing category: ${categoryName}\n\nThis will filter listings when connected to Firebase!`);
+
+    if (window.UIComponents) {
+        window.UIComponents.showInfoToast(
+            `Filtering listings for ${categoryName}`,
+            'Category Selected'
+        );
+    }
+
+    // TODO: Navigate to browse page with category filter
+    // window.location.href = `pages/browse-listings.html?category=${encodeURIComponent(categoryName)}`;
 }
 
 function handleListingClick(e) {
     const listingTitle = e.currentTarget.querySelector('.listing-title').textContent;
     const listingPrice = e.currentTarget.querySelector('.listing-price').textContent;
     console.log(`🏷️ Listing clicked: ${listingTitle} - ${listingPrice}`);
-    // TODO: Show listing details modal
-    alert(`${listingTitle}\n${listingPrice}\n\nFull listing details coming soon!`);
+
+    if (window.UIComponents) {
+        window.UIComponents.showModal(
+            `Price: ${listingPrice}\n\nFull listing details and contact information will be available soon!`,
+            listingTitle,
+            { confirmText: 'Close' }
+        );
+    } else {
+        alert(`${listingTitle}\n${listingPrice}\n\nFull listing details coming soon!`);
+    }
 }
 
 // ===== Utility Functions =====

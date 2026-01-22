@@ -70,14 +70,109 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // User Menu Toggle (placeholder for future implementation)
+    // User Menu Toggle - Enhanced for authentication
     const userMenuToggle = document.querySelector('.user-menu-toggle');
     if (userMenuToggle) {
-        userMenuToggle.addEventListener('click', function () {
-            // Future: Open user dropdown menu
-            console.log('User menu clicked - implement user menu');
+        // Create user dropdown menu
+        const userDropdown = document.createElement('div');
+        userDropdown.className = 'user-dropdown';
+        userDropdown.style.cssText = `
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            margin-top: 0.5rem;
+            display: none;
+            z-index: 1000;
+        `;
+
+        // Update menu based on auth state
+        function updateUserMenu(user) {
+            if (user) {
+                // User is logged in - show profile menu
+                userDropdown.innerHTML = `
+                    <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">
+                        <div style="font-weight: 600; color: #111827;">${user.displayName || 'User'}</div>
+                        <div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">${user.email}</div>
+                    </div>
+                    <div style="padding: 0.5rem;">
+                        <a href="/pages/profile.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                            My Profile
+                        </a>
+                        <a href="/pages/my-listings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                            My Listings
+                        </a>
+                        <a href="#" id="signOutBtn" style="display: block; padding: 0.75rem; color: #dc2626; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
+                            Sign Out
+                        </a>
+                    </div>
+                `;
+            } else {
+                // User is not logged in - show login/signup
+                userDropdown.innerHTML = `
+                    <div style="padding: 0.5rem;">
+                        <a href="/pages/auth/login.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                            Sign In
+                        </a>
+                        <a href="/pages/auth/signup.html" style="display: block; padding: 0.75rem; color: #667eea; font-weight: 600; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#eef2ff'" onmouseout="this.style.background='transparent'">
+                            Create Account
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        // Add dropdown to DOM
+        userMenuToggle.parentElement.style.position = 'relative';
+        userMenuToggle.parentElement.appendChild(userDropdown);
+
+        // Toggle dropdown on click
+        userMenuToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function () {
+            userDropdown.style.display = 'none';
+        });
+
+        // Handle sign out
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'signOutBtn') {
+                e.preventDefault();
+                if (window.FirebaseAPI) {
+                    window.FirebaseAPI.signOut();
+                }
+            }
+        });
+
+        // Wait for Firebase to be ready before setting up auth listener
+        function waitForFirebase(callback, maxAttempts = 50) {
+            let attempts = 0;
+            const checkInterval = setInterval(() => {
+                attempts++;
+                if (window.FirebaseAPI && window.FirebaseAPI.auth) {
+                    clearInterval(checkInterval);
+                    console.log('✅ Firebase ready, setting up auth listener');
+                    callback();
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(checkInterval);
+                    console.warn('⚠️ Firebase not ready after', maxAttempts * 100, 'ms - showing guest menu');
+                    updateUserMenu(null);
+                }
+            }, 100);
+        }
+
+        // Initialize auth listener when Firebase is ready
+        waitForFirebase(() => {
+            window.FirebaseAPI.auth.onAuthStateChanged(updateUserMenu);
         });
     }
+
 
     // Location Selector (placeholder for future implementation)
     const locationSelector = document.querySelector('.location-selector');

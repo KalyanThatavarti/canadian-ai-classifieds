@@ -38,6 +38,8 @@ console.log('✅ Storage ready');
  * @returns {Promise<Object>} User object
  */
 async function signUpWithEmail(email, password, displayName) {
+    if (window.UIComponents) window.UIComponents.showLoading('Creating your account...');
+
     try {
         // Create authentication account
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
@@ -64,9 +66,27 @@ async function signUpWithEmail(email, password, displayName) {
         });
 
         console.log('✅ User signed up:', user.uid);
+
+        if (window.UIComponents) {
+            window.UIComponents.hideLoading();
+            window.UIComponents.showSuccessToast(
+                'Account created! Please check your email to verify your account.',
+                'Welcome!'
+            );
+        }
+
         return user;
     } catch (error) {
         console.error('❌ Sign up error:', error.message);
+
+        if (window.UIComponents) {
+            window.UIComponents.hideLoading();
+            window.UIComponents.showErrorToast(
+                error.message || 'Failed to create account. Please try again.',
+                'Sign Up Failed'
+            );
+        }
+
         throw error;
     }
 }
@@ -78,12 +98,29 @@ async function signUpWithEmail(email, password, displayName) {
  * @returns {Promise<Object>} User object
  */
 async function signInWithEmail(email, password) {
+    if (window.UIComponents) window.UIComponents.showLoading('Signing you in...');
+
     try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         console.log('✅ User signed in:', userCredential.user.uid);
+
+        if (window.UIComponents) {
+            window.UIComponents.hideLoading();
+            window.UIComponents.showSuccessToast('Welcome back!', 'Signed In');
+        }
+
         return userCredential.user;
     } catch (error) {
         console.error('❌ Sign in error:', error.message);
+
+        if (window.UIComponents) {
+            window.UIComponents.hideLoading();
+            window.UIComponents.showErrorToast(
+                error.message || 'Failed to sign in. Please check your credentials.',
+                'Sign In Failed'
+            );
+        }
+
         throw error;
     }
 }
@@ -133,10 +170,22 @@ async function signOut() {
     try {
         await auth.signOut();
         console.log('✅ User signed out');
-        // Redirect to home page
-        window.location.href = '/index.html';
+
+        if (window.UIComponents) {
+            window.UIComponents.showInfoToast('You have been signed out', 'Goodbye');
+        }
+
+        // Redirect to home page using relative path
+        setTimeout(() => {
+            window.location.href = './index.html';
+        }, 500);
     } catch (error) {
         console.error('❌ Sign out error:', error.message);
+
+        if (window.UIComponents) {
+            window.UIComponents.showErrorToast('Failed to sign out', 'Error');
+        }
+
         throw error;
     }
 }
@@ -146,12 +195,32 @@ async function signOut() {
  * @param {string} email - User's email
  */
 async function resetPassword(email) {
+    if (window.UIComponents) window.UIComponents.showLoading('Sending reset email...');
+
     try {
         await auth.sendPasswordResetEmail(email);
         console.log('✅ Password reset email sent to:', email);
+
+        if (window.UIComponents) {
+            window.UIComponents.hideLoading();
+            window.UIComponents.showSuccessToast(
+                `Password reset email sent to ${email}`,
+                'Check Your Email'
+            );
+        }
+
         return true;
     } catch (error) {
         console.error('❌ Password reset error:', error.message);
+
+        if (window.UIComponents) {
+            window.UIComponents.hideLoading();
+            window.UIComponents.showErrorToast(
+                error.message || 'Failed to send reset email',
+                'Password Reset Failed'
+            );
+        }
+
         throw error;
     }
 }
@@ -429,8 +498,20 @@ function updateHeaderForGuest() {
     const postAdButtons = document.querySelectorAll('.post-ad-btn');
     postAdButtons.forEach(btn => {
         btn.onclick = () => {
-            alert('Please log in to post an ad');
-            window.location.href = '/pages/auth/login.html';
+            if (window.UIComponents) {
+                window.UIComponents.showModal(
+                    'Create an account or sign in to start posting ads!',
+                    'Sign In Required',
+                    {
+                        confirmText: 'Sign In',
+                        cancelText: 'Cancel',
+                        onConfirm: () => window.location.href = './pages/auth/login.html'
+                    }
+                );
+            } else {
+                alert('Please log in to post an ad');
+                window.location.href = './pages/auth/login.html';
+            }
         };
     });
 }
