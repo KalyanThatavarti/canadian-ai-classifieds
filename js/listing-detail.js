@@ -284,19 +284,21 @@ document.addEventListener('DOMContentLoaded', function () {
             alert(`Contact ${listing.seller.name}\n\nIn a real implementation, this would open a messaging interface or show contact information.`);
         });
 
-        // Favorite button - integrate with Firebase
-        const favoriteBtn = document.getElementById('favoriteBtn');
+        // Favorite buttons - integrate with Firebase
+        const favoriteBtns = document.querySelectorAll('.favorite-btn');
 
         // Wait for Firebase auth to be ready, then check if listing is already favorited
         function checkFavoriteState() {
             if (window.FirebaseAPI && window.FirebaseAPI.getCurrentUser()) {
                 const currentUser = window.FirebaseAPI.getCurrentUser();
                 window.FirebaseAPI.isFavorited(currentUser.uid, listingId).then(isFav => {
-                    if (isFav) {
-                        favoriteBtn.classList.add('favorited');
-                        const icon = favoriteBtn.querySelector('svg');
-                        icon.innerHTML = '<path stroke="none" fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>';
-                    }
+                    favoriteBtns.forEach(btn => {
+                        if (window.Utils && window.Utils.updateFavoriteButtonState) {
+                            window.Utils.updateFavoriteButtonState(btn, isFav);
+                        } else {
+                            if (isFav) btn.classList.add('favorited');
+                        }
+                    });
                 }).catch(err => {
                     console.log('Could not check favorite status:', err.message);
                 });
@@ -314,55 +316,61 @@ document.addEventListener('DOMContentLoaded', function () {
             // Wait for Firebase to be ready
             setTimeout(checkFavoriteState, 500);
         }
-        favoriteBtn.addEventListener('click', async () => {
-            // Check if user is logged in
-            if (!window.FirebaseAPI || !window.FirebaseAPI.getCurrentUser()) {
-                if (window.UIComponents) {
-                    window.UIComponents.showModal(
-                        'Please sign in to save favorites',
-                        'Sign In Required',
-                        {
-                            confirmText: 'Sign In',
-                            cancelText: 'Cancel',
-                            onConfirm: () => window.location.href = 'auth/login.html'
+
+        // Attach click handlers to all favorite buttons
+        favoriteBtns.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+
+                // Check if user is logged in
+                if (!window.FirebaseAPI || !window.FirebaseAPI.getCurrentUser()) {
+                    if (window.UIComponents) {
+                        window.UIComponents.showModal(
+                            'Please sign in to save favorites',
+                            'Sign In Required',
+                            {
+                                confirmText: 'Sign In',
+                                cancelText: 'Cancel',
+                                onConfirm: () => window.location.href = 'auth/login.html'
+                            }
+                        );
+                    } else {
+                        alert('Please sign in to save favorites');
+                        window.location.href = 'auth/login.html';
+                    }
+                    return;
+                }
+
+                const currentUser = window.FirebaseAPI.getCurrentUser();
+
+                try {
+                    // Toggle favorite in Firebase
+                    const isFavorited = await window.FirebaseAPI.toggleFavorite(currentUser.uid, listingId);
+
+                    // Update ALL favorite buttons on the page
+                    favoriteBtns.forEach(b => {
+                        if (window.Utils && window.Utils.updateFavoriteButtonState) {
+                            window.Utils.updateFavoriteButtonState(b, isFavorited);
                         }
-                    );
-                } else {
-                    alert('Please sign in to save favorites');
-                    window.location.href = 'auth/login.html';
-                }
-                return;
-            }
+                    });
 
-            const currentUser = window.FirebaseAPI.getCurrentUser();
-
-            try {
-                // Toggle favorite in Firebase
-                const isFavorited = await window.FirebaseAPI.toggleFavorite(currentUser.uid, listingId);
-
-                // Update UI
-                const icon = favoriteBtn.querySelector('svg');
-                if (isFavorited) {
-                    favoriteBtn.classList.add('favorited');
-                    icon.innerHTML = '<path stroke="none" fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>';
+                    // Show toast
                     if (window.UIComponents) {
-                        window.UIComponents.showSuccessToast('Added to favorites', 'Success');
+                        if (isFavorited) {
+                            window.UIComponents.showSuccessToast('Added to favorites', 'Success');
+                        } else {
+                            window.UIComponents.showInfoToast('Removed from favorites', 'Removed');
+                        }
                     }
-                } else {
-                    favoriteBtn.classList.remove('favorited');
-                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>';
+                } catch (error) {
+                    console.error('Error toggling favorite:', error);
                     if (window.UIComponents) {
-                        window.UIComponents.showInfoToast('Removed from favorites', 'Removed');
+                        window.UIComponents.showErrorToast('Failed to update favorite', 'Error');
+                    } else {
+                        alert('Failed to update favorite. Please try again.');
                     }
                 }
-            } catch (error) {
-                console.error('Error toggling favorite:', error);
-                if (window.UIComponents) {
-                    window.UIComponents.showErrorToast('Failed to update favorite', 'Error');
-                } else {
-                    alert('Failed to update favorite. Please try again.');
-                }
-            }
+            });
         });
 
         // Share button
