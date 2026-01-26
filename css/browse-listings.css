@@ -495,6 +495,54 @@
     color: #ff4757;
 }
 
+/* Listing Card Favorite Button */
+.listing-card-favorite-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid rgba(229, 221, 213, 0.3);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.listing-card-favorite-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    border-color: #ff4757;
+}
+
+.listing-card-favorite-btn svg {
+    width: 20px;
+    height: 20px;
+    color: #666666;
+    transition: all 0.3s ease;
+}
+
+.listing-card-favorite-btn.favorited {
+    background: rgba(255, 71, 87, 0.1);
+    border-color: #ff4757;
+}
+
+.listing-card-favorite-btn.favorited svg {
+    color: #ff4757;
+    fill: #ff4757;
+    stroke: #ff4757;
+}
+
+.listing-card-favorite-btn:hover svg {
+    color: #ff4757;
+}
+
 .listing-info {
     padding: 1.25rem;
 }

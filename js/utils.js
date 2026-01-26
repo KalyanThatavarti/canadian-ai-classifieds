@@ -188,6 +188,108 @@ function generateId(length = 16) {
     return result;
 }
 
+// ===== Favorite Button Utilities =====
+
+/**
+ * Create favorite button HTML for listing cards
+ * @param {string} listingId - Listing ID
+ * @param {boolean} isFavorited - Whether listing is already favorited
+ * @returns {string} Favorite button HTML
+ */
+function createFavoriteButton(listingId, isFavorited = false) {
+    const favoritedClass = isFavorited ? 'favorited' : '';
+    const heartIcon = isFavorited
+        ? '<path stroke="none" fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>'
+        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>';
+
+    return `
+        <button class="listing-card-favorite-btn ${favoritedClass}" 
+                data-listing-id="${listingId}" 
+                aria-label="Add to favorites"
+                onclick="event.stopPropagation();">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                ${heartIcon}
+            </svg>
+        </button>
+    `;
+}
+
+/**
+ * Attach favorite button click handlers to listing cards
+ * @param {HTMLElement} container - Container element with favorite buttons
+ */
+function attachFavoriteHandlers(container) {
+    const favoriteButtons = container.querySelectorAll('.listing-card-favorite-btn');
+
+    favoriteButtons.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const listingId = btn.dataset.listingId;
+
+            // Check if user is logged in
+            if (!window.FirebaseAPI || !window.FirebaseAPI.getCurrentUser()) {
+                if (window.UIComponents) {
+                    window.UIComponents.showModal(
+                        'Please sign in to save favorites',
+                        'Sign In Required',
+                        {
+                            confirmText: 'Sign In',
+                            cancelText: 'Cancel',
+                            onConfirm: () => window.location.href = '/pages/auth/login.html'
+                        }
+                    );
+                } else {
+                    alert('Please sign in to save favorites');
+                }
+                return;
+            }
+
+            const currentUser = window.FirebaseAPI.getCurrentUser();
+
+            try {
+                // Toggle favorite
+                const isFavorited = await window.FirebaseAPI.toggleFavorite(currentUser.uid, listingId);
+
+                // Update button state
+                updateFavoriteButtonState(btn, isFavorited);
+
+                // Show toast
+                if (window.UIComponents) {
+                    if (isFavorited) {
+                        window.UIComponents.showSuccessToast('Added to favorites', 'Success');
+                    } else {
+                        window.UIComponents.showInfoToast('Removed from favorites', 'Removed');
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling favorite:', error);
+                if (window.UIComponents) {
+                    window.UIComponents.showErrorToast('Failed to update favorite', 'Error');
+                }
+            }
+        });
+    });
+}
+
+/**
+ * Update favorite button visual state
+ * @param {HTMLElement} button - Favorite button element
+ * @param {boolean} isFavorited - Whether listing is favorited
+ */
+function updateFavoriteButtonState(button, isFavorited) {
+    const icon = button.querySelector('svg');
+
+    if (isFavorited) {
+        button.classList.add('favorited');
+        icon.innerHTML = '<path stroke="none" fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>';
+    } else {
+        button.classList.remove('favorited');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>';
+    }
+}
+
 // ===== Export to window for global access =====
 window.Utils = {
     // Sanitization
@@ -208,7 +310,12 @@ window.Utils = {
     throttle,
 
     // Helpers
-    generateId
+    generateId,
+
+    // Favorites
+    createFavoriteButton,
+    attachFavoriteHandlers,
+    updateFavoriteButtonState
 };
 
 console.log('✅ Utility functions loaded - Sanitization and helpers ready');

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .success {
+            color: #10b981;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🗑️ Clear Storage</h1>
+        <p>Click the button below to clear all localStorage data and reload fresh sample data with new images.</p>
+        <button onclick="clearStorage()">Clear Storage & Reload</button>
+        <p class="success" id="success">✅ Storage cleared! Redirecting...</p>
+    </div>
+
+    <script>
+        function clearStorage() {
+            // Clear all localStorage
+            localStorage.clear();
+
+            // Show success message
+            document.getElementById('success').style.display = 'block';
+
+            // Redirect to My Listings page after 1 second
+            setTimeout(() => {
+                window.location.href = 'pages/my-listings.html';
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

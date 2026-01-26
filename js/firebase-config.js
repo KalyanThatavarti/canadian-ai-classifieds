@@ -175,10 +175,10 @@ async function signOut() {
             window.UIComponents.showInfoToast('You have been signed out', 'Goodbye');
         }
 
-        // Redirect to home page using relative path
+        // Redirect to home page using absolute path from root
         setTimeout(() => {
-            window.location.href = './index.html';
-        }, 500);
+            window.location.href = '/index.html';
+        }, 300);
     } catch (error) {
         console.error('❌ Sign out error:', error.message);
 
@@ -545,6 +545,241 @@ function toRadians(degrees) {
     return degrees * (Math.PI / 180);
 }
 
+// ===== Profile Helper Functions =====
+
+/**
+ * Get user profile by ID
+ * @param {string} userId - User ID
+ * @returns {Promise<Object>} User profile data
+ */
+async function getUserProfile(userId) {
+    try {
+        const userDoc = await db.collection('users').doc(userId).get();
+
+        if (!userDoc.exists) {
+            throw new Error('User profile not found');
+        }
+
+        return {
+            id: userDoc.id,
+            ...userDoc.data()
+        };
+    } catch (error) {
+        console.error('❌ Get user profile error:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Update user profile
+ * @param {string} userId - User ID
+ * @param {Object} updates - Profile fields to update
+ * @returns {Promise<void>}
+ */
+async function updateUserProfile(userId, updates) {
+    try {
+        const user = auth.currentUser;
+        if (!user || user.uid !== userId) {
+            throw new Error('Unauthorized: Cannot update another user\'s profile');
+        }
+
+        // Update Firestore
+        await db.collection('users').doc(userId).update({
+            ...updates,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // If displayName changed, update auth profile too
+        if (updates.displayName) {
+            await user.updateProfile({ displayName: updates.displayName });
+        }
+
+        console.log('✅ Profile updated:', userId);
+    } catch (error) {
+        console.error('❌ Update profile error:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Get user's listings
+ * @param {string} userId - User ID
+ * @param {string} status - Filter by status: 'active', 'sold', 'deleted', or 'all'
+ * @returns {Promise<Array>} Array of listings
+ */
+async function getUserListings(userId, status = 'all') {
+    try {
+        let query = db.collection('listings')
+            .where('userId', '==', userId)
+            .orderBy('createdAt', 'desc');
+
+        // Filter by status if specified
+        if (status !== 'all') {
+            query = query.where('status', '==', status);
+        }
+
+        const snapshot = await query.get();
+        const listings = [];
+
+        snapshot.forEach(doc => {
+            listings.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+
+        console.log(`✅ Retrieved ${listings.length} listings for user ${userId}`);
+        return listings;
+    } catch (error) {
+        console.error('❌ Get user listings error:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Get user's favorite listings
+ * @param {string} userId - User ID
+ * @returns {Promise<Array>} Array of favorite listings
+ */
+async function getUserFavorites(userId) {
+    try {
+        const user = auth.currentUser;
+        if (!user || user.uid !== userId) {
+            throw new Error('Unauthorized: Cannot view another user\'s favorites');
+        }
+
+        // Get favorite listing IDs from subcollection
+        const favoritesSnapshot = await db.collection('users')
+            .doc(userId)
+            .collection('favorites')
+            .orderBy('addedAt', 'desc')
+            .get();
+
+        const listingIds = [];
+        favoritesSnapshot.forEach(doc => {
+            listingIds.push(doc.id);
+        });
+
+        if (listingIds.length === 0) {
+            return [];
+        }
+
+        // Fetch the actual listing data
+        // Firestore has a limit of 10 items per 'in' query, so batch if needed
+        const favorites = [];
+        const batchSize = 10;
+
+        for (let i = 0; i < listingIds.length; i += batchSize) {
+            const batch = listingIds.slice(i, i + batchSize);
+            const listingsSnapshot = await db.collection('listings')
+                .where(firebase.firestore.FieldPath.documentId(), 'in', batch)
+                .get();
+
+            listingsSnapshot.forEach(doc => {
+                favorites.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+        }
+
+        console.log(`✅ Retrieved ${favorites.length} favorites for user ${userId}`);
+        return favorites;
+    } catch (error) {
+        console.log('Get favorites error (may be due to Firestore rules):', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Toggle favorite status for a listing
+ * @param {string} userId - User ID
+ * @param {string} listingId - Listing ID
+ * @returns {Promise<boolean>} True if favorited, false if unfavorited
+ */
+async function toggleFavorite(userId, listingId) {
+    try {
+        const user = auth.currentUser;
+        if (!user || user.uid !== userId) {
+            throw new Error('Unauthorized: Must be logged in to favorite');
+        }
+
+        const favoriteRef = db.collection('users')
+            .doc(userId)
+            .collection('favorites')
+            .doc(listingId);
+
+        const favoriteDoc = await favoriteRef.get();
+
+        if (favoriteDoc.exists) {
+            // Remove favorite
+            await favoriteRef.delete();
+
+            // Try to decrement favorites count on listing (if it exists in Firestore)
+            try {
+                const listingDoc = await db.collection('listings').doc(listingId).get();
+                if (listingDoc.exists) {
+                    await db.collection('listings').doc(listingId).update({
+                        favorites: firebase.firestore.FieldValue.increment(-1)
+                    });
+                }
+            } catch (err) {
+                console.log('Note: Could not update listing favorites count (listing may be from sample data)');
+            }
+
+            console.log('✅ Removed favorite:', listingId);
+            return false;
+        } else {
+            // Add favorite
+            await favoriteRef.set({
+                listingId: listingId,
+                addedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // Try to increment favorites count on listing (if it exists in Firestore)
+            try {
+                const listingDoc = await db.collection('listings').doc(listingId).get();
+                if (listingDoc.exists) {
+                    await db.collection('listings').doc(listingId).update({
+                        favorites: firebase.firestore.FieldValue.increment(1)
+                    });
+                }
+            } catch (err) {
+                console.log('Note: Could not update listing favorites count (listing may be from sample data)');
+            }
+
+            console.log('✅ Added favorite:', listingId);
+            return true;
+        }
+    } catch (error) {
+        console.error('❌ Toggle favorite error:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Check if user has favorited a listing
+ * @param {string} userId - User ID
+ * @param {string} listingId - Listing ID
+ * @returns {Promise<boolean>} True if favorited
+ */
+async function isFavorited(userId, listingId) {
+    try {
+        if (!userId) return false;
+
+        const favoriteDoc = await db.collection('users')
+            .doc(userId)
+            .collection('favorites')
+            .doc(listingId)
+            .get();
+
+        return favoriteDoc.exists;
+    } catch (error) {
+        console.error('❌ Check favorite error:', error.message);
+        return false;
+    }
+}
+
 // ===== Export API for use in other files =====
 window.FirebaseAPI = {
     // Auth
@@ -566,6 +801,16 @@ window.FirebaseAPI = {
     uploadListingImages,
     uploadProfilePhoto,
 
+    // Profile
+    getUserProfile,
+    updateUserProfile,
+    getUserListings,
+
+    // Favorites
+    getUserFavorites,
+    toggleFavorite,
+    isFavorited,
+
     // Utility
     calculateDistance,
 
@@ -574,6 +819,7 @@ window.FirebaseAPI = {
     db,
     storage
 };
+
 
 console.log('✅ Firebase API ready - access via window.FirebaseAPI');
 // End of file

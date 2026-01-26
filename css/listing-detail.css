@@ -338,15 +338,27 @@
 
 .btn-secondary svg {
     color: #666666;
+    transition: all 0.3s ease;
 }
 
 .btn-secondary:hover svg {
     color: #4a90e2;
 }
 
+/* Favorite button states */
+.favorite-btn svg {
+    transition: all 0.3s ease;
+}
+
+.favorite-btn.favorited {
+    background: rgba(255, 71, 87, 0.1);
+    border-color: #ff4757;
+}
+
 .favorite-btn.favorited svg {
     color: #ff4757;
     fill: #ff4757;
+    stroke: #ff4757;
 }
 
 /* Sections */

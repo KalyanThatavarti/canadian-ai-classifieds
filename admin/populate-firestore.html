@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Populate Firestore - Canadian AI Classifieds</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .info {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #2196f3;
+        }
+
+        .warning {
+            background: #fff3e0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ff9800;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-right: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #log {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        .log-entry {
+            margin: 0.25rem 0;
+        }
+
+        .success {
+            color: #4caf50;
+        }
+
+        .error {
+            color: #f44336;
+        }
+
+        .info-log {
+            color: #2196f3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔥 Populate Firestore Database</h1>
+
+        <div class="info">
+            <strong>ℹ️ What this does:</strong><br>
+            This script will upload all sample listings to your Firestore database. This allows:
+            <ul>
+                <li>✅ Favorites to work properly with count updates</li>
+                <li>✅ Real-time data synchronization</li>
+                <li>✅ Proper database queries and filtering</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Warning:</strong><br>
+            This will add 12 sample listings to your Firestore database. Run this only once!
+        </div>
+
+        <button id="populateBtn" onclick="populateFirestore()">
+            📤 Upload Sample Listings to Firestore
+        </button>
+
+        <button id="clearBtn" onclick="clearListings()" style="background: #f44336;">
+            🗑️ Clear All Listings
+        </button>
+
+        <div id="log"></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Sample Data -->
+    <script src="../js/sample-data.js"></script>
+
+    <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRKj_NwastndKYdfIkfYDy_Q7Ox5OVaSc",
+            authDomain: "canadian-ai-classifieds.firebaseapp.com",
+            projectId: "canadian-ai-classifieds",
+            storageBucket: "canadian-ai-classifieds.firebasestorage.app",
+            messagingSenderId: "1016245908858",
+            appId: "1:1016245908858:web:f787299038dad64f7ad2c3"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const logDiv = document.getElementById('log');
+        const populateBtn = document.getElementById('populateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+
+        function log(message, type = 'info-log') {
+            logDiv.style.display = 'block';
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function populateFirestore() {
+            // Check if user is logged in
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Please sign in first!');
+                window.location.href = 'auth/login.html';
+                return;
+            }
+
+            populateBtn.disabled = true;
+            clearBtn.disabled = true;
+            logDiv.innerHTML = '';
+
+            log('🚀 Starting Firestore population...', 'info-log');
+            log(`📊 Found ${sampleListings.length} listings to upload`, 'info-log');
+
+            let successCount = 0;
+            let errorCount = 0;
+
+            for (const listing of sampleListings) {
+                try {
+                    // Prepare listing data
+                    const listingData = {
+                        ...listing,
+                        // Convert Date objects to Firestore timestamps
+                        createdAt: firebase.firestore.Timestamp.fromDate(new Date(listing.createdAt)),
+                        updatedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+                        // Ensure required fields
+                        status: listing.status || 'active',
+                        views: listing.views || 0,
+                        favorites: listing.favorites || 0
+                    };
+
+                    // Upload to Firestore using the listing ID
+                    await db.collection('listings').doc(listing.id).set(listingData);
+
+                    successCount++;
+                    log(`✅ Uploaded: ${listing.title}`, 'success');
+                } catch (error) {
+                    errorCount++;
+                    log(`❌ Failed: ${listing.title} - ${error.message}`, 'error');
+                }
+            }
+
+            log(`\n🎉 Complete! Success: ${successCount}, Errors: ${errorCount}`, 'success');
+            populateBtn.disabled = false;
+            clearBtn.disabled = false;
+        }
+
+        async function clearListings() {
+            if (!confirm('Are you sure you want to delete ALL listings from Firestore? This cannot be undone!')) {
+                return;
+            }
+
+            populateBtn.disabled = true;
+            clearBtn.disabled = true;
+            logDiv.innerHTML = '';
+
+            log('🗑️ Starting to clear all listings...', 'info-log');
+
+            try {
+                const snapshot = await db.collection('listings').get();
+                log(`📊 Found ${snapshot.size} listings to delete`, 'info-log');
+
+                const batch = db.batch();
+                snapshot.docs.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+
+                await batch.commit();
+                log(`✅ Successfully deleted ${snapshot.size} listings`, 'success');
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+
+            populateBtn.disabled = false;
+            clearBtn.disabled = false;
+        }
+
+        // Check auth state
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                log('⚠️ Please sign in to use this tool', 'error');
+                populateBtn.disabled = true;
+                clearBtn.disabled = true;
+            } else {
+                log(`✅ Signed in as: ${user.email}`, 'success');
+            }
+        });
+    </script>
+</body>
+
+</html>

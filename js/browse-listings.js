@@ -262,26 +262,17 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.listing-card').forEach(card => {
             card.addEventListener('click', (e) => {
                 // Don't navigate if clicking favorite button
-                if (!e.target.closest('.favorite-btn')) {
+                if (!e.target.closest('.listing-card-favorite-btn')) {
                     const listingId = card.dataset.id;
                     window.location.href = `listing-detail.html?id=${listingId}`;
                 }
             });
         });
 
-        // Add favorite button handlers
-        document.querySelectorAll('.favorite-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                btn.classList.toggle('favorited');
-                const icon = btn.querySelector('svg');
-                if (btn.classList.contains('favorited')) {
-                    icon.innerHTML = '<path stroke="none" fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>';
-                } else {
-                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>';
-                }
-            });
-        });
+        // Attach favorite button handlers using utility function
+        if (window.Utils && window.Utils.attachFavoriteHandlers) {
+            window.Utils.attachFavoriteHandlers(listingsGrid);
+        }
     }
 
     // Create listing card HTML
@@ -297,13 +288,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         ${listing.featured ? '<span class="badge badge-featured">Featured</span>' : ''}
                         ${isNew ? '<span class="badge badge-new">New</span>' : ''}
                     </div>
-                    <button class="favorite-btn" aria-label="Add to favorites">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                    </button>
                 </div>
+                ${window.Utils ? window.Utils.createFavoriteButton(listing.id, false) : ''}
                 <div class="listing-info">
                     <div class="listing-category">${categories[listing.category].icon} ${categories[listing.category].name}</div>
                     <h3 class="listing-title">${listing.title}</h3>

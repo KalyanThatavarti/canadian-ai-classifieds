@@ -78,10 +78,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 day: 'numeric'
             });
 
+
         // Seller information
         document.getElementById('sellerAvatar').src = listing.seller.avatar;
         document.getElementById('sellerAvatar').alt = listing.seller.name;
         document.getElementById('sellerName').textContent = listing.seller.name;
+
+        // Make seller clickable to view profile
+        const sellerAvatar = document.getElementById('sellerAvatar');
+        const sellerName = document.getElementById('sellerName');
+        const viewProfileBtn = document.querySelector('.view-profile-btn');
+
+        const sellerUserId = listing.seller.id || listing.userId;
+
+        [sellerAvatar, sellerName, viewProfileBtn].forEach(el => {
+            if (el) {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', () => {
+                    window.location.href = `profile.html?userId=${sellerUserId}`;
+                });
+            }
+        });
 
         if (listing.seller.verified) {
             document.getElementById('verifiedBadge').style.display = 'inline-flex';
@@ -95,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.rating-text').textContent =
             `${rating.toFixed(1)} (${reviewCount} review${reviewCount !== 1 ? 's' : ''})`;
     }
+
 
     // Render image gallery
     function renderImageGallery() {
@@ -266,15 +284,84 @@ document.addEventListener('DOMContentLoaded', function () {
             alert(`Contact ${listing.seller.name}\n\nIn a real implementation, this would open a messaging interface or show contact information.`);
         });
 
-        // Favorite button
+        // Favorite button - integrate with Firebase
         const favoriteBtn = document.getElementById('favoriteBtn');
-        favoriteBtn.addEventListener('click', () => {
-            favoriteBtn.classList.toggle('favorited');
-            const icon = favoriteBtn.querySelector('svg');
-            if (favoriteBtn.classList.contains('favorited')) {
-                icon.innerHTML = '<path stroke="none" fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>';
-            } else {
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>';
+
+        // Wait for Firebase auth to be ready, then check if listing is already favorited
+        function checkFavoriteState() {
+            if (window.FirebaseAPI && window.FirebaseAPI.getCurrentUser()) {
+                const currentUser = window.FirebaseAPI.getCurrentUser();
+                window.FirebaseAPI.isFavorited(currentUser.uid, listingId).then(isFav => {
+                    if (isFav) {
+                        favoriteBtn.classList.add('favorited');
+                        const icon = favoriteBtn.querySelector('svg');
+                        icon.innerHTML = '<path stroke="none" fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>';
+                    }
+                }).catch(err => {
+                    console.log('Could not check favorite status:', err.message);
+                });
+            }
+        }
+
+        // Check immediately if Firebase is ready
+        if (window.FirebaseAPI && window.FirebaseAPI.auth) {
+            window.FirebaseAPI.auth.onAuthStateChanged(user => {
+                if (user) {
+                    checkFavoriteState();
+                }
+            });
+        } else {
+            // Wait for Firebase to be ready
+            setTimeout(checkFavoriteState, 500);
+        }
+        favoriteBtn.addEventListener('click', async () => {
+            // Check if user is logged in
+            if (!window.FirebaseAPI || !window.FirebaseAPI.getCurrentUser()) {
+                if (window.UIComponents) {
+                    window.UIComponents.showModal(
+                        'Please sign in to save favorites',
+                        'Sign In Required',
+                        {
+                            confirmText: 'Sign In',
+                            cancelText: 'Cancel',
+                            onConfirm: () => window.location.href = 'auth/login.html'
+                        }
+                    );
+                } else {
+                    alert('Please sign in to save favorites');
+                    window.location.href = 'auth/login.html';
+                }
+                return;
+            }
+
+            const currentUser = window.FirebaseAPI.getCurrentUser();
+
+            try {
+                // Toggle favorite in Firebase
+                const isFavorited = await window.FirebaseAPI.toggleFavorite(currentUser.uid, listingId);
+
+                // Update UI
+                const icon = favoriteBtn.querySelector('svg');
+                if (isFavorited) {
+                    favoriteBtn.classList.add('favorited');
+                    icon.innerHTML = '<path stroke="none" fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>';
+                    if (window.UIComponents) {
+                        window.UIComponents.showSuccessToast('Added to favorites', 'Success');
+                    }
+                } else {
+                    favoriteBtn.classList.remove('favorited');
+                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>';
+                    if (window.UIComponents) {
+                        window.UIComponents.showInfoToast('Removed from favorites', 'Removed');
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling favorite:', error);
+                if (window.UIComponents) {
+                    window.UIComponents.showErrorToast('Failed to update favorite', 'Error');
+                } else {
+                    alert('Failed to update favorite. Please try again.');
+                }
             }
         });
 

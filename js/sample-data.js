@@ -6,16 +6,16 @@ const sampleListings = [
     // Electronics
     {
         id: 'listing-001',
-        title: 'iPhone 14 Pro Max - 256GB Deep Purple',
-        description: 'Excellent condition iPhone 14 Pro Max. Barely used for 3 months. Comes with original box, charging cable, and clear case. Always used with screen protector. Battery health at 100%. No scratches or dents. Selling because upgrading to newer model.',
+        title: 'Samsung Galaxy S23 Ultra - 256GB Phantom Black',
+        description: 'Excellent condition Samsung Galaxy S23 Ultra. Barely used for 3 months. Comes with original box, charging cable, and protective case. Always used with screen protector. Battery health excellent. No scratches or dents. Selling because upgrading to newer model.',
         price: 1150,
         category: 'electronics',
         subcategory: 'phones',
         condition: 'Like New',
         images: [
-            'https://picsum.photos/800/600?random=1',
-            'https://picsum.photos/800/600?random=2',
-            'https://picsum.photos/800/600?random=3'
+            'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&h=600&fit=crop&q=80',
+            'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&h=600&fit=crop&q=80',
+            'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&h=600&fit=crop&q=80'
         ],
         location: {
             city: 'Toronto',
@@ -47,9 +47,9 @@ const sampleListings = [
         subcategory: 'computers',
         condition: 'Excellent',
         images: [
-            'https://picsum.photos/800/600?random=4',
-            'https://picsum.photos/800/600?random=5',
-            'https://picsum.photos/800/600?random=6'
+            'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=600&fit=crop&q=80',
+            'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&h=600&fit=crop&q=80',
+            'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop&q=80'
         ],
         location: {
             city: 'Vancouver',
@@ -81,8 +81,8 @@ const sampleListings = [
         subcategory: 'audio',
         condition: 'Like New',
         images: [
-            'https://picsum.photos/800/600?random=7',
-            'https://picsum.photos/800/600?random=8'
+            'https://images.unsplash.com/photo-1545127398-14699f92334b?w=800&h=600&fit=crop&q=80',
+            'https://images.unsplash.com/photo-1599669454699-248893623440?w=800&h=600&fit=crop&q=80'
         ],
         location: {
             city: 'Montreal',
