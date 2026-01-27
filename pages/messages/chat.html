@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Canadian AI Classifieds</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/messages.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <main class="messages-page">
+        <div class="messages-container">
+            <!-- Inbox List (Hidden on mobile when chat is active, or visible as sidebar on desktop) -->
+            <div class="conversations-list" style="display: none; @media (min-width: 768px) { display: flex; }">
+                <div class="inbox-header">
+                    <h1 class="inbox-title">Messages</h1>
+                    <a href="index.html" style="font-size:0.9rem;text-decoration:none;">View All</a>
+                </div>
+                <!-- We won't load the full list here to keep it simple, just a placeholder or back link -->
+                <div class="conversation-items">
+                    <div style="padding:1rem;color:#666;">
+                        <a href="index.html" class="btn-text">← Back to Inbox</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div class="chat-window active">
+                <div class="chat-header">
+                    <a href="index.html" class="back-button">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                    </a>
+                    <div class="header-info">
+                        <div class="header-name" id="chatTitle">Loading...</div>
+                        <a href="#" class="header-listing-link" id="listingLink">
+                            <span id="listingTitle">...</span>
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                </path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="messages-area" id="messagesArea">
+                    <div style="display: flex; justify-content: center; padding: 2rem;">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <form id="chatForm" style="display: contents;">
+                        <textarea id="messageInput" class="chat-input" placeholder="Type a message..."
+                            rows="1"></textarea>
+                        <button type="submit" class="send-btn" id="sendBtn" disabled>
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="../../js/firebase-config.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/chat.js"></script>
+
+    <!-- Injecting Header is now handled by header.js -->
+</body>
+
+</html>

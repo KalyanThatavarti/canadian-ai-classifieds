@@ -56,40 +56,34 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.log('loadListings called');
 
         try {
-            // First check localStorage for saved state
-            const savedListings = loadListingsFromLocalStorage();
+            // Always try to fetch fresh data from Firestore first
+            console.log('Fetching listings from Firestore...');
+            try {
+                // Try to get listings from Firestore
+                const firestoreListings = await window.FirebaseAPI.getUserListings(currentUser.uid, 'all');
+                console.log('Firestore returned:', firestoreListings.length, 'listings');
 
-            if (savedListings && savedListings.length > 0) {
-                console.log('Loading listings from localStorage:', savedListings.length);
-                allListings = savedListings;
-            } else {
-                console.log('No localStorage, trying Firestore...');
+                // If we got data (or empty array) from Firestore, use it
+                allListings = firestoreListings;
 
-                try {
-                    // Try to get listings from Firestore
-                    allListings = await window.FirebaseAPI.getUserListings(currentUser.uid, 'all');
-                    console.log('Firestore returned:', allListings.length, 'listings');
-                } catch (firestoreError) {
-                    console.log('Firestore error:', firestoreError);
+                // Save fresh data to localStorage
+                saveListingsToLocalStorage();
+            } catch (firestoreError) {
+                console.log('Firestore error:', firestoreError);
+                console.warn('Falling back to localStorage due to network error');
+
+                // Fallback to localStorage only on error
+                const savedListings = loadListingsFromLocalStorage();
+                if (savedListings) {
+                    allListings = savedListings;
+                } else {
                     allListings = [];
                 }
+            }
 
-                // If no listings in Firestore, use sample data for testing
-                if (allListings.length === 0) {
-                    if (typeof sampleListings !== 'undefined') {
-                        console.log('Using sample data');
-                        // Filter sample data to show a few listings
-                        allListings = sampleListings.slice(0, 3).map(listing => ({
-                            ...listing,
-                            userId: currentUser.uid // Assign to current user for testing
-                        }));
-                        // Save initial sample data to localStorage
-                        saveListingsToLocalStorage();
-                    } else {
-                        console.log('No sampleListings available!');
-                        allListings = [];
-                    }
-                }
+            // Sample data fallback removed. No listings = Empty State.
+            if (allListings.length === 0) {
+                console.log('No listings found (fresh fetch).');
             }
 
             console.log('Final allListings:', allListings.length);

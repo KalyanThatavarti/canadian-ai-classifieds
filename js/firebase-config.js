@@ -786,6 +786,199 @@ async function isFavorited(userId, listingId) {
     }
 }
 
+// ===== Messaging Helper Functions =====
+
+/**
+ * Create or get existing conversation
+ * @param {Array} participantIds - Array of user IDs (buyer and seller)
+ * @param {string} listingId - ID of the listing
+ * @param {Object} listingDetails - Listing details {title, image}
+ * @returns {Promise<string>} Conversation ID
+ */
+async function createConversation(participantIds, listingId, listingDetails = {}) {
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error('User must be logged in');
+
+        // Check for existing conversation with these participants and listing
+        // Note: Firestore array-contains-any doesn't support "exact match" for arrays easily.
+        // For simplicity in this demo, we'll query by listingId and then filter in client.
+        // A robust app would use a composite key or subcollections differently.
+
+        const snapshot = await db.collection('conversations')
+            .where('listingId', '==', listingId)
+            .where('participantIds', 'array-contains', user.uid)
+            .get();
+
+        let existingConversation = null;
+        participantIds.sort(); // Ensure consistent order for comparison
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const dataParticipants = data.participantIds.sort();
+
+            // simple array comparison
+            if (JSON.stringify(dataParticipants) === JSON.stringify(participantIds)) {
+                existingConversation = doc.id;
+            }
+        });
+
+        if (existingConversation) {
+            console.log('✅ Found existing conversation:', existingConversation);
+            return existingConversation;
+        }
+
+        // Create new conversation
+        // Use passed details with fallbacks
+        const title = listingDetails.title || 'Listing';
+        const image = listingDetails.image || null;
+
+        const conversationRef = await db.collection('conversations').add({
+            participantIds: participantIds,
+            listingId: listingId,
+            listingTitle: title,
+            listingImage: image,
+            lastMessage: '',
+            lastMessageTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            lastMessageSenderId: '',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            // Map to track read status for each user
+            readStatus: {
+                [participantIds[0]]: true, // Initiator has read
+                [participantIds[1]]: true  // No messages yet
+            }
+        });
+
+        console.log('✅ Created new conversation:', conversationRef.id);
+        return conversationRef.id;
+
+    } catch (error) {
+        console.error('❌ Create conversation error:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Send a message to a conversation
+ * @param {string} conversationId - Conversation ID
+ * @param {string} text - Message text
+ */
+async function sendMessage(conversationId, text) {
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error('User must be logged in');
+
+        const batch = db.batch();
+
+        // 1. Add message to subcollection
+        const messageRef = db.collection('conversations')
+            .doc(conversationId)
+            .collection('messages')
+            .doc();
+
+        batch.set(messageRef, {
+            senderId: user.uid,
+            text: text,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            read: false
+        });
+
+        // 2. Update conversation metadata
+        const conversationRef = db.collection('conversations').doc(conversationId);
+
+        // Dynamic update for readStatus - mark sender as read, others as unread
+        // Since we don't know the other ID easily here without a read, we'll just update lastMessage
+        // In a real app we'd need to know the other participant ID to set their readStatus to false.
+        // For now, simpler approach:
+
+        batch.update(conversationRef, {
+            lastMessage: text,
+            lastMessageTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            lastMessageSenderId: user.uid,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            // In a better implementation, we would set readStatus[otherUserId] = false
+        });
+
+        await batch.commit();
+        console.log('✅ Message sent');
+        return messageRef.id;
+
+    } catch (error) {
+        console.error('❌ Send message error:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Get conversations for current user (Real-time listener)
+ * @param {string} userId - User ID
+ * @param {Function} callback - Function to call with updates
+ * @returns {Function} Unsubscribe function
+ */
+function getConversations(userId, callback) {
+    return db.collection('conversations')
+        .where('participantIds', 'array-contains', userId)
+        .orderBy('updatedAt', 'desc')
+        .onSnapshot(snapshot => {
+            const conversations = [];
+            snapshot.forEach(doc => {
+                conversations.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            callback(conversations);
+        }, error => {
+            console.error('❌ Get conversations error:', error);
+        });
+}
+
+/**
+ * Get messages for a conversation (Real-time listener)
+ * @param {string} conversationId - Conversation ID
+ * @param {Function} callback - Function to call with updates
+ * @returns {Function} Unsubscribe function
+ */
+function getMessages(conversationId, callback) {
+    return db.collection('conversations')
+        .doc(conversationId)
+        .collection('messages')
+        .orderBy('timestamp', 'asc')
+        .onSnapshot(snapshot => {
+            const messages = [];
+            snapshot.forEach(doc => {
+                messages.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            callback(messages);
+        }, error => {
+            console.error('❌ Get messages error:', error);
+        });
+}
+
+/**
+ * Mark conversation as read for user
+ * @param {string} conversationId 
+ * @param {string} userId 
+ */
+async function markAsRead(conversationId, userId) {
+    try {
+        // This is a simplified "mark read" - in a real app check `readStatus` map or subcollection
+        // For this demo, we'll just log it or maybe update a field if we had the map set up perfectly
+        /*
+        await db.collection('conversations').doc(conversationId).update({
+            [`readStatus.${userId}`]: true
+        });
+        */
+        console.log('Marked as read (local logic)');
+    } catch (error) {
+        console.error('❌ Mark read error:', error);
+    }
+}
+
 // ===== Export API for use in other files =====
 window.FirebaseAPI = {
     // Auth
@@ -802,17 +995,20 @@ window.FirebaseAPI = {
     getListing,
     updateListing,
     deleteListing,
-
-    // Storage
     uploadListingImages,
-    uploadProfilePhoto,
+
+    // Messaging
+    createConversation,
+    sendMessage,
+    getConversations,
+    getMessages,
+    markAsRead,
 
     // Profile
     getUserProfile,
     updateUserProfile,
+    uploadProfilePhoto,
     getUserListings,
-
-    // Favorites
     getUserFavorites,
     toggleFavorite,
     isFavorited,

@@ -350,8 +350,49 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Contact button
-        document.getElementById('contactBtn').addEventListener('click', () => {
-            alert(`Contact ${listing.seller.name}\n\nIn a real implementation, this would open a messaging interface or show contact information.`);
+        document.getElementById('contactBtn').addEventListener('click', async () => {
+            const currentUser = window.FirebaseAPI.getCurrentUser();
+
+            if (!currentUser) {
+                // Redirect to login
+                const returnUrl = encodeURIComponent(window.location.href);
+                window.location.href = `auth/login.html?redirect=${returnUrl}`;
+                return;
+            }
+
+            const sellerId = listing.userId || (listing.seller && listing.seller.id);
+
+            if (currentUser.uid === sellerId) {
+                alert('You cannot message yourself!');
+                return;
+            }
+
+            try {
+                // Show loading state on button
+                const btn = document.getElementById('contactBtn');
+                const originalText = btn.textContent;
+                btn.textContent = '...';
+                btn.disabled = true;
+
+                const conversationId = await window.FirebaseAPI.createConversation(
+                    [currentUser.uid, sellerId],
+                    listing.id,
+                    {
+                        title: listing.title,
+                        image: listing.images && listing.images.length > 0 ? listing.images[0] : null
+                    }
+                );
+
+                window.location.href = `messages/chat.html?id=${conversationId}`;
+            } catch (error) {
+                console.error('Failed to start conversation:', error);
+                // Alert the ACTUAL error message to default to user
+                alert('Error: ' + (error.message || 'Could not start conversation'));
+
+                const btn = document.getElementById('contactBtn');
+                btn.textContent = 'Contact Seller';
+                btn.disabled = false;
+            }
         });
 
         // Favorite buttons - integrate with Firebase

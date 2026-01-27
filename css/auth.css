@@ -1,16 +1,22 @@
 /* ================================
    Authentication Pages Styles
-   Premium Glassmorphic Design
+   Standardized Light Glass Design (Matches Post Ad)
    ================================ */
 
 :root {
-    --auth-primary: hsl(220, 70%, 55%);
-    --auth-primary-hover: hsl(220, 70%, 50%);
-    --auth-danger: hsl(0, 70%, 60%);
-    --auth-success: hsl(150, 60%, 50%);
-    --auth-bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
+    --auth-primary: #4a90e2;
+    --auth-primary-hover: #357abd;
+    --auth-danger: #ef4444;
+    --auth-success: #22c55e;
+    /* Light Theme Background matching site style */
+    --auth-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    /* Light glass */
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --text-primary: #2C2C2C;
+    --text-secondary: #666;
+    --input-border: #e1e1e1;
+    --input-bg: #ffffff;
 }
 
 /* Authentication Container */
@@ -25,7 +31,7 @@
     overflow: hidden;
 }
 
-/* Animated Background */
+/* Animated Background Particles (Subtle for light theme) */
 .auth-container::before {
     content: '';
     position: absolute;
@@ -33,9 +39,9 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: backgroundMove 20s linear infinite;
+    background: radial-gradient(circle, rgba(74, 144, 226, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: backgroundMove 30s linear infinite;
     pointer-events: none;
 }
 
@@ -45,16 +51,16 @@
     }
 
     100% {
-        transform: translate(50px, 50px);
+        transform: translate(30px, 30px);
     }
 }
 
-/* Floating Particles */
+/* Floating Particles (Colored for light theme) */
 .auth-particle {
     position: absolute;
-    width: 4px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.3);
+    width: 6px;
+    height: 6px;
+    background: rgba(74, 144, 226, 0.2);
     border-radius: 50%;
     animation: float 15s infinite ease-in-out;
 }
@@ -69,8 +75,10 @@
     left: 80%;
     top: 30%;
     animation-delay: 2s;
+    background: rgba(47, 93, 58, 0.15);
 }
 
+/* Green hint */
 .auth-particle:nth-child(3) {
     left: 20%;
     top: 70%;
@@ -81,6 +89,7 @@
     left: 70%;
     top: 60%;
     animation-delay: 6s;
+    background: rgba(47, 93, 58, 0.15);
 }
 
 .auth-particle:nth-child(5) {
@@ -97,21 +106,22 @@
     }
 
     50% {
-        transform: translateY(-100px) rotate(180deg);
+        transform: translateY(-40px) rotate(180deg);
     }
 }
 
-/* Authentication Card */
+/* Authentication Card - Matches .section-card from post-ad.css */
 .auth-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
-    border-radius: 24px;
+    border-radius: 20px;
     padding: 3rem;
     width: 100%;
     max-width: 450px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    /* Softer shadow */
     position: relative;
     z-index: 1;
     animation: slideUp 0.6s ease-out;
@@ -144,13 +154,16 @@
     font-family: 'Playfair Display', serif;
     font-size: 1.75rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
     margin: 0;
 }
 
 .auth-logo-subtitle {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--auth-primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin-top: 0.25rem;
 }
 
@@ -164,12 +177,12 @@
     font-family: 'Playfair Display', serif;
     font-size: 1.75rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
     margin: 0 0 0.5rem 0;
 }
 
 .auth-subtitle {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     font-size: 0.95rem;
 }
 
@@ -187,31 +200,34 @@
 }
 
 .form-label {
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 500;
+    color: #000000;
+    /* Jet black for maximum visibility */
+    font-size: 0.95rem;
+    font-weight: 700;
+    /* Bold for clarity */
 }
 
+/* Inputs - Matches post-ad.css inputs */
 .form-input {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 12px;
-    padding: 0.875rem 1rem;
-    color: white;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    /* Slightly squarer than before to match post-ad */
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
     font-size: 1rem;
-    transition: all 0.3s ease;
     font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: #999;
 }
 
 .form-input:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    border-color: var(--auth-primary);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 /* Password Strength Indicator */
@@ -226,7 +242,7 @@
 
 .strength-bar {
     height: 4px;
-    background: rgba(255, 255, 255, 0.2);
+    background: #e1e1e1;
     border-radius: 2px;
     overflow: hidden;
     margin-bottom: 0.5rem;
@@ -239,23 +255,23 @@
 }
 
 .strength-fill.weak {
-    background: hsl(0, 70%, 60%);
+    background: var(--auth-danger);
     width: 33%;
 }
 
 .strength-fill.medium {
-    background: hsl(40, 90%, 60%);
+    background: #fbbf24;
     width: 66%;
 }
 
 .strength-fill.strong {
-    background: hsl(150, 60%, 50%);
+    background: var(--auth-success);
     width: 100%;
 }
 
 .strength-text {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
 }
 
 /* Checkbox */
@@ -274,36 +290,37 @@
 }
 
 .checkbox-label {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-secondary);
     font-size: 0.9rem;
     line-height: 1.4;
     cursor: pointer;
 }
 
 .checkbox-label a {
-    color: white;
+    color: var(--auth-primary);
     text-decoration: underline;
 }
 
-/* Submit Button */
+/* Submit Button - Matches .btn-post gradient */
 .auth-submit-btn {
-    background: white;
-    color: #667eea;
+    background: linear-gradient(135deg, #2F5D3A, #4a90e2);
+    color: white;
     border: none;
-    border-radius: 12px;
-    padding: 1rem;
+    border-radius: 8px;
+    /* Match post-ad buttons */
+    padding: 0.75rem 2rem;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.2s, box-shadow 0.2s;
     margin-top: 0.5rem;
     font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 12px rgba(47, 93, 58, 0.3);
 }
 
 .auth-submit-btn:hover {
-    background: rgba(255, 255, 255, 0.95);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 16px rgba(47, 93, 58, 0.4);
 }
 
 .auth-submit-btn:active {
@@ -321,7 +338,7 @@
     align-items: center;
     gap: 1rem;
     margin: 1.5rem 0;
-    color: rgba(255, 255, 255, 0.7);
+    color: #999;
     font-size: 0.9rem;
 }
 
@@ -330,16 +347,16 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(255, 255, 255, 0.3);
+    background: #e1e1e1;
 }
 
 /* Google Sign-in Button */
 .google-btn {
     background: white;
     color: #333;
-    border: none;
-    border-radius: 12px;
-    padding: 1rem;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
@@ -357,34 +374,35 @@
 }
 
 .google-btn:hover {
-    background: rgba(255, 255, 255, 0.95);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    background: #f8fafc;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Footer Links */
 .auth-footer {
     text-align: center;
     margin-top: 1.5rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     font-size: 0.95rem;
 }
 
 .auth-footer a {
-    color: white;
+    color: var(--auth-primary);
     font-weight: 600;
     text-decoration: none;
     transition: opacity 0.3s ease;
 }
 
 .auth-footer a:hover {
-    opacity: 0.8;
+    text-decoration: underline;
 }
 
 /* Alert Messages */
 .auth-alert {
     padding: 1rem;
-    border-radius: 12px;
+    border-radius: 8px;
     margin-bottom: 1.25rem;
     font-size: 0.9rem;
     display: none;
@@ -408,21 +426,21 @@
 }
 
 .auth-alert.error {
-    background: rgba(239, 68, 68, 0.2);
-    border: 1px solid rgba(239, 68, 68, 0.4);
-    color: #fecaca;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
 }
 
 .auth-alert.success {
-    background: rgba(34, 197, 94, 0.2);
-    border: 1px solid rgba(34, 197, 94, 0.4);
-    color: #bbf7d0;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
 }
 
 .auth-alert.info {
-    background: rgba(59, 130, 246, 0.2);
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    color: #bfdbfe;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
 }
 
 /* Back to Home Link */
@@ -430,18 +448,18 @@
     position: absolute;
     top: 2rem;
     left: 2rem;
-    color: white;
+    color: #4b5563;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: 500;
-    transition: opacity 0.3s ease;
+    transition: color 0.3s ease;
     z-index: 10;
 }
 
 .auth-back-link:hover {
-    opacity: 0.8;
+    color: var(--auth-primary);
 }
 
 .back-arrow {
@@ -473,8 +491,8 @@
     display: inline-block;
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(102, 126, 234, 0.3);
-    border-top-color: #667eea;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-right: 0.5rem;

@@ -4,6 +4,127 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    // Inject Header if placeholder exists
+    const headerPlaceholder = document.getElementById('header-placeholder');
+    if (headerPlaceholder) {
+        // Determine relative path depth
+        const pathDepth = window.location.pathname.split('/').length - 2; // Rough estimate or just use relative checks
+        // Better: Check based on current location to set correct links
+        const isInPages = window.location.pathname.includes('/pages/');
+        const isInMessages = window.location.pathname.includes('/pages/messages/');
+
+        const homeLink = isInMessages ? '../../index.html' : (isInPages ? '../index.html' : 'index.html');
+        // Fix for logo link in subpages
+
+        headerPlaceholder.innerHTML = `
+    <header class="site-header">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-container">
+                <div class="top-bar-left">
+                    <a href="#" class="location-selector">
+                        <svg class="location-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span>Toronto, ON</span>
+                    </a>
+                </div>
+                <div class="top-bar-right">
+                    <div class="language-toggle">
+                        <span class="lang-option active-lang">EN</span>
+                        <span class="lang-divider">/</span>
+                        <span class="lang-option">FR</span>
+                    </div>
+                    <a href="#" class="help-link">
+                        <svg class="help-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                        <span>Help Center</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="main-header-container">
+                <!-- Logo -->
+                <a href="${homeLink}" class="header-logo">
+                    <div class="logo-text">
+                        <span class="logo-icon">🍁</span>
+                        <div>
+                            Canadian Classifieds
+                            <div class="logo-tagline">AI-Powered</div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Navigation -->
+                <nav class="main-nav">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="${isInMessages ? '../browse-listings.html' : (isInPages ? 'browse-listings.html' : 'pages/browse-listings.html')}" class="nav-link">
+                                Browse Listings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="${homeLink}#how-it-works" class="nav-link">How It Works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="${homeLink}#safety" class="nav-link">Safety & Trust</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="${homeLink}#about" class="nav-link">About</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Header Actions -->
+                <div class="header-actions">
+                    <!-- Search Toggle -->
+                    <button class="search-toggle" aria-label="Search">
+                        <svg class="search-icon-header" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+
+                    <a href="${isInMessages ? '../../pages/post-ad.html' : (isInPages ? '../pages/post-ad.html' : 'pages/post-ad.html')}" class="post-ad-btn" style="text-decoration:none;">
+                        <svg class="post-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        <span>Post Your Ad</span>
+                    </a>
+
+                    <div class="user-menu-toggle">
+                        <div class="user-avatar-container">
+                            <svg class="user-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                        <svg class="hamburger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+        `;
+    }
+
     // Sticky Header on Scroll
     const header = document.querySelector('.site-header');
     let lastScroll = 0;
@@ -104,6 +225,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </a>
                         <a href="/pages/my-listings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             My Listings
+                        </a>
+                        <a href="/pages/messages/index.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                            Messages
                         </a>
                         <a href="#" id="signOutBtn" style="display: block; padding: 0.75rem; color: #dc2626; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
                             Sign Out

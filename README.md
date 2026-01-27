@@ -216,15 +216,37 @@ Update your Firestore security rules:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Listings
     match /listings/{listingId} {
       allow read: if true;
       allow create: if request.auth != null;
       allow update, delete: if request.auth.uid == resource.data.userId;
     }
     
+    // Users
     match /users/{userId} {
       allow read: if true;
       allow write: if request.auth.uid == userId;
+      
+      // Favorites subcollection
+       match /favorites/{favoriteId} {
+        allow read, write: if request.auth.uid == userId;
+      }
+    }
+    
+    // Conversations (Messaging)
+    match /conversations/{conversationId} {
+      // Allow create if user is in participantIds
+      allow create: if request.auth != null && request.auth.uid in request.resource.data.participantIds;
+      // Allow read if user is a participant
+      allow read: if request.auth != null && request.auth.uid in resource.data.participantIds;
+      // Allow update if user is a participant
+      allow update: if request.auth != null && request.auth.uid in resource.data.participantIds;
+      
+      // Messages subcollection
+      match /messages/{messageId} {
+        allow read, create: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds;
+      }
     }
   }
 }
