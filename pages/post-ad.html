@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Your Ad | Canadian AI Classifieds</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <link rel="stylesheet" href="../css/loading.css">
+    <link rel="stylesheet" href="../css/post-ad.css">
+</head>
+
+<body>
+    <!-- Premium Glassmorphic Header (Shared) -->
+    <header class="site-header">
+        <!-- Reused header structure - will be handled by header.js but verified here for structure -->
+        <div class="top-bar">
+            <div class="top-bar-container">
+                <div class="top-bar-left">
+                    <a href="#" class="location-selector">
+                        <span>Toronto, ON</span>
+                    </a>
+                </div>
+                <div class="top-bar-right">
+                    <div class="language-toggle">
+                        <span class="lang-option active-lang">EN</span>
+                        <span class="lang-divider">/</span>
+                        <span class="lang-option">FR</span>
+                    </div>
+                    <a href="#" class="help-link">Help Center</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-header">
+            <div class="main-header-container">
+                <a href="../index.html" class="header-logo">
+                    <div class="logo-text">
+                        <span class="logo-icon">🍁</span>
+                        <div>
+                            Canadian Classifieds
+                            <div class="logo-tagline">AI-Powered</div>
+                        </div>
+                    </div>
+                </a>
+
+                <nav class="main-nav">
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="../index.html" class="nav-link">Home</a></li>
+                        <li class="nav-item"><a href="browse-listings.html" class="nav-link">Browse</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <button class="user-menu-toggle" aria-label="User menu">
+                        <svg class="user-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </button>
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                        <svg class="hamburger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="post-ad-container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a>
+            <span class="separator">/</span>
+            <span class="current">Post a New Ad</span>
+        </div>
+
+        <div class="post-header fade-in-up">
+            <h1>Create Your Listing</h1>
+            <p>Post in seconds. Let AI write your description.</p>
+        </div>
+
+        <form id="postAdForm" class="post-form-grid fade-in-up">
+            <!-- Left Column: Images -->
+            <div class="form-column left-col">
+                <div class="section-card">
+                    <h2>Photos</h2>
+                    <p class="section-subtitle">Add up to 5 photos. First photo is your cover.</p>
+
+                    <div class="image-upload-area" id="dropZone">
+                        <input type="file" id="fileInput" multiple accept="image/*" hidden>
+                        <div class="upload-placeholder">
+                            <div class="upload-icon-circle">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3>Drag & Drop photos here</h3>
+                            <p>or click to browse</p>
+                        </div>
+                    </div>
+
+                    <div class="image-preview-grid" id="imagePreviewGrid">
+                        <!-- Preview items will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Details -->
+            <div class="form-column right-col">
+                <div class="section-card">
+                    <h2>Details</h2>
+
+                    <div class="form-group">
+                        <label for="adTitle">Title</label>
+                        <input type="text" id="adTitle" placeholder="What are you selling?" required maxlength="80">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="adCategory">Category</label>
+                            <select id="adCategory" required>
+                                <option value="" disabled selected>Select category</option>
+                                <option value="vehicles">Cars & Vehicles</option>
+                                <option value="realestate">Real Estate</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="furniture">Furniture</option>
+                                <option value="jobs">Jobs</option>
+                                <option value="services">Services</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="adPrice">Price ($)</label>
+                            <input type="number" id="adPrice" placeholder="0.00" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="condition" value="New" checked>
+                                <span class="radio-label">New</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="condition" value="Like New">
+                                <span class="radio-label">Like New</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="condition" value="Used - Good">
+                                <span class="radio-label">Used - Good</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="condition" value="Used - Fair">
+                                <span class="radio-label">Used - Fair</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label for="adDescription">Description</label>
+                            <button type="button" class="ai-generate-btn" id="aiGenerateBtn">
+                                <svg class="sparkles-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                    </path>
+                                </svg>
+                                AI Write
+                            </button>
+                        </div>
+                        <textarea id="adDescription" rows="6" placeholder="Describe your item... or let AI do it!"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adLocation">Location</label>
+                        <div class="input-icon-wrapper">
+                            <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <input type="text" id="adLocation" placeholder="City, Province" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="window.history.back()">Cancel</button>
+                        <button type="submit" class="btn-post" id="submitBtn">Post My Ad</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <div id="toastContainer"></div>
+
+    <!-- Firebase SDK (v9 compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/ui-components.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/post-ad.js"></script>
+</body>
+
+</html>

@@ -12,22 +12,92 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Find the listing from sample data
-    const listing = sampleListings.find(l => l.id === listingId);
+    // State
+    let listing = null;
+    let currentImageIndex = 0;
 
-    if (!listing) {
-        // Listing not found
-        alert('Listing not found');
-        window.location.href = 'browse-listings.html';
-        return;
+    // Initialize
+    loadListingData();
+
+    async function loadListingData() {
+        // 1. Try sample data first (fastest)
+        listing = sampleListings.find(l => l.id === listingId);
+
+        // 2. If not found, try Firestore
+        if (!listing) {
+            try {
+                // Show loading indicator if defined, or just wait
+                if (window.UIComponents) {
+                    const loadingOverlay = document.createElement('div');
+                    loadingOverlay.id = 'pageLoading';
+                    loadingOverlay.className = 'loading-overlay';
+                    loadingOverlay.innerHTML = '<div class="spinner"></div>';
+                    document.body.appendChild(loadingOverlay);
+                }
+
+                await waitForFirebase();
+
+                const doc = await window.FirebaseAPI.db.collection('listings').doc(listingId).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    listing = {
+                        id: doc.id,
+                        ...data,
+                        // Ensure arrays/types
+                        images: data.images || ['../images/placeholder.jpg'],
+                        price: Number(data.price)
+                    };
+                }
+            } catch (err) {
+                console.error('Error fetching listing:', err);
+            } finally {
+                const loader = document.getElementById('pageLoading');
+                if (loader) loader.remove();
+            }
+        }
+
+        // 3. If still not found, error
+        if (!listing) {
+            alert('Listing not found');
+            window.location.href = 'browse-listings.html';
+            return;
+        }
+
+        // 4. Listing found, initialize page
+        // Set totalImages here now that listing is loaded
+        totalImages = listing.images.length;
+        init();
     }
 
-    // State
-    let currentImageIndex = 0;
-    const totalImages = listing.images.length;
+    // Placeholder for totalImages (will be set in loadListingData)
+    let totalImages = 0;
 
-    // Initialize page
-    init();
+    function init() {
+        renderListing();
+        renderImageGallery();
+        renderSimilarListings();
+        setupEventListeners();
+        updateBreadcrumb();
+    }
+
+    function waitForFirebase(timeout = 5000) {
+        return new Promise((resolve) => {
+            if (window.FirebaseAPI && window.FirebaseAPI.db) {
+                return resolve();
+            }
+            const start = Date.now();
+            const interval = setInterval(() => {
+                if (window.FirebaseAPI && window.FirebaseAPI.db) {
+                    clearInterval(interval);
+                    resolve();
+                } else if (Date.now() - start > timeout) {
+                    clearInterval(interval);
+                    console.warn('Firebase timeout');
+                    resolve();
+                }
+            }, 100);
+        });
+    }
 
     function init() {
         renderListing();

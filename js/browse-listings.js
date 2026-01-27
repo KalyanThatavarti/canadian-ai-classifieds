@@ -42,11 +42,82 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize page
     init();
 
-    function init() {
+    async function init() {
         renderCategoryFilters();
+
+        // Show loading initially
+        showLoading();
+
+        try {
+            // Wait for Firebase to be ready
+            await waitForFirebase();
+
+            // Fetch real listings from Firestore
+            const realListings = await fetchListings();
+
+            // Combine with sample listings (so site isn't empty)
+            // In production, you might want ONLY real listings
+            allListings = [...realListings, ...sampleListings];
+
+        } catch (error) {
+            console.error('Error fetching listings:', error);
+            // Fallback to samples only
+            allListings = [...sampleListings];
+        }
+
+        filteredListings = [...allListings];
         renderListings();
         updateResultsCount();
         setupEventListeners();
+        hideLoading();
+    }
+
+    async function fetchListings() {
+        if (!window.FirebaseAPI || !window.FirebaseAPI.db) {
+            console.warn('Firebase not available');
+            return [];
+        }
+
+        try {
+            const snapshot = await window.FirebaseAPI.db.collection('listings')
+                .orderBy('createdAt', 'desc')
+                .limit(50)
+                .get();
+
+            return snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    // Ensure consistency with sample data structure
+                    price: Number(data.price),
+                    images: data.images || ['../images/placeholder.jpg']
+                };
+            });
+        } catch (error) {
+            console.error('Firestore fetch error:', error);
+            return [];
+        }
+    }
+
+    function waitForFirebase(timeout = 5000) {
+        return new Promise((resolve) => {
+            if (window.FirebaseAPI && window.FirebaseAPI.db) {
+                return resolve();
+            }
+
+            const start = Date.now();
+            const interval = setInterval(() => {
+                if (window.FirebaseAPI && window.FirebaseAPI.db) {
+                    clearInterval(interval);
+                    resolve();
+                } else if (Date.now() - start > timeout) {
+                    clearInterval(interval);
+                    console.warn('Firebase timeout');
+                    resolve(); // Resolve anyway to show samples
+                }
+            }, 100);
+        });
     }
 
     // Render category filter options

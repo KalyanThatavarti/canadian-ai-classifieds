@@ -483,7 +483,10 @@ function updateHeaderForUser(user) {
     // Update "Post Your Ad" button to work
     const postAdButtons = document.querySelectorAll('.post-ad-btn');
     postAdButtons.forEach(btn => {
-        btn.onclick = () => window.location.href = '/pages/post-ad.html';
+        btn.onclick = () => {
+            const isInPagesDir = window.location.pathname.includes('/pages/');
+            window.location.href = isInPagesDir ? 'post-ad.html' : 'pages/post-ad.html';
+        };
     });
 
     // Update user menu
@@ -505,7 +508,10 @@ function updateHeaderForGuest() {
                     {
                         confirmText: 'Sign In',
                         cancelText: 'Cancel',
-                        onConfirm: () => window.location.href = './pages/auth/login.html'
+                        onConfirm: () => {
+                            const isInPagesDir = window.location.pathname.includes('/pages/');
+                            window.location.href = isInPagesDir ? 'auth/login.html' : 'pages/auth/login.html';
+                        }
                     }
                 );
             } else {
