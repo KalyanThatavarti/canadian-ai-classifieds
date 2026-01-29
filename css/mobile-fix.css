@@ -1,0 +1,75 @@
+/* ================================
+   MOBILE OVERFLOW FIX - Universal
+   Prevents horizontal scroll without breaking menus
+   ================================ */
+
+/* Critical: Prevent all horizontal scrolling */
+html {
+    position: relative;
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+body {
+    position: relative;
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+/* Container constraints - only for main content containers */
+.container,
+.hero-content-wrapper,
+.search-container,
+.top-bar-container,
+.main-header-container {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Ensure images never cause overflow */
+img {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Fix for hero slider and main sections */
+.hero-slider,
+.hero-section {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+}
+
+/* Mobile specific - iPhone 12 Pro (390px) */
+@media (max-width: 480px) {
+
+    /* Remove any transforms that might push content */
+    .glass-card:hover,
+    .listing-card:hover,
+    .category-tile:hover {
+        transform: translateY(-4px) !important;
+    }
+
+    /* Ensure buttons don't overflow */
+    .btn:not(.mobile-menu-toggle):not(.user-menu-toggle),
+    .btn-hero-primary,
+    .btn-hero-secondary {
+        max-width: 100% !important;
+    }
+
+    /* Fix search bar */
+    .search-wrapper,
+    .search-bar {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    /* IMPORTANT: Allow menus and dropdowns to render correctly */
+    .main-nav,
+    .user-menu,
+    .dropdown-menu,
+    [role="menu"],
+    [class*="dropdown"] {
+        max-width: none !important;
+        overflow-x: visible !important;
+    }
+}

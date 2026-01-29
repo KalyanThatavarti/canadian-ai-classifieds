@@ -307,9 +307,10 @@
 @media (max-width: 768px) {
     .messages-container {
         padding: 0;
-        height: calc(100vh - 60px);
-        /* Adjust for header */
-        margin-top: 60px;
+        height: calc(100vh - 90px);
+        /* Changed from 60px */
+        margin-top: 90px;
+        /* Changed from 60px to account for full header */
     }
 
     .messages-page {
@@ -325,10 +326,12 @@
 
     .chat-window {
         position: fixed;
-        top: 60px;
+        top: 90px;
+        /* Changed from 60px - accounts for top bar + main header */
         left: 0;
         width: 100%;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 90px);
+        /* Changed from 60px */
         border-radius: 0;
         transform: translateX(100%);
         transition: transform 0.3s ease;

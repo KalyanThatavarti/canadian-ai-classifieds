@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
             min-width: 200px;
             margin-top: 0.5rem;
             display: none;
-            z-index: 1000;
+            z-index: 100000;
         `;
 
         // Update menu based on auth state
@@ -257,6 +257,16 @@ document.addEventListener('DOMContentLoaded', function () {
         userMenuToggle.addEventListener('click', function (e) {
             e.stopPropagation();
             userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+
+            // Close mobile menu if it's open
+            if (userDropdown.style.display === 'block' && mainNav && mainNav.classList.contains('active')) {
+                mainNav.classList.remove('active');
+                body.classList.remove('menu-open');
+                const icon = mobileMenuToggle?.querySelector('.hamburger-icon');
+                if (icon) {
+                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>`;
+                }
+            }
         });
 
         // Close dropdown when clicking outside

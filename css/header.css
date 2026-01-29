@@ -8,7 +8,8 @@
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 10000;
+    /* Increased to ensure nav is above everything */
     transition: all 0.3s ease;
 }
 
@@ -387,6 +388,8 @@
     }
 
     .main-nav {
+        display: none;
+        /* Hidden by default on mobile */
         position: fixed;
         top: 90px;
         left: 0;
@@ -399,13 +402,28 @@
         align-items: flex-start;
         padding: 2rem;
         gap: 0;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
         overflow-y: auto;
+        overflow-x: hidden;
+        z-index: 9999;
+        /* Ensure it's above everything */
+        animation: slideInFromRight 0.3s ease;
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
     }
 
     .main-nav.active {
-        transform: translateX(0);
+        display: flex;
+        /* Show when active */
     }
 
     .nav-menu {
@@ -528,5 +546,17 @@
     .post-icon {
         width: 14px;
         height: 14px;
+    }
+
+    /* Fix dropdown overflow on mobile */
+    .dropdown-menu,
+    .user-menu {
+        min-width: unset;
+        width: auto;
+        max-width: calc(100vw - 2rem);
+        left: auto;
+        right: 0;
+        z-index: 99999 !important;
+        /* Higher than mobile nav (9999) */
     }
 }
