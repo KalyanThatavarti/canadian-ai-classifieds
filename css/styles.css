@@ -402,7 +402,6 @@ body {
 .ai-safety .section-title {
     text-align: center;
     margin-bottom: var(--spacing-lg);
-    white-space: nowrap;
 }
 
 .safety-content {
@@ -735,6 +734,17 @@ body {
     animation: tumbleIn 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
+/* Mobile fallback - ensure title is visible even if animation doesn't trigger */
+@media (max-width: 768px) {
+    .slide-in-right-down {
+        opacity: 1;
+    }
+
+    .slide-in-right-down.animate {
+        animation: tumbleInMobile 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    }
+}
+
 @keyframes tumbleIn {
     0% {
         opacity: 0;
@@ -753,6 +763,24 @@ body {
     100% {
         opacity: 1;
         transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+    }
+}
+
+/* Simpler mobile animation */
+@keyframes tumbleInMobile {
+    0% {
+        opacity: 0;
+        transform: translateX(50px) rotate(20deg) scale(0.8);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateX(-10px) rotate(-5deg) scale(1.05);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg) scale(1);
     }
 }
 
@@ -846,6 +874,10 @@ body {
 
     .section-title {
         font-size: 1.5rem;
+        /* Ensure text wraps properly on small screens */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
 
     .footer-grid {
