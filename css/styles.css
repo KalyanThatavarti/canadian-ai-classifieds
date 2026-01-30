@@ -357,6 +357,8 @@ body {
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    text-decoration: none;
+    display: block;
 }
 
 .category-tile::before {
