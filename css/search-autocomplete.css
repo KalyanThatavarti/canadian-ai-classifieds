@@ -1,0 +1,337 @@
+/* ================================
+   Search & Autocomplete Styles
+   ================================ */
+
+/* Autocomplete dropdown */
+.autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    border: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.autocomplete-section {
+    padding: 0.5rem 0;
+}
+
+.autocomplete-section:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.autocomplete-section-header {
+    padding: 0.75rem 1rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.clear-recent-btn {
+    background: none;
+    border: none;
+    color: var(--blue-primary);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.clear-recent-btn:hover {
+    background: rgba(74, 144, 226, 0.1);
+}
+
+.autocomplete-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+    background: rgba(74, 144, 226, 0.08);
+}
+
+.autocomplete-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--text-light);
+    flex-shrink: 0;
+}
+
+.autocomplete-item strong {
+    color: var(--blue-primary);
+    font-weight: 600;
+}
+
+/* Search highlight (in results) */
+.search-highlight,
+mark.search-highlight {
+    background: #fff3cd;
+    color: var(--text-charcoal);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+/* Filter chips */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(74, 144, 226, 0.03);
+    border-radius: var(--radius-md);
+}
+
+.filter-chip {
+    background: var(--blue-primary);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.filter-chip button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.filter-chip button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-chip button svg {
+    width: 12px;
+    height: 12px;
+    stroke-width: 3;
+}
+
+/* Recently Viewed Section */
+.recently-viewed-section {
+    padding: var(--spacing-lg) 0;
+    background: rgba(237, 247, 252, 0.5);
+}
+
+.recently-viewed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.clear-history-btn {
+    background: none;
+    border: 1px solid var(--blue-primary);
+    color: var(--blue-primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.clear-history-btn:hover {
+    background: var(--blue-primary);
+    color: white;
+}
+
+.recently-viewed-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.recently-viewed-item {
+    position: relative;
+}
+
+.recently-viewed-badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    backdrop-filter: blur(8px);
+}
+
+.recently-viewed-badge svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Search input container positioning for autocomplete */
+.search-container {
+    position: relative;
+}
+
+/* Enhanced search input focus state */
+.search-input:focus {
+    outline: none;
+    border-color: var(--blue-primary);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* Loading skeleton for autocomplete */
+.autocomplete-loading {
+    padding: 1rem;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+/* Empty autocomplete state */
+.autocomplete-empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .autocomplete-dropdown {
+        max-height: 300px;
+        font-size: 0.9rem;
+    }
+
+    .autocomplete-item {
+        padding: 0.625rem 0.875rem;
+    }
+
+    .filter-chip {
+        font-size: 0.8125rem;
+        padding: 0.4rem 0.65rem;
+    }
+
+    .active-filters {
+        padding: 0.75rem;
+    }
+
+    .recently-viewed-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: var(--spacing-sm);
+    }
+
+    .clear-history-btn {
+        font-size: 0.8125rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .autocomplete-dropdown {
+        border-radius: var(--radius-md);
+        max-height: 250px;
+    }
+
+    .recently-viewed-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .recently-viewed-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .clear-history-btn {
+        align-self: flex-end;
+    }
+}
+
+/* Accessibility improvements */
+.autocomplete-item:focus-visible {
+    outline: 2px solid var(--blue-primary);
+    outline-offset: -2px;
+}
+
+.filter-chip button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+/* Smooth transitions */
+.autocomplete-dropdown {
+    animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom scrollbar for autocomplete dropdown */
+.autocomplete-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(74, 144, 226, 0.3);
+    border-radius: 3px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+    background: rgba(74, 144, 226, 0.5);
+}

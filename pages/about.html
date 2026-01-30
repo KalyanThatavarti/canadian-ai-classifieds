@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Learn about Canadian AI Classifieds - Your trusted platform for buying and selling across Canada with AI-powered listings and verified safety.">
+    <meta name="keywords" content="about, canadian classifieds, ai platform, buy sell canada">
+    <title>About Us | Canadian AI Classifieds</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/luxury-cards.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-accent) 100%);
+            padding: 140px 0 1.25rem;
+            /* 30px top gap, 20px bottom gap */
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .about-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .about-hero p {
+            font-size: 1.125rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .about-section {
+            padding: 1.25rem 0;
+            /* Consistent 20px padding (40px total gap between blocks) */
+        }
+
+        .about-section:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .about-content {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin: 0 0 0.75rem 0;
+            color: var(--text-charcoal);
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            text-align: center;
+            margin: -0.25rem 0 1.25rem 0;
+        }
+
+        .about-text {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-charcoal);
+            text-align: center;
+            margin: 0;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.25rem;
+        }
+
+        .value-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-icon {
+            font-size: 2.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .value-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: var(--text-charcoal);
+        }
+
+        .value-description {
+            color: var(--text-gray);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 0.75rem;
+        }
+
+        .stat-number {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--blue-primary);
+            margin-bottom: 0.15rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mission-box {
+            background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-accent) 100%);
+            color: white;
+            padding: 2.25rem;
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+
+        .mission-box h3 {
+            font-size: 1.625rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .mission-box p {
+            font-size: 1.0625rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.25rem 0 0;
+        }
+
+        .features-list li {
+            padding: 0.625rem 0 0.625rem 2.25rem;
+            position: relative;
+            font-size: 1.0625rem;
+            color: var(--text-charcoal);
+            line-height: 1.5;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--green-success);
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .cta-box {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .cta-box h3 {
+            font-size: 1.875rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-charcoal);
+        }
+
+        .cta-box p {
+            font-size: 1.0625rem;
+            color: var(--text-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .about-hero {
+                padding: 130px 1.25rem 1.5rem;
+            }
+
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+
+            .about-section {
+                padding: 1.5rem 0;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Skip Navigation (Accessibility) -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+    <!-- Premium Glassmorphic Header -->
+    <header class="site-header">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-container">
+                <div class="top-bar-left">
+                    <a href="#" class="location-selector">
+                        <svg class="location-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span>Toronto, ON</span>
+                    </a>
+                </div>
+                <div class="top-bar-right">
+                    <div class="language-toggle">
+                        <span class="lang-option active-lang">EN</span>
+                        <span class="lang-divider">/</span>
+                        <span class="lang-option">FR</span>
+                    </div>
+                    <a href="#" class="help-link">
+                        <svg class="help-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                        <span>Help Center</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="main-header-container">
+                <!-- Logo -->
+                <a href="../index.html" class="header-logo">
+                    <div class="logo-text">
+                        <span class="logo-icon">🍁</span>
+                        <div>
+                            Canadian Classifieds
+                            <div class="logo-tagline">AI-Powered</div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Navigation -->
+                <nav class="main-nav">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="../index.html" class="nav-link">
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="browse-listings.html" class="nav-link">
+                                Browse Listings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="../index.html#how-it-works" class="nav-link">How It Works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="../index.html#safety" class="nav-link">Safety & Trust</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="about.html" class="nav-link active">About</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Header Actions -->
+                <div class="header-actions">
+                    <!-- Search Toggle -->
+                    <button class="search-toggle" aria-label="Search">
+                        <svg class="search-icon-header" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Post Ad Button -->
+                    <button class="post-ad-btn">
+                        <svg class="post-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        <span>Post Your Ad</span>
+                    </button>
+
+                    <!-- User Menu -->
+                    <button class="user-menu-toggle" aria-label="User menu">
+                        <svg class="user-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                        <svg class="hamburger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+        <div class="floating-particle"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="container about-hero-content">
+            <h1>About Canadian AI Classifieds</h1>
+            <p>Canada's most trusted platform for buying and selling locally, powered by AI technology</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Our Story Section -->
+        <section class="about-section">
+            <div class="container">
+                <div class="about-content">
+                    <h2 class="section-title">Our Story</h2>
+                    <p class="about-text">
+                        Canadian AI Classifieds was born from a simple idea: make buying and selling locally easier,
+                        safer, and more efficient for all Canadians. We leverage cutting-edge AI technology to help
+                        users create compelling listings in seconds, match buyers with sellers instantly, and build
+                        a trusted marketplace that serves communities from coast to coast.
+                    </p>
+
+                    <!-- Stats -->
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-number">50K+</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">100K+</div>
+                            <div class="stat-label">Listings Posted</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">13</div>
+                            <div class="stat-label">Provinces & Territories</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">4.8★</div>
+                            <div class="stat-label">User Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="about-section">
+            <div class="container">
+                <div class="about-content">
+                    <div class="mission-box">
+                        <h3>Our Mission</h3>
+                        <p>
+                            To empower Canadians to buy, sell, and trade locally with confidence, transparency,
+                            and ease. We're building more than a marketplace—we're creating connections between
+                            neighbors, supporting local economies, and making sustainable commerce accessible
+                            to everyone.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values Section -->
+        <section class="about-section">
+            <div class="container">
+                <h2 class="section-title">Our Core Values</h2>
+                <p class="section-subtitle">The principles that guide everything we do</p>
+
+                <div class="values-grid">
+                    <div class="value-card">
+                        <div class="value-icon">🔒</div>
+                        <h3 class="value-title">Safety First</h3>
+                        <p class="value-description">
+                            We prioritize user safety with verified profiles, secure messaging,
+                            and fraud prevention systems.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">⚡</div>
+                        <h3 class="value-title">Speed & Simplicity</h3>
+                        <p class="value-description">
+                            Post ads in 60 seconds with AI assistance. No complicated forms,
+                            no endless waiting.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">🤝</div>
+                        <h3 class="value-title">Community Trust</h3>
+                        <p class="value-description">
+                            Building trust through transparent reviews, verified identities,
+                            and responsive support.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">🌍</div>
+                        <h3 class="value-title">Local Focus</h3>
+                        <p class="value-description">
+                            Supporting Canadian communities by connecting buyers and sellers
+                            in their neighborhoods.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">🚀</div>
+                        <h3 class="value-title">Innovation</h3>
+                        <p class="value-description">
+                            Leveraging AI and technology to create the best classifieds
+                            experience in Canada.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">♻️</div>
+                        <h3 class="value-title">Sustainability</h3>
+                        <p class="value-description">
+                            Promoting reuse and recycling by making it easy to give items
+                            a second life.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What Makes Us Different -->
+        <section class="about-section">
+            <div class="container">
+                <div class="about-content">
+                    <h2 class="section-title">What Makes Us Different</h2>
+
+                    <ul class="features-list">
+                        <li>
+                            <strong>AI-Powered Listings:</strong> Create professional listings in seconds with
+                            AI-generated descriptions and smart pricing suggestions
+                        </li>
+                        <li>
+                            <strong>Instant Local Matching:</strong> Get matched with nearby buyers and sellers
+                            based on location and preferences
+                        </li>
+                        <li>
+                            <strong>Verified Profiles:</strong> Enhanced safety with verified user identities
+                            and rating systems
+                        </li>
+                        <li>
+                            <strong>Secure Messaging:</strong> In-platform messaging keeps your contact information
+                            private until you're ready
+                        </li>
+                        <li>
+                            <strong>Smart Search:</strong> Advanced search and filtering to find exactly what
+                            you're looking for
+                        </li>
+                        <li>
+                            <strong>Mobile First:</strong> Seamless experience across all devices—desktop, tablet,
+                            and mobile
+                        </li>
+                        <li>
+                            <strong>Free to Use:</strong> No hidden fees, no subscription costs—just honest,
+                            straightforward classifieds
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="about-section team-section">
+            <div class="container">
+                <div class="about-content">
+                    <h2 class="section-title">Our Team</h2>
+                    <p class="about-text" style="max-width: 700px; margin: 0 auto;">
+                        We're a passionate team of developers, designers, and marketplace experts dedicated
+                        to creating the best local buying and selling experience for Canadians. Our diverse
+                        team brings together expertise in AI, e-commerce, community building, and user experience
+                        to serve you better every day.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="about-section">
+            <div class="container">
+                <div class="about-content">
+                    <div class="cta-box">
+                        <h3>Ready to Get Started?</h3>
+                        <p>Join thousands of Canadians already buying and selling on our platform</p>
+                        <div class="cta-buttons">
+                            <a href="post-ad.html" class="btn btn-large btn-primary">Post Your First Ad</a>
+                            <a href="browse-listings.html" class="btn btn-large btn-secondary">Browse Listings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4 class="footer-title">About</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="../index.html#how-it-works">How It Works</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="../index.html#safety">Safety Tips</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Community Guidelines</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title">Community</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                        <li><a href="#">Social Media</a></li>
+                        <li><a href="#">Newsletter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">&copy; 2025 Canadian AI Classifieds. All rights reserved.</p>
+                <p class="footer-badge">Proudly Built for Canadians 🇨🇦</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/header.js"></script>
+</body>
+
+</html>

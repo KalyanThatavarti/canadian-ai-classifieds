@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function () {
     let filteredListings = [...allListings];
     let currentView = 'grid';
 
+    // Initialize search engine
+    const searchEngine = new SearchEngine();
+    let autocompleteInstance = null;
+
     // DOM Elements
     const listingsGrid = document.getElementById('listingsGrid');
     const searchInput = document.getElementById('searchInput');
@@ -66,10 +70,69 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         filteredListings = [...allListings];
+
+        // Build search index
+        searchEngine.buildIndex(allListings);
+
+        // Apply any URL parameters from hero search
+        applyURLParameters();
+
         renderListings();
         updateResultsCount();
         setupEventListeners();
         hideLoading();
+    }
+
+    /**
+     * Apply search/filter parameters from URL
+     */
+    function applyURLParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Check URL params first, then sessionStorage as fallback
+        const searchParam = urlParams.get('search') || sessionStorage.getItem('heroSearch');
+        const categoryParam = urlParams.get('category') || sessionStorage.getItem('heroCategory');
+        const locationParam = urlParams.get('location') || sessionStorage.getItem('heroLocation');
+
+        // Apply search query
+        if (searchParam) {
+            searchInput.value = searchParam;
+            activeFilters.search = searchParam.toLowerCase();
+            sessionStorage.removeItem('heroSearch'); // Clear after use
+        }
+
+        // Apply category filter
+        if (categoryParam) {
+            activeFilters.categories = [categoryParam];
+            // Check the category checkbox
+            const categoryCheckbox = document.querySelector(`input[value="${categoryParam}"]`);
+            if (categoryCheckbox) {
+                categoryCheckbox.checked = true;
+            }
+            sessionStorage.removeItem('heroCategory'); // Clear after use
+        }
+
+        // Apply location filter (if it matches our dropdown options)
+        if (locationParam) {
+            const locationSelect = document.getElementById('locationFilter');
+            if (locationSelect) {
+                // Try to match the location value
+                const option = Array.from(locationSelect.options).find(opt =>
+                    opt.value.toLowerCase().includes(locationParam.toLowerCase()) ||
+                    locationParam.toLowerCase().includes(opt.value.toLowerCase())
+                );
+                if (option) {
+                    locationSelect.value = option.value;
+                    activeFilters.location = option.value;
+                }
+            }
+            sessionStorage.removeItem('heroLocation'); // Clear after use
+        }
+
+        // If any filters were applied, trigger filter
+        if (searchParam || categoryParam || locationParam) {
+            applyFilters();
+        }
     }
 
     async function fetchListings() {
@@ -133,6 +196,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Setup event listeners
     function setupEventListeners() {
+        // Initialize autocomplete for search input
+        if (typeof Autocomplete !== 'undefined') {
+            autocompleteInstance = new Autocomplete(searchInput, {
+                searchEngine: searchEngine,
+                onSelect: (value) => {
+                    activeFilters.search = value.toLowerCase();
+                    applyFilters();
+                }
+            });
+        }
+
         // Search input with debounce
         let searchTimeout;
         searchInput.addEventListener('input', (e) => {
@@ -232,16 +306,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Simulate slight delay for better UX
         setTimeout(() => {
-            filteredListings = allListings.filter(listing => {
-                // Search filter
-                if (activeFilters.search) {
-                    const searchLower = activeFilters.search;
-                    const matchesSearch =
-                        listing.title.toLowerCase().includes(searchLower) ||
-                        listing.description.toLowerCase().includes(searchLower) ||
-                        listing.category.toLowerCase().includes(searchLower);
-                    if (!matchesSearch) return false;
-                }
+            // First, apply search using SearchEngine if there's a search query
+            if (activeFilters.search) {
+                filteredListings = searchEngine.search(activeFilters.search, {});
+            } else {
+                filteredListings = [...allListings];
+            }
+
+            // Then apply other filters
+            filteredListings = filteredListings.filter(listing => {
 
                 // Category filter
                 if (activeFilters.categories.length > 0) {

@@ -62,11 +62,17 @@ function initButtonInteractions() {
     const browseButtons = document.querySelectorAll('.btn-secondary');
 
     postAdButtons.forEach(btn => {
-        btn.addEventListener('click', handlePostAdClick);
+        // Skip buttons that have specific IDs (they have their own handlers)
+        if (!btn.id || btn.id === '') {
+            btn.addEventListener('click', handlePostAdClick);
+        }
     });
 
     browseButtons.forEach(btn => {
-        btn.addEventListener('click', handleBrowseClick);
+        // Skip buttons that have specific IDs (they have their own handlers)
+        if (!btn.id || btn.id === '') {
+            btn.addEventListener('click', handleBrowseClick);
+        }
     });
 
     // Category tile clicks
