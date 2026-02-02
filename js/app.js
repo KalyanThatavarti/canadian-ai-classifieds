@@ -58,92 +58,11 @@ function initSmoothScroll() {
 
 // ===== Button Interactions =====
 function initButtonInteractions() {
-    const postAdButtons = document.querySelectorAll('.btn-primary');
-    const browseButtons = document.querySelectorAll('.btn-secondary');
-
-    postAdButtons.forEach(btn => {
-        // Skip buttons that have specific IDs (they have their own handlers)
-        if (!btn.id || btn.id === '') {
-            btn.addEventListener('click', handlePostAdClick);
-        }
-    });
-
-    browseButtons.forEach(btn => {
-        // Skip buttons that have specific IDs (they have their own handlers)
-        if (!btn.id || btn.id === '') {
-            btn.addEventListener('click', handleBrowseClick);
-        }
-    });
-
-    // Category tile clicks
-    const categoryTiles = document.querySelectorAll('.category-tile');
-    categoryTiles.forEach(tile => {
-        tile.addEventListener('click', handleCategoryClick);
-    });
-
-    // Listing card clicks
-    const listingCards = document.querySelectorAll('.listing-card');
-    listingCards.forEach(card => {
-        card.addEventListener('click', handleListingClick);
-    });
+    // Legacy interactions removed in favor of direct linking and specialized scripts
+    console.log('🔄 UI interactions initialized (Legacy handlers removed)');
 }
 
 // ===== Event Handlers =====
-function handlePostAdClick(e) {
-    console.log('📝 Post Ad button clicked');
-
-    // Check if UI components are loaded
-    if (window.UIComponents) {
-        window.UIComponents.showModal(
-            'Create listings in 60 seconds with AI-powered descriptions! This feature will be available soon.',
-            '🎉 Post Your Ad',
-            {
-                confirmText: 'Got it!',
-                cancelText: null
-            }
-        );
-    } else {
-        alert('🎉 Post Ad feature coming soon! You\'ll be able to create ads in 60 seconds with AI.');
-    }
-}
-
-function handleBrowseClick(e) {
-    console.log('🔍 Browse Listings button clicked');
-
-    // Redirect to browse page
-    window.location.href = 'pages/browse-listings.html';
-}
-
-function handleCategoryClick(e) {
-    const categoryName = e.currentTarget.querySelector('.category-name').textContent;
-    console.log(`📂 Category clicked: ${categoryName}`);
-
-    if (window.UIComponents) {
-        window.UIComponents.showInfoToast(
-            `Filtering listings for ${categoryName}`,
-            'Category Selected'
-        );
-    }
-
-    // TODO: Navigate to browse page with category filter
-    // window.location.href = `pages/browse-listings.html?category=${encodeURIComponent(categoryName)}`;
-}
-
-function handleListingClick(e) {
-    const listingTitle = e.currentTarget.querySelector('.listing-title').textContent;
-    const listingPrice = e.currentTarget.querySelector('.listing-price').textContent;
-    console.log(`🏷️ Listing clicked: ${listingTitle} - ${listingPrice}`);
-
-    if (window.UIComponents) {
-        window.UIComponents.showModal(
-            `Price: ${listingPrice}\n\nFull listing details and contact information will be available soon!`,
-            listingTitle,
-            { confirmText: 'Close' }
-        );
-    } else {
-        alert(`${listingTitle}\n${listingPrice}\n\nFull listing details coming soon!`);
-    }
-}
 
 // ===== Utility Functions =====
 
