@@ -62,7 +62,14 @@ async function signUpWithEmail(email, password, displayName) {
             updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
             trustScore: 0,
             totalListings: 0,
-            totalSales: 0
+            totalSales: 0,
+            // Email notification preferences
+            emailNotifications: {
+                messages: true,           // Notify on new messages
+                priceDrops: true,         // Notify on price drops for favorited items
+                weeklyDigest: false,      // Weekly digest (opt-in)
+                marketing: false          // Marketing emails (opt-in)
+            }
         });
 
         console.log('✅ User signed up:', user.uid);
@@ -151,7 +158,14 @@ async function signInWithGoogle() {
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                 trustScore: 10, // Google users get slight boost
                 totalListings: 0,
-                totalSales: 0
+                totalSales: 0,
+                // Email notification preferences
+                emailNotifications: {
+                    messages: true,
+                    priceDrops: true,
+                    weeklyDigest: false,
+                    marketing: false
+                }
             });
         }
 

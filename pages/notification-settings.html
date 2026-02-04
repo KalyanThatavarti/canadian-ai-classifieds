@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Settings | Canadian AI Classifieds</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 80px auto 40px;
+            padding: 20px;
+        }
+
+        .settings-header {
+            margin-bottom: 40px;
+        }
+
+        .settings-header h1 {
+            color: var(--text-dark);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .settings-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .settings-card h2 {
+            color: var(--text-dark);
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .toggle-container:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            flex: 1;
+        }
+
+        .toggle-label h3 {
+            color: var(--text-dark);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .toggle-label p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: all 0.3s ease;
+            border-radius: 28px;
+            z-index: 1;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch input:checked+.slider {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+        }
+
+        .toggle-switch input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-switch input:disabled+.slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .save-button {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-medium);
+            margin-top: 20px;
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        .save-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .email-preview {
+            background: var(--background-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-top: 15px;
+        }
+
+        .email-preview strong {
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .email-preview span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="settings-container">
+        <div class="settings-header">
+            <h1>📧 Email Notification Settings</h1>
+            <p>Manage your email preferences and control what notifications you receive.</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading-state">
+            <p>Loading your preferences...</p>
+        </div>
+
+        <!-- Settings Content (hidden initially) -->
+        <div id="settings-content" style="display: none;">
+
+            <!-- Message Notifications -->
+            <div class="settings-card">
+                <h2>💬 Message Notifications</h2>
+                <p>Get notified when someone sends you a message about a listing</p>
+
+                <div class="toggle-container">
+                    <div class="toggle-label">
+                        <h3>New Message Alerts</h3>
+                        <p>Receive an email when someone messages you</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notifyMessages" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="email-preview">
+                    <strong>Email Preview:</strong>
+                    <span>Subject: "💬 New message from John about 'iPhone 13 Pro'"</span>
+                </div>
+            </div>
+
+            <!-- Price Drop Alerts -->
+            <div class="settings-card">
+                <h2>💰 Price Drop Alerts</h2>
+                <p>Get notified when items you favorited drop in price</p>
+
+                <div class="toggle-container">
+                    <div class="toggle-label">
+                        <h3>Favorited Items Price Drops</h3>
+                        <p>Email alerts when prices drop by 10% or $50+</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notifyPriceDrops" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="email-preview">
+                    <strong>Email Preview:</strong>
+                    <span>Subject: "💰 Price drop alert: MacBook is now $800 (20% off!)"</span>
+                </div>
+            </div>
+
+            <!-- Weekly Digest -->
+            <div class="settings-card">
+                <h2>📬 Weekly Digest</h2>
+                <p>Get a curated summary of new listings every week</p>
+
+                <div class="toggle-container">
+                    <div class="toggle-label">
+                        <h3>Weekly Summary Email</h3>
+                        <p>Sent every Monday at 9 AM with new listings from the past week</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notifyWeeklyDigest">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="email-preview">
+                    <strong>Email Preview:</strong>
+                    <span>Subject: "📬 Your weekly digest: 25 new listings this week"</span>
+                </div>
+            </div>
+
+            <!-- Marketing & Updates -->
+            <div class="settings-card">
+                <h2>📣 Marketing & Updates</h2>
+                <p>Promotional emails and platform updates</p>
+
+                <div class="toggle-container">
+                    <div class="toggle-label">
+                        <h3>Promotional Emails</h3>
+                        <p>Receive news, tips, and special offers</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notifyMarketing">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <button id="saveSettings" class="save-button">
+                Save Preferences
+            </button>
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Local Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/ui-components.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/notification-settings.js"></script>
+</body>
+
+</html>
