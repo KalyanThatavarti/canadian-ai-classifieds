@@ -26,6 +26,10 @@ desktop.ini
 firebase-debug.log
 .firebaserc
 
+# Firebase Config (contains API keys)
+js/firebase-config.js
+functions/.env
+
 # Build files
 dist/
 build/
