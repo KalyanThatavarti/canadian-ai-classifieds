@@ -2,10 +2,28 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Users collection - users can read/write their own data
+    // ===== Helper Functions =====
+    
+    // Check if user is an admin
+    function isAdmin() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Check if user is banned
+    function isBanned() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'banned';
+    }
+    
+    // ===== Users Collection =====
+    
     match /users/{userId} {
       // Allow users to read and write their own profile
       allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Admins can read and update any user
+      allow read, update: if isAdmin();
       
       // Allow Cloud Functions to read user data (for email notifications)
       allow read: if request.auth == null; // Service account access
@@ -20,17 +38,18 @@ service cloud.firestore {
       }
     }
     
-    // Listings collection
+    // ===== Listings Collection =====
+    
     match /listings/{listingId} {
       // Anyone can read listings
       allow read: if true;
       
-      // Only authenticated users can create
-      allow create: if request.auth != null;
+      // Banned users cannot create listings
+      allow create: if request.auth != null && !isBanned();
       
-      // Only the owner can update or delete
+      // Owner or admin can update/delete
       allow update, delete: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
+        (request.auth.uid == resource.data.userId || isAdmin());
       
       // Cloud Functions can read/update for price drop notifications
       allow read, update: if request.auth == null; // Service account
@@ -59,9 +78,30 @@ service cloud.firestore {
       allow read: if request.auth == null; // Service account
     }
     
-    // Favorites - user-specific
+    //===== Favorites Collection =====
+    
     match /users/{userId}/favorites/{favoriteId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // ===== Reports Collection =====
+    
+    match /reports/{reportId} {
+      // Anyone authenticated can create a report
+      allow create: if request.auth != null;
+      
+      // Only admins can read, update, and delete reports
+      allow read, update, delete: if isAdmin();
+    }
+    
+    // ===== Admin Logs Collection =====
+    
+    match /adminLogs/{logId} {
+      // Anyone authenticated can create logs (for audit trail)
+      allow create: if request.auth != null;
+      
+      // Only admins can read logs
+      allow read: if isAdmin();
     }
   }
 }

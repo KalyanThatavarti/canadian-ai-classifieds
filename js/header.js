@@ -211,8 +211,24 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
 
         // Update menu based on auth state
-        function updateUserMenu(user) {
+        async function updateUserMenu(user) {
             if (user) {
+                // Check if user is admin
+                let isAdmin = false;
+                try {
+                    const userDoc = await firebase.firestore()
+                        .collection('users')
+                        .doc(user.uid)
+                        .get();
+
+                    if (userDoc.exists) {
+                        isAdmin = userDoc.data().isAdmin === true;
+                        console.log('🔐 Admin status:', isAdmin ? 'ADMIN' : 'Regular User');
+                    }
+                } catch (error) {
+                    console.error('Error checking admin status:', error);
+                }
+
                 // User is logged in - show profile menu
                 userDropdown.innerHTML = `
                     <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">
@@ -231,6 +247,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </a>
                         <a href="/pages/notification-settings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             📧 Notification Settings
+                        </a>
+                        <a href="/pages/admin/index.html" id="adminMenuLink" style="display: ${isAdmin ? 'block' : 'none'}; padding: 0.75rem; color: #667eea; text-decoration: none; border-radius: 8px; transition: background 0.2s; font-weight: 600; border-top: 1px solid #e5e7eb; margin-top: 0.5rem; padding-top: 0.75rem;" onmouseover="this.style.background='#eef2ff'" onmouseout="this.style.background='transparent'">
+                            🛡️ Admin Dashboard
                         </a>
                         <a href="#" id="signOutBtn" style="display: block; padding: 0.75rem; color: #dc2626; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
                             Sign Out
@@ -299,14 +318,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else if (attempts >= maxAttempts) {
                     clearInterval(checkInterval);
                     console.warn('⚠️ Firebase not ready after', maxAttempts * 100, 'ms - showing guest menu');
-                    updateUserMenu(null);
+                    updateUserMenu(null).catch(() => { });
                 }
             }, 100);
         }
 
         // Initialize auth listener when Firebase is ready
         waitForFirebase(() => {
-            window.FirebaseAPI.auth.onAuthStateChanged(updateUserMenu);
+            window.FirebaseAPI.auth.onAuthStateChanged((user) => {
+                updateUserMenu(user).catch(err => {
+                    console.error('Error updating user menu:', err);
+                    // Fallback to non-admin menu on error
+                    if (user) {
+                        userDropdown.innerHTML = `
+                            <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">
+                                <div style="font-weight: 600; color: #111827;">${user.displayName || 'User'}</div>
+                                <div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">${user.email}</div>
+                            </div>
+                            <div style="padding: 0.5rem;">
+                                <a href="/pages/profile.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px;">My Profile</a>
+                                <a href="/pages/my-listings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px;">My Listings</a>
+                                <a href="#" id="signOutBtn" style="display: block; padding: 0.75rem; color: #dc2626; text-decoration: none; border-radius: 8px;">Sign Out</a>
+                            </div>
+                        `;
+                    }
+                });
+            });
         });
     }
 

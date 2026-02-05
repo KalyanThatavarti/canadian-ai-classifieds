@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Debug - Canadian Classifieds</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .card {
+            background: #334155;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        h1 {
+            color: #60a5fa;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .info {
+            background: #1e40af;
+            color: white;
+        }
+
+        .success {
+            background: #047857;
+            color: white;
+        }
+
+        .error {
+            background: #dc2626;
+            color: white;
+        }
+
+        pre {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #475569;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🛡️ Admin Access Debug Tool</h1>
+
+    <div class="card">
+        <h2>Current Status</h2>
+        <div id="status" class="status info">Loading...</div>
+    </div>
+
+    <div class="card">
+        <h2>User Document Data</h2>
+        <pre id="userData">Fetching...</pre>
+    </div>
+
+    <div class="card">
+        <h2>Admin Check Result</h2>
+        <pre id="adminResult">...</pre>
+    </div>
+
+    <div class="card">
+        <h2>Actions</h2>
+        <button onclick="checkAdminStatus()">🔍 Check Admin Status</button>
+        <button onclick="location.href='/pages/admin/index.html'">🚀 Try Admin Dashboard</button>
+        <button onclick="location.reload()">🔄 Refresh</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const userDataEl = document.getElementById('userData');
+        const adminResultEl = document.getElementById('adminResult');
+
+        async function checkAdminStatus() {
+            const user = firebase.auth().currentUser;
+
+            if (!user) {
+                statusEl.textContent = '❌ NOT LOGGED IN';
+                statusEl.className = 'status error';
+                userDataEl.textContent = 'Please log in first';
+                return;
+            }
+
+            try {
+                statusEl.textContent = '🔍 Checking...';
+                statusEl.className = 'status info';
+
+                const db = firebase.firestore();
+                const userDoc = await db.collection('users').doc(user.uid).get();
+
+                if (!userDoc.exists) {
+                    statusEl.textContent = '❌ USER DOCUMENT NOT FOUND';
+                    statusEl.className = 'status error';
+                    userDataEl.textContent = `User UID: ${user.uid}\nEmail: ${user.email}\n\nNo document found in Firestore!`;
+                    return;
+                }
+
+                const userData = userDoc.data();
+
+                // Display user data
+                userDataEl.textContent = JSON.stringify(userData, null, 2);
+
+                // Check admin status
+                const isAdmin = userData.isAdmin === true;
+                const hasField = 'isAdmin' in userData;
+                const fieldType = typeof userData.isAdmin;
+                const role = userData.role;
+
+                adminResultEl.textContent = `
+Is Admin: ${isAdmin ? '✅ YES' : '❌ NO'}
+
+Field Details:
+- Has 'isAdmin' field: ${hasField ? '✅ YES' : '❌ NO'}
+- isAdmin value: ${userData.isAdmin}
+- isAdmin type: ${fieldType}
+- Expected type: boolean
+- Expected value: true
+
+Role Details:
+- Has 'role' field: ${'role' in userData ? '✅ YES' : '❌ NO'}
+- role value: ${role || 'NOT SET'}
+- Expected value: "admin"
+
+VERDICT: ${isAdmin ? '✅ ACCESS GRANTED' : '❌ ACCESS DENIED'}
+                `.trim();
+
+                if (isAdmin) {
+                    statusEl.textContent = '✅ YOU ARE AN ADMIN!';
+                    statusEl.className = 'status success';
+                } else {
+                    statusEl.textContent = '❌ NOT AN ADMIN - Check details below';
+                    statusEl.className = 'status error';
+                }
+
+            } catch (error) {
+                statusEl.textContent = '❌ ERROR: ' + error.message;
+                statusEl.className = 'status error';
+                userDataEl.textContent = error.stack;
+                console.error(error);
+            }
+        }
+
+        // Auto-check on load
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                statusEl.textContent = `✅ Logged in as ${user.email}`;
+                statusEl.className = 'status success';
+                checkAdminStatus();
+            } else {
+                statusEl.textContent = '❌ Please log in';
+                statusEl.className = 'status error';
+                userDataEl.textContent = 'Not logged in';
+            }
+        });
+    </script>
+</body>
+
+</html>

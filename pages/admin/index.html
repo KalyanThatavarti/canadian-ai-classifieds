@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Canadian AI Classifieds</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/toast.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 80px auto 40px;
+            padding: 20px;
+        }
+
+        .admin-header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .admin-header h1 {
+            color: var(--text-dark);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .admin-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-medium);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive {
+            color: #10B981;
+        }
+
+        .stat-change.negative {
+            color: #EF4444;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 40px;
+        }
+
+        .quick-actions h2 {
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .action-card {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+
+        .action-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .action-label {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-bottom: 40px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-card h3 {
+            color: var(--text-dark);
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .activity-section h3 {
+            color: var(--text-dark);
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+        }
+
+        .activity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .activity-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: var(--background-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 3px solid var(--border-light);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1>
+                🛡️ Admin Dashboard
+                <span class="admin-badge">Admin Only</span>
+            </h1>
+            <p>Manage your Canadian AI Classifieds platform</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading dashboard...</p>
+        </div>
+
+        <!-- Dashboard Content (hidden initially) -->
+        <div id="dashboard-content" style="display: none;">
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">👥</span>
+                    </div>
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-change positive" id="usersChange">+0 this week</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">📝</span>
+                    </div>
+                    <div class="stat-value" id="totalListings">0</div>
+                    <div class="stat-label">Active Listings</div>
+                    <div class="stat-change positive" id="listingsChange">+0 this week</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">🚩</span>
+                    </div>
+                    <div class="stat-value" id="totalReports">0</div>
+                    <div class="stat-label">Pending Reports</div>
+                    <div class="stat-change" id="reportsChange">0 resolved today</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-icon">💬</span>
+                    </div>
+                    <div class="stat-value" id="totalMessages">0</div>
+                    <div class="stat-label">Messages Today</div>
+                    <div class="stat-change positive" id="messagesChange">Active</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h2>Quick Actions</h2>
+                <div class="action-grid">
+                    <a href="/pages/admin/listings.html" class="action-card">
+                        <div class="action-icon">📋</div>
+                        <div class="action-label">Manage Listings</div>
+                    </a>
+                    <a href="/pages/admin/users.html" class="action-card">
+                        <div class="action-icon">👤</div>
+                        <div class="action-label">Manage Users</div>
+                    </a>
+                    <a href="/pages/admin/reports.html" class="action-card">
+                        <div class="action-icon">🚨</div>
+                        <div class="action-label">View Reports</div>
+                    </a>
+                    <a href="/pages/admin/logs.html" class="action-card">
+                        <div class="action-icon">📊</div>
+                        <div class="action-label">Activity Logs</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>📈 User Growth (Last 30 Days)</h3>
+                        <div class="chart-container">
+                            <canvas id="userGrowthChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>🎨 Listings by Category</h3>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <h3>📌 Recent Activity</h3>
+                <ul class="activity-list" id="activityList">
+                    <!-- Activity items will be populated by JavaScript -->
+                </ul>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Local Scripts -->
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/ui-components.js"></script>
+    <script src="../../js/firebase-config.js"></script>
+    <script src="../../js/admin-auth.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/admin-dashboard.js"></script>
+</body>
+
+</html>

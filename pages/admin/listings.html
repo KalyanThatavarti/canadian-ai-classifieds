@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Listings | Admin Dashboard</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/toast.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 80px auto 40px;
+            padding: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-header h1 {
+            color: var(--text-dark);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+        }
+
+        /* Listings Table */
+        .listings-table-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .listings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .listings-table th {
+            background: var(--background-light);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .listings-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .listings-table tr:hover {
+            background: var(--background-light);
+        }
+
+        .listing-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+        }
+
+        .listing-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .listing-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .price {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #DEF7EC;
+            color: #03543F;
+        }
+
+        .status-sold {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-flagged {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-view {
+            background: var(--background-light);
+            color: var(--text-dark);
+        }
+
+        .btn-view:hover {
+            background: var(--border-color);
+        }
+
+        .btn-delete {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .btn-delete:hover {
+            background: #DC2626;
+            color: white;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 3px solid var(--border-light);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .modal-body {
+            margin-bottom: 24px;
+            color: var(--text-dark);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-modal {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-cancel {
+            background: var(--background-light);
+            color: var(--text-dark);
+        }
+
+        .btn-cancel:hover {
+            background: var(--border-color);
+        }
+
+        .btn-confirm {
+            background: #DC2626;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #B91C1C;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="admin-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <a href="/pages/admin/index.html" class="back-link">← Back to Dashboard</a>
+                <h1>📋 Manage Listings</h1>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="searchInput" placeholder="Search by title...">
+                </div>
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Vehicles">Vehicles</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Jobs">Jobs</option>
+                        <option value="Services">Services</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="sold">Sold</option>
+                        <option value="flagged">Flagged</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading listings...</p>
+        </div>
+
+        <!-- Listings Table -->
+        <div id="listingsContainer" class="listings-table-container" style="display: none;">
+            <table class="listings-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title & Details</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Posted</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="listingsTableBody">
+                    <!-- Listings will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="no-results" style="display: none;">
+            <p>No listings found</p>
+        </div>
+
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🗑️ Delete Listing</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this listing? This action cannot be undone.</p>
+                <textarea id="deleteReason" placeholder="Reason for deletion (required)..."
+                    style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-top: 12px; min-height: 80px;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-modal btn-confirm" onclick="confirmDelete()">Delete Listing</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Local Scripts -->
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/ui-components.js"></script>
+    <script src="../../js/firebase-config.js"></script>
+    <script src="../../js/admin-auth.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/admin-listings.js"></script>
+</body>
+
+</html>
