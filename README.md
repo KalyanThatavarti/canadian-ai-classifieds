@@ -1,311 +1,227 @@
-# 🇨🇦 Canadian AI Classifieds Website
+# 🍁 Canadian AI Classifieds
 
-A modern, ultra-premium classifieds website for the Canadian public, powered by AI and Firebase.
+A modern, AI-powered classifieds platform for buying and selling items across Canada. Built with Firebase, featuring real-time messaging, email notifications, and a beautiful user interface.
 
-## ✨ Features
+[![Live Demo](https://img.shields.io/badge/demo-live-green)](https://canadian-ai-classifieds.web.app)
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-- **AI-Powered Ad Creation**: Create ads in 60 seconds with AI-generated descriptions
-- **Verified Safety System**: AI-powered identity verification and fraud detection
-- **Local Matching**: Find buyers and sellers within 2-5 km radius
-- **Real-time Listings**: Live updates powered by Firebase Firestore
-- **Secure Messaging**: End-to-end encrypted communication
-- **Smart Pricing**: AI suggests optimal prices based on market data
+## 🌟 Features
 
-## 🎨 Design
+### Core Functionality
+- 🔐 **User Authentication** - Email/password and Google OAuth sign-in
+- 📝 **Listing Management** - Create, edit, and manage classified ads
+- 🔍 **Advanced Search** - Filter by category, location, and price range
+- 💬 **Real-time Messaging** - Built-in chat system for buyers and sellers
+- ⭐ **Favorites** - Save and track listings you're interested in
+- 📊 **User Profiles** - Manage your listings and account settings
 
-- **Ultra-Modern UI**: Glassmorphism design with smooth animations
-- **Responsive**: Mobile-first design that works on all devices
-- **Accessibility**: WCAG 2.1 compliant with semantic HTML
-- **Performance**: Optimized assets and lazy loading
+### Email Notifications
+- 📧 **Message Notifications** - Get instant email alerts for new messages
+- 💰 **Price Drop Alerts** - Notifications when favorited items drop in price
+- 📬 **Weekly Digest** - Curated summary of new listings (opt-in)
+- ⚙️ **Notification Settings** - Customizable email preferences
 
-## 📚 Documentation
+### UI/UX
+- 🎨 **Modern Design** - Clean, responsive interface
+- 📱 **Mobile-First** - Optimized for all devices
+- 🌈 **Premium Aesthetics** - Vibrant colors, smooth animations
+- ♿ **Accessible** - WCAG compliant design
 
-For detailed feature documentation, see the [docs](docs/) folder:
-- **[Feature Documentation](docs/FEATURES.md)** - Complete guide to all implemented features
-  - Premium Glassmorphic Header
-  - Hero Section with Image Slider
-  - AI-Powered Search Bar
-  - Luxury Card Components
-  - Responsive Design
-  - Browser Support & Performance
+## 🚀 Live Demo
 
-## 🏗️ Tech Stack
+Visit the live site: **[canadian-ai-classifieds.web.app](https://canadian-ai-classifieds.web.app)**
 
-- **Frontend**: HTML5, CSS3 (Vanilla), JavaScript (ES6+)
-- **Backend**: Firebase
-  - Authentication (Email/Password, Google)
-  - Firestore Database
-  - Cloud Storage
-  - Cloud Functions (future)
-  - Analytics
-- **Fonts**: Inter from Google Fonts
-- **Hosting**: Firebase Hosting (recommended)
+## 📸 Screenshots
 
-## 📂 Project Structure
+[Add screenshots here once you upload them]
 
-```
-canadian-classifieds/
-├── index.html              # Main homepage
-├── css/
-│   ├── styles.css          # Global styles
-│   ├── header.css          # Premium glassmorphic header
-│   ├── hero-slider.css     # Hero section with image slider
-│   ├── luxury-cards.css    # Card components
-│   └── search-bar.css      # AI-powered search bar
-├── js/
-│   ├── app.js              # Main application logic
-│   ├── firebase-config.js  # Firebase configuration
-│   ├── header.js           # Header interactions
-│   ├── hero-slider.js      # Image slider functionality
-│   └── category-title-animation.js  # Category animations
-├── images/
-│   ├── hero_background_*.png  # Hero slider images
-│   └── ai-safety.png       # AI safety illustration
-├── docs/
-│   ├── README.md           # Documentation index
-│   └── FEATURES.md         # Complete feature documentation
-└── README.md               # This file
-```
+## 🛠️ Tech Stack
 
-## 🚀 Getting Started
+### Frontend
+- **HTML5** - Semantic markup
+- **CSS3** - Modern styling with CSS Grid and Flexbox
+- **JavaScript (ES6+)** - Vanilla JS for interactivity
+- **Firebase SDK v9** - Client-side Firebase integration
 
-### Prerequisites
+### Backend
+- **Firebase Authentication** - User auth and session management
+- **Cloud Firestore** - NoSQL database for real-time data
+- **Cloud Functions** - Serverless Node.js 20 runtime
+- **Firebase Storage** - Image and file storage
+- **Firebase Hosting** - Static site hosting
 
-- A modern web browser (Chrome, Firefox, Safari, Edge)
-- Firebase account (free tier is fine)
-- Basic knowledge of HTML/CSS/JavaScript
+### Email Service
+- **Resend API** - Transactional email delivery
+- **Custom HTML Templates** - Responsive email design
 
-### Firebase Setup
+## 📋 Prerequisites
 
-1. **Create Firebase Project**
-   - Go to [Firebase Console](https://console.firebase.google.com)
-   - Click "Add project"
-   - Follow the setup wizard
+- Node.js 20+ and npm
+- Firebase CLI (`npm install -g firebase-tools`)
+- A Firebase project ([Create one here](https://console.firebase.google.com))
+- A Resend account ([Sign up here](https://resend.com))
 
-2. **Enable Authentication**
-   - In Firebase Console, go to Authentication
-   - Click "Get Started"
-   - Enable "Email/Password" sign-in method
-   - Enable "Google" sign-in method
+## ⚡ Quick Start
 
-3. **Create Firestore Database**
-   - Go to Firestore Database
-   - Click "Create database"
-   - Start in **test mode** (change security rules later)
-   - Choose a location close to your users (e.g., `us-central` for Canada)
+### 1. Clone the Repository
 
-4. **Enable Storage**
-   - Go to Storage
-   - Click "Get Started"
-   - Start in test mode
-
-5. **Get Firebase Config**
-   - Go to Project Settings (gear icon)
-   - Scroll down to "Your apps"
-   - Click the web icon (`</>`)
-   - Copy the `firebaseConfig` object
-
-6. **Update Configuration**
-   - Open `js/firebase-config.js`
-   - Replace the placeholder config with your actual config
-   - Uncomment the Firebase initialization code
-
-7. **Add Firebase SDK to HTML**
-   - Open `index.html`
-   - Add these scripts before the closing `</body>` tag (before `app.js`):
-
-```html
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+```bash
+git clone https://github.com/KalyanThatavarti/canadian-ai-classifieds.git
+cd canadian-ai-classifieds
 ```
 
-### Local Development
+### 2. Set Up Firebase Configuration
 
-1. **Option 1: Using Python**
-   ```bash
-   cd canadian-classifieds
-   python -m http.server 8000
-   ```
-   Then open `http://localhost:8000` in your browser
-
-2. **Option 2: Using Node.js**
-   ```bash
-   npx http-server -p 8000
-   ```
-
-3. **Option 3: Using VS Code**
-   - Install "Live Server" extension
-   - Right-click `index.html`
-   - Select "Open with Live Server"
-
-### Deployment
-
-#### Deploy to Firebase Hosting
-
-1. **Install Firebase CLI**
-   ```bash
-   npm install -g firebase-tools
-   ```
-
-2. **Login to Firebase**
-   ```bash
-   firebase login
-   ```
-
-3. **Initialize Firebase Hosting**
-   ```bash
-   firebase init hosting
-   ```
-   - Select your project
-   - Set public directory to `.` (current directory)
-   - Configure as single-page app: `No`
-   - Don't overwrite index.html
-
-4. **Deploy**
-   ```bash
-   firebase deploy --only hosting
-   ```
-
-Your site will be live at `https://your-project-id.web.app`
-
-## 📊 Firestore Database Structure
-
-### Collections
-
-#### `listings` Collection
-```javascript
-{
-  userId: "user123",
-  title: "Modern Sofa Set",
-  description: "AI-generated description...",
-  price: 450,
-  category: "furniture",
-  location: {
-    latitude: 43.6532,
-    longitude: -79.3832,
-    city: "Toronto",
-    province: "ON"
-  },
-  images: ["url1.jpg", "url2.jpg"],
-  status: "active", // 'active' | 'sold' | 'deleted'
-  createdAt: timestamp,
-  updatedAt: timestamp
-}
+```bash
+# Copy the example file
+cp js/firebase-config.example.js js/firebase-config.js
 ```
 
-#### `users` Collection
-```javascript
-{
-  email: "user@example.com",
-  displayName: "John Doe",
-  verified: true,
-  createdAt: timestamp,
-  listings: ["listing1", "listing2"]
-}
-```
-
-### Security Rules
-
-Update your Firestore security rules:
+Edit `js/firebase-config.js` with your Firebase project credentials:
 
 ```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Listings
-    match /listings/{listingId} {
-      allow read: if true;
-      allow create: if request.auth != null;
-      allow update, delete: if request.auth.uid == resource.data.userId;
-    }
-    
-    // Users
-    match /users/{userId} {
-      allow read: if true;
-      allow write: if request.auth.uid == userId;
-      
-      // Favorites subcollection
-       match /favorites/{favoriteId} {
-        allow read, write: if request.auth.uid == userId;
-      }
-    }
-    
-    // Conversations (Messaging)
-    match /conversations/{conversationId} {
-      // Allow create if user is in participantIds
-      allow create: if request.auth != null && request.auth.uid in request.resource.data.participantIds;
-      // Allow read if user is a participant
-      allow read: if request.auth != null && request.auth.uid in resource.data.participantIds;
-      // Allow update if user is a participant
-      allow update: if request.auth != null && request.auth.uid in resource.data.participantIds;
-      
-      // Messages subcollection
-      match /messages/{messageId} {
-        allow read, create: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds;
-      }
-    }
-  }
-}
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "your-project.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project.firebasestorage.app",
+    messagingSenderId: "123456789",
+    appId: "your-app-id"
+};
 ```
 
-## 🎯 Next Steps
+### 3. Set Up Cloud Functions
 
-### Phase 1: Core Features (Current)
-- [x] Homepage design
-- [x] Responsive layout
-- [x] Firebase configuration
-- [ ] User authentication UI
-- [ ] Listing creation page
-- [ ] Listings browse page
+```bash
+cd functions
+npm install
+cp .env.example .env
+```
 
-### Phase 2: Enhanced Features
-- [ ] AI description generation (OpenAI API)
-- [ ] Image upload and compression
-- [ ] Real-time chat messaging
-- [ ] User profiles
-- [ ] Review system
-- [ ] Search and filters
+Add your Resend API key to `functions/.env`:
 
-### Phase 3: Advanced Features
-- [ ] Geolocation and maps integration
-- [ ] Push notifications
-- [ ] Payment integration (Stripe)
+```
+RESEND_API_KEY=re_your_api_key_here
+```
+
+### 4. Deploy to Firebase
+
+```bash
+# Login to Firebase
+firebase login
+
+# Initialize Firebase (if not already)
+firebase init
+
+# Deploy everything
+firebase deploy
+```
+
+For detailed setup instructions, see [SECURITY_SETUP.md](SECURITY_SETUP.md)
+
+## 📁 Project Structure
+
+```
+canadian-ai-classifieds/
+├── css/                    # Stylesheets
+│   ├── styles.css         # Global styles
+│   ├── header.css         # Navigation styles
+│   └── toast.css          # Toast notification styles
+├── js/                     # JavaScript files
+│   ├── firebase-config.js # Firebase initialization (gitignored)
+│   ├── header.js          # Header/navigation logic
+│   ├── ui-components.js   # Reusable UI components
+│   └── notification-settings.js  # Email preferences
+├── pages/                  # HTML pages
+│   ├── index.html         # Homepage
+│   ├── auth/              # Authentication pages
+│   ├── messages/          # Messaging interface
+│   └── notification-settings.html  # Email settings
+├── functions/              # Cloud Functions
+│   ├── index.js           # Main functions entry
+│   ├── lib/
+│   │   ├── email-service.js      # Resend integration
+│   │   └── email-templates.js    # Email HTML templates
+│   └── package.json
+├── firestore.rules        # Firestore security rules
+├── firebase.json          # Firebase configuration
+└── SECURITY_SETUP.md      # Security setup guide
+```
+
+## 🔐 Security
+
+This repository follows security best practices:
+
+- ✅ API keys are **gitignored** and not committed
+- ✅ Example configuration files provided
+- ✅ Firestore Security Rules enforce access control
+- ✅ Cloud Functions use environment variables
+- ✅ Firebase Client SDK keys are domain-restricted
+
+See [SECURITY_SETUP.md](SECURITY_SETUP.md) for details.
+
+## 📧 Email Notifications
+
+The platform uses **Cloud Functions** to send automated emails:
+
+1. **Message Notifications** (`onMessageCreated`)
+   - Triggered when a new message is sent
+   - Sends email to the recipient
+
+2. **Price Drop Alerts** (`onListingPriceChanged`)
+   - Monitors listing price changes
+   - Alerts users who favorited the item (≥10% or $50 drop)
+
+3. **Weekly Digest** (`sendWeeklyDigest`)
+   - Scheduled function (Mondays at 9 AM EST)
+   - Sends curated list of new listings to opted-in users
+
+## 🎯 Roadmap
+
+- [ ] Advanced AI-powered listing descriptions
+- [ ] Image recognition for automatic categorization
+- [ ] Seller ratings and reviews
+- [ ] Payment integration
+- [ ] Mobile app (React Native)
 - [ ] Admin dashboard
-- [ ] Analytics and reporting
-
-## 🐛 Troubleshooting
-
-### Firebase Not Loading
-- Check browser console for errors
-- Verify Firebase config is correct
-- Ensure Firebase SDK scripts are loaded before your app.js
-
-### Images Not Showing
-- Check image paths are correct
-- Verify images are in the `images/` folder
-- Check browser console for 404 errors
-
-### Styles Not Applied
-- Clear browser cache (Ctrl+Shift+R)
-- Check CSS file path in index.html
-- Verify styles.css has no syntax errors
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
+- [ ] Spam detection
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📧 Contact
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-For questions or support, please open an issue on GitHub.
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Kalyan Thatavarti**
+- GitHub: [@KalyanThatavarti](https://github.com/KalyanThatavarti)
+- Project: [canadian-ai-classifieds](https://github.com/KalyanThatavarti/canadian-ai-classifieds)
+
+## 🙏 Acknowledgments
+
+- Firebase for backend infrastructure
+- Resend for email delivery
+- Google Fonts for typography
+- The open-source community
+
+## 📞 Support
+
+If you have any questions or run into issues:
+
+1. Check [SECURITY_SETUP.md](SECURITY_SETUP.md) for setup help
+2. Open an [issue](https://github.com/KalyanThatavarti/canadian-ai-classifieds/issues)
+3. Email: [your-email@example.com]
 
 ---
 
-**Built with ❤️ for Canadians 🇨🇦**
+**Built with ❤️ using Firebase and modern web technologies**
