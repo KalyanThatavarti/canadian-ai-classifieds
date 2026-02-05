@@ -68,6 +68,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <nav class="main-nav">
                     <ul class="nav-menu">
                         <li class="nav-item">
+                            <a href="${homeLink}" class="nav-link">
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="${isInMessages ? '../browse-listings.html' : (isInPages ? 'browse-listings.html' : 'pages/browse-listings.html')}" class="nav-link">
                                 Browse Listings
                             </a>

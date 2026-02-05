@@ -140,9 +140,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const text = messageInput.value.trim();
         if (!text) return;
 
+        // Clear input immediately
         messageInput.value = '';
         messageInput.style.height = 'auto'; // Reset height
         sendBtn.disabled = true;
+
+        // Blur input to dismiss mobile keyboard
+        messageInput.blur();
 
         try {
             await window.FirebaseAPI.sendMessage(conversationId, text);
@@ -164,6 +168,14 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             sendBtn.disabled = true;
         }
+    });
+
+    // Scroll input into view when keyboard appears (mobile fix)
+    messageInput.addEventListener('focus', function () {
+        // Small delay to let keyboard fully appear
+        setTimeout(() => {
+            this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
     });
 
     // Escaping helper

@@ -307,10 +307,10 @@
 @media (max-width: 768px) {
     .messages-container {
         padding: 0;
-        height: calc(100vh - 90px);
-        /* Changed from 60px */
-        margin-top: 90px;
-        /* Changed from 60px to account for full header */
+        /* Use dvh (dynamic viewport height) to account for mobile browser UI */
+        height: 100dvh;
+        margin-top: 0;
+        padding-top: 90px;
     }
 
     .messages-page {
@@ -327,11 +327,10 @@
     .chat-window {
         position: fixed;
         top: 90px;
-        /* Changed from 60px - accounts for top bar + main header */
         left: 0;
         width: 100%;
-        height: calc(100vh - 90px);
-        /* Changed from 60px */
+        /* Use dynamic viewport height to adjust for keyboard */
+        height: calc(100dvh - 90px);
         border-radius: 0;
         transform: translateX(100%);
         transition: transform 0.3s ease;
@@ -345,5 +344,44 @@
     .back-button {
         display: block;
         margin-right: 0.5rem;
+    }
+
+    /* Critical fixes for mobile keyboard */
+    .messages-area {
+        /* Allow scrolling above keyboard */
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        /* Add padding to bottom so last message is always visible */
+        padding-bottom: 80px;
+    }
+
+    .chat-input-area {
+        /* Stick to bottom but move up with keyboard */
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 0.75rem;
+        /* Ensure it's above messages */
+        z-index: 10;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .chat-input {
+        font-size: 16px;
+        /* Prevents iOS zoom on focus */
+        max-height: 80px;
+        min-height: 40px;
+    }
+
+    .send-btn {
+        /* Make button more tappable */
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
     }
 }
