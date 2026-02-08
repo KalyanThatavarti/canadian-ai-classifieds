@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports Management - Canadian AI Classifieds Admin</title>
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="admin-container">
+        <div class="admin-header">
+            <a href="/pages/admin/index.html"
+                style="display: inline-flex; align-items: center; gap: 8px; color: #6366f1; text-decoration: none; font-weight: 600; margin-bottom: 1rem;">←
+                Back to Dashboard</a>
+            <h1><i class="fas fa-flag"></i> Reports Management</h1>
+            <p>Review and manage user-submitted reports</p>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="admin-filters">
+            <div class="filter-group">
+                <input type="text" id="reportSearch" placeholder="Search by listing title or reporter..."
+                    class="filter-input">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <div class="filter-group">
+                <label for="statusFilter">Status:</label>
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Reports</option>
+                    <option value="pending">Pending</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="dismissed">Dismissed</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="typeFilter">Type:</label>
+                <select id="typeFilter" class="filter-select">
+                    <option value="all">All Types</option>
+                    <option value="spam">Spam</option>
+                    <option value="inappropriate">Inappropriate Content</option>
+                    <option value="scam">Scam/Fraud</option>
+                    <option value="duplicate">Duplicate Listing</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sortBy">Sort:</label>
+                <select id="sortBy" class="filter-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="priority">High Priority</option>
+                </select>
+            </div>
+
+            <button id="refreshBtn" class="btn-secondary">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <i class="fas fa-flag"></i>
+                <div>
+                    <h3 id="totalReports">0</h3>
+                    <p>Total Reports</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock" style="color: #f59e0b;"></i>
+                <div>
+                    <h3 id="pendingReports">0</h3>
+                    <p>Pending</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                <div>
+                    <h3 id="resolvedReports">0</h3>
+                    <p>Resolved</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-times-circle" style="color: #6b7280;"></i>
+                <div>
+                    <h3 id="dismissedReports">0</h3>
+                    <p>Dismissed</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Table -->
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Report Details</th>
+                        <th>Listing</th>
+                        <th>Type</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reportsTableBody">
+                    <!-- Reports will be populated here -->
+                </tbody>
+            </table>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>No Reports Found</h3>
+                <p>Try adjusting your search or filters</p>
+            </div>
+
+            <div id="loadingState" class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading reports...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Report Details Modal -->
+    <div id="reportDetailsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-alt"></i> Report Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="reportDetailsContent">
+                    <!-- Report details will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeReportDetailsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resolve Report Modal -->
+    <div id="resolveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-check-circle"></i> Resolve Report</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Mark this report as resolved?</p>
+                <p class="info-text">
+                    <i class="fas fa-info-circle"></i>
+                    The listing will remain active. If needed, you can delete it separately.
+                </p>
+
+                <div class="form-group">
+                    <label for="resolveNotes">Resolution Notes: *</label>
+                    <textarea id="resolveNotes" rows="4" placeholder="Enter notes about how this was resolved..."
+                        required></textarea>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="deleteListing">
+                    <label for="deleteListing">Also delete the reported listing</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeResolveModal()">Cancel</button>
+                <button class="btn-success" onclick="confirmResolve()">
+                    <i class="fas fa-check"></i> Resolve Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dismiss Report Modal -->
+    <div id="dismissModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-times-circle"></i> Dismiss Report</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to dismiss this report?</p>
+
+                <div class="form-group">
+                    <label for="dismissReason">Reason for dismissal: *</label>
+                    <textarea id="dismissReason" rows="4" placeholder="Why is this report being dismissed..."
+                        required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeDismissModal()">Cancel</button>
+                <button class="btn-warning" onclick="confirmDismiss()">
+                    <i class="fas fa-times"></i> Dismiss Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="../../js/firebase-config.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/admin-auth.js"></script>
+    <script src="../../js/admin-reports.js"></script>
+
+    <style>
+        .info-text {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-success {
+            padding: 0.75rem 1.5rem;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .priority-low {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-resolved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-dismissed {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .report-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .reporter-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .report-reason {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .listing-link {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .listing-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</body>
+
+</html>

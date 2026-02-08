@@ -215,7 +215,8 @@
     border: none;
     cursor: pointer;
     padding: 0.5rem;
-    display: flex;
+    display: none;
+    /* Hidden until search functionality is implemented */
     align-items: center;
     color: #2C2C2C;
     transition: all 0.3s ease;

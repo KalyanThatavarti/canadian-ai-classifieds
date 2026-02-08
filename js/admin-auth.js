@@ -141,8 +141,9 @@ async function toggleAdminUI() {
  * @param {string} action - The action performed (e.g., 'ban_user', 'delete_listing')
  * @param {string} targetId - ID of the affected resource
  * @param {string} reason - Reason for the action
+ * @param {Object} metadata - Additional metadata (e.g., targetName, deletedListings)
  */
-async function logAdminAction(action, targetId, reason = '') {
+async function logAdminAction(action, targetId, reason = '', metadata = {}) {
     const user = firebase.auth().currentUser;
 
     if (!user) {
@@ -158,7 +159,9 @@ async function logAdminAction(action, targetId, reason = '') {
                 adminEmail: user.email,
                 action: action,
                 targetId: targetId,
+                targetName: metadata.targetUserName || metadata.targetListingName || targetId,
                 reason: reason,
+                metadata: metadata,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 

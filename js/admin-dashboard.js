@@ -288,13 +288,16 @@ function getActivityIcon(action) {
  * Get human-readable text for activity
  */
 function getActivityText(log) {
+    // Use targetName if available, otherwise fall back to targetId
+    const target = log.targetName || log.targetId || 'Unknown';
+
     const actions = {
-        ban_user: `Banned user (${log.targetId})`,
-        delete_listing: `Deleted listing (${log.targetId})`,
-        approve_listing: `Approved listing (${log.targetId})`,
-        suspend_user: `Suspended user (${log.targetId})`,
-        resolve_report: `Resolved report (${log.targetId})`,
-        dismiss_report: `Dismissed report (${log.targetId})`
+        ban_user: `Banned user (${target})`,
+        delete_listing: `Deleted listing (${target})`,
+        approve_listing: `Approved listing (${target})`,
+        suspend_user: `Suspended user (${target})`,
+        resolve_report: `Resolved report (${target})`,
+        dismiss_report: `Dismissed report (${target})`
     };
 
     const text = actions[log.action] || `Performed action: ${log.action}`;

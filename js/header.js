@@ -12,8 +12,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // Better: Check based on current location to set correct links
         const isInPages = window.location.pathname.includes('/pages/');
         const isInMessages = window.location.pathname.includes('/pages/messages/');
+        const isInAdmin = window.location.pathname.includes('/pages/admin/');
 
-        const homeLink = isInMessages ? '../../index.html' : (isInPages ? '../index.html' : 'index.html');
+        // Fix home link path based on location
+        const homeLink = isInMessages ? '../../index.html' :
+            (isInAdmin ? '../../index.html' :
+                (isInPages ? '../index.html' : 'index.html'));
         // Fix for logo link in subpages
 
         headerPlaceholder.innerHTML = `
@@ -73,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="${isInMessages ? '../browse-listings.html' : (isInPages ? 'browse-listings.html' : 'pages/browse-listings.html')}" class="nav-link">
+                            <a href="${isInMessages ? '../browse-listings.html' : (isInAdmin ? '../browse-listings.html' : (isInPages ? 'browse-listings.html' : 'pages/browse-listings.html'))}" class="nav-link">
                                 Browse Listings
                             </a>
                         </li>
@@ -99,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </svg>
                     </button>
 
-                    <a href="${isInMessages ? '../../pages/post-ad.html' : (isInPages ? '../pages/post-ad.html' : 'pages/post-ad.html')}" class="post-ad-btn" style="text-decoration:none;">
+                    <a href="${isInMessages ? '../../pages/post-ad.html' : (isInAdmin ? '../post-ad.html' : (isInPages ? 'post-ad.html' : 'pages/post-ad.html'))}" class="post-ad-btn" style="text-decoration:none;">
                         <svg class="post-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
