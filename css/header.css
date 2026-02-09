@@ -210,6 +210,43 @@
     gap: 1.5rem;
 }
 
+.messages-icon-link {
+    display: flex;
+    /* Hidden by default until JS checks auth? No, visible is fine, redirect to login if not */
+    align-items: center;
+    color: #2C2C2C;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.messages-icon-link:hover {
+    color: #4a90e2;
+    transform: scale(1.1);
+}
+
+.message-icon-header {
+    width: 24px;
+    height: 24px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid white;
+}
+
 .search-toggle {
     background: none;
     border: none;

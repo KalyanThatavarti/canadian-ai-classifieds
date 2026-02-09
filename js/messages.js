@@ -62,6 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const listContainer = document.getElementById('conversationList');
         listContainer.innerHTML = '';
 
+        let unreadCount = 0;
+
         conversations.forEach(conv => {
             const item = document.createElement('div');
             item.className = 'conversation-item';
@@ -70,14 +72,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const isRead = conv.readStatus && conv.readStatus[currentUser.uid];
             if (!isRead) {
                 item.classList.add('unread');
+                unreadCount++;
             }
 
             // Determine other participant (simple logic: assuming 2 people)
             const otherUserId = conv.participantIds.find(id => id !== currentUser.uid);
-
-            // In a real app, we'd fetch the other user's profile to get name/avatar
-            // For now, we might rely on cached data or just show "User" if not available
-            // Or better, we could store participant names in the conversation doc itself for preview
 
             const timeAgo = getTimeAgo(conv.lastMessageTimestamp ? conv.lastMessageTimestamp.toDate() : new Date());
 
@@ -109,6 +108,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             listContainer.appendChild(item);
         });
+
+        // Update Inbox Title with Count
+        const inboxTitle = document.querySelector('.inbox-title');
+        if (inboxTitle) {
+            inboxTitle.innerHTML = `Messages ${unreadCount > 0 ? `<span class="inbox-badge">(${unreadCount})</span>` : ''}`;
+        }
     }
 
     function getTimeAgo(date) {

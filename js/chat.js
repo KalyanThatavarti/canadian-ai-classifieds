@@ -148,8 +148,16 @@ document.addEventListener('DOMContentLoaded', function () {
         // Blur input to dismiss mobile keyboard
         messageInput.blur();
 
+        if (!conversationData || !conversationData.participantIds) {
+            console.error('Conversation data not loaded yet');
+            alert('Please wait for chat to load completely');
+            sendBtn.disabled = false;
+            return;
+        }
+
         try {
-            await window.FirebaseAPI.sendMessage(conversationId, text);
+            const otherUserId = conversationData.participantIds.find(id => id !== currentUser.uid);
+            await window.FirebaseAPI.sendMessage(conversationId, text, otherUserId);
             sendBtn.disabled = false;
             // Scroll will happen via listener
         } catch (error) {

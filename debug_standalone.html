@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Independent v4 (Real-time)</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        #output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            margin-top: 20px;
+            min-height: 200px;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .unread {
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        .read {
+            color: #4ade80;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🐞 Standalone Diagnostics (Real-time)</h1>
+    <p>This page updates automatically when messages are sent/received.</p>
+    <button id="runBtn">Start Monitoring</button>
+    <div id="output">Initializing...</div>
+
+    <!-- Firebase SDK (CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        const output = document.getElementById('output');
+        let unsubscribe = null;
+
+        function log(msg) {
+            output.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+        }
+
+        function clearLog() {
+            output.innerHTML = '';
+        }
+
+        // --- EMBEDDED CONFIG START ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRKj_NwastndKYdfIkfYDy_Q7Ox5OVaSc",
+            authDomain: "canadian-ai-classifieds.firebaseapp.com",
+            projectId: "canadian-ai-classifieds",
+            storageBucket: "canadian-ai-classifieds.firebasestorage.app",
+            messagingSenderId: "1016245908858",
+            appId: "1:1016245908858:web:f787299038dad64f7ad2c3"
+        };
+        // --- EMBEDDED CONFIG END ---
+
+        log("Page loaded.");
+
+        // Initialize immediately
+        try {
+            if (typeof firebase === 'undefined') {
+                log("❌ CRITICAL: Firebase SDK not loaded from CDN.");
+            } else {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                    log("✅ Firebase Initialized.");
+                }
+                const auth = firebase.auth();
+                const db = firebase.firestore();
+
+                // Check Login Status
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        log(`✅ Logged in as: ${user.email} (${user.uid})`);
+                        document.getElementById('runBtn').onclick = () => startMonitoring(db, user);
+                    } else {
+                        log("⚠️ Not logged in. Please log in to the main site.");
+                        log("<a href='index.html'>Go to Login</a>");
+                    }
+                });
+            }
+        } catch (e) {
+            log(`❌ Init Error: ${e.message}`);
+        }
+
+        function startMonitoring(db, user) {
+            if (unsubscribe) {
+                unsubscribe();
+                log("Stopped previous listener.");
+            }
+
+            clearLog();
+            log("🚀 Monitoring Real-time Updates...");
+            log("👉 Send a message from another device now to see changes here.");
+
+            unsubscribe = db.collection('conversations')
+                .where('participantIds', 'array-contains', user.uid)
+                .orderBy('updatedAt', 'desc')
+                .onSnapshot(snapshot => {
+                    // Re-render the whole list on every update
+                    let html = `<div>[${new Date().toLocaleTimeString()}] 📦 UPDATED SNAPSHOT (${snapshot.size} conversations)</div><hr>`;
+
+                    if (snapshot.empty) {
+                        html += "<div>⚠️ No conversations found.</div>";
+                    }
+
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const readStatus = data.readStatus;
+                        const listingTitle = data.listingTitle || 'Unknown';
+                        const lastMsg = data.lastMessage || '';
+
+                        html += `<div><strong>ID: ${doc.id}</strong> (${listingTitle})</div>`;
+                        html += `<div>Last Msg: "${lastMsg}"</div>`;
+
+                        if (!readStatus) {
+                            html += `<div style='color:red'>❌ readStatus: MISSING</div>`;
+                        } else {
+                            const myStatus = readStatus[user.uid];
+                            const rawJson = JSON.stringify(readStatus);
+
+                            html += `<div>readStatus JSON: ${rawJson}</div>`;
+
+                            if (!myStatus) {
+                                html += `<div class='unread'>🔔 STATUS: UNREAD (This should trigger badge)</div>`;
+                            } else {
+                                html += `<div class='read'>✅ STATUS: READ</div>`;
+                            }
+                        }
+                        html += `<hr>`;
+                    });
+
+                    output.innerHTML = html;
+                }, err => {
+                    log(`❌ Listener Error: ${err.message}`);
+                });
+        }
+    </script>
+</body>
+
+</html>

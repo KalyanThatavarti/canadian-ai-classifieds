@@ -95,6 +95,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 <!-- Header Actions -->
                 <div class="header-actions">
+                    <!-- Messages Icon (Visible when logged in) -->
+                    <a href="${isInMessages ? '../messages/index.html' : (isInAdmin ? '../messages/index.html' : (isInPages ? 'messages/index.html' : 'pages/messages/index.html'))}" class="messages-icon-link" aria-label="Messages">
+                        <div style="position: relative;">
+                            <svg class="message-icon-header" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                            </svg>
+                            <span id="header-msg-badge" class="notification-badge" style="display: none;">0</span>
+                        </div>
+                    </a>
+
                     <!-- Search Toggle -->
                     <button class="search-toggle" aria-label="Search">
                         <svg class="search-icon-header" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -334,26 +345,65 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Initialize auth listener when Firebase is ready
         waitForFirebase(() => {
+            let unsubscribeConversations = null;
+
             window.FirebaseAPI.auth.onAuthStateChanged((user) => {
-                updateUserMenu(user).catch(err => {
-                    console.error('Error updating user menu:', err);
-                    // Fallback to non-admin menu on error
+                updateUserMenu(user).then(() => {
+                    // Update unread count if user is logged in
                     if (user) {
-                        userDropdown.innerHTML = `
-                            <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">
-                                <div style="font-weight: 600; color: #111827;">${user.displayName || 'User'}</div>
-                                <div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">${user.email}</div>
-                            </div>
-                            <div style="padding: 0.5rem;">
-                                <a href="/pages/profile.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px;">My Profile</a>
-                                <a href="/pages/my-listings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px;">My Listings</a>
-                                <a href="#" id="signOutBtn" style="display: block; padding: 0.75rem; color: #dc2626; text-decoration: none; border-radius: 8px;">Sign Out</a>
-                            </div>
-                        `;
+                        if (unsubscribeConversations) unsubscribeConversations();
+
+                        unsubscribeConversations = window.FirebaseAPI.getConversations(user.uid, (conversations) => {
+                            // Calculate unread count
+                            let unreadCount = 0;
+                            conversations.forEach(conv => {
+                                const isRead = conv.readStatus && conv.readStatus[user.uid];
+                                // console.log(`Debug: Conv ${conv.id} readStatus for ${user.uid}:`, isRead);
+                                if (!isRead) {
+                                    unreadCount++;
+                                }
+                            });
+
+                            console.log('🔔 Unread Messages Count:', unreadCount);
+
+                            // Update UI
+                            updateStartMessagesCount(unreadCount);
+                        });
+                    } else {
+                        if (unsubscribeConversations) unsubscribeConversations();
+                        updateStartMessagesCount(0);
+                    }
+                }).catch(err => {
+                    console.error('Error updating user menu:', err);
+                    if (user) {
+                        // Fallback
                     }
                 });
             });
         });
+
+        function updateStartMessagesCount(count) {
+            // Update Dropdown Link
+            const messagesLink = document.querySelector('a[href*="/pages/messages/index.html"]');
+            if (messagesLink) {
+                if (count > 0) {
+                    messagesLink.innerHTML = `Messages <span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; margin-left: 5px;">${count}</span>`;
+                } else {
+                    messagesLink.textContent = 'Messages';
+                }
+            }
+
+            // Update Header Icon (if exists)
+            const headerMsgBadge = document.getElementById('header-msg-badge');
+            if (headerMsgBadge) {
+                if (count > 0) {
+                    headerMsgBadge.style.display = 'flex';
+                    headerMsgBadge.textContent = count > 99 ? '99+' : count;
+                } else {
+                    headerMsgBadge.style.display = 'none';
+                }
+            }
+        }
     }
 
 
