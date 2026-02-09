@@ -154,12 +154,14 @@
 }
 
 .back-button {
-    display: none;
-    /* Show on mobile */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
     background: none;
     border: none;
     cursor: pointer;
     color: var(--text-charcoal);
+    margin-right: 1rem;
 }
 
 .header-info {
@@ -342,7 +344,7 @@
     }
 
     .back-button {
-        display: block;
+        display: flex;
         margin-right: 0.5rem;
     }
 
@@ -383,5 +385,12 @@
         width: 44px;
         height: 44px;
         flex-shrink: 0;
+    }
+}
+
+/* Utility to hide elements on mobile */
+@media (max-width: 768px) {
+    .hidden-on-mobile {
+        display: none !important;
     }
 }
