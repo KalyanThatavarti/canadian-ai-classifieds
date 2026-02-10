@@ -373,6 +373,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (unsubscribeConversations) unsubscribeConversations();
                         updateStartMessagesCount(0);
                     }
+
+                    // Toggle Messages Icon visibility based on auth state
+                    const messagesIconLink = document.querySelector('.messages-icon-link');
+                    if (messagesIconLink) {
+                        messagesIconLink.style.display = user ? 'block' : 'none';
+                    }
                 }).catch(err => {
                     console.error('Error updating user menu:', err);
                     if (user) {

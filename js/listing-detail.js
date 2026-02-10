@@ -500,6 +500,51 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
+
+        // Touch Swipe Navigation
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        function handleSwipe(element, onSwipeLeft, onSwipeRight) {
+            element.addEventListener('touchstart', e => {
+                touchstartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            element.addEventListener('touchend', e => {
+                touchendX = e.changedTouches[0].screenX;
+                checkDirection();
+            }, { passive: true });
+
+            function checkDirection() {
+                const threshold = 50;
+                if (touchendX < touchstartX - threshold) {
+                    // Swiped Left -> Next Image
+                    onSwipeLeft();
+                }
+                if (touchendX > touchstartX + threshold) {
+                    // Swiped Right -> Prev Image
+                    onSwipeRight();
+                }
+            }
+        }
+
+        // Apply swipe to main image and lightbox
+        const mainImage = document.getElementById('mainImage');
+        const lightboxModal = document.getElementById('lightboxModal');
+
+        if (mainImage) {
+            handleSwipe(mainImage, nextImage, prevImage);
+        }
+
+        if (lightboxModal) {
+            handleSwipe(lightboxModal, () => {
+                nextImage();
+                updateLightboxImage();
+            }, () => {
+                prevImage();
+                updateLightboxImage();
+            });
+        }
     }
 
     // Lightbox functions

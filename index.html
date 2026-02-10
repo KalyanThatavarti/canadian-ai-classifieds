@@ -16,7 +16,7 @@
         rel="stylesheet">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=7">
     <link rel="stylesheet" href="css/header.css?v=2">
     <link rel="stylesheet" href="css/hero-slider.css">
     <link rel="stylesheet" href="css/luxury-cards.css">
@@ -26,6 +26,26 @@
     <link rel="stylesheet" href="css/loading.css">
     <link rel="stylesheet" href="css/mobile-fix.css">
 
+    <style>
+        .skip-to-main {
+            position: absolute;
+            left: -10000px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        .skip-to-main:focus {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            height: auto;
+            overflow: visible;
+        }
+    </style>
 </head>
 
 <body>
@@ -441,6 +461,23 @@
 
     <!-- Firebase SDK (v9 compat mode) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js?v=5"></script>
+
+    <!-- Core Scripts -->
+    <script src="js/auth-handler.js?v=8"></script>
+    <script src="js/header.js?v=8"></script>
+    <script src="js/app.js?v=5"></script>
+
+    <!-- Page Specific Scripts -->
+    <script src="js/hero-slider.js?v=5"></script>
+    <script src="js/hero-search.js?v=5"></script>
+    <script src="js/category-title-animation.js?v=5"></script>
+    <script src="js/recently-viewed.js?v=5"></script>
     <script>
         // Initialize recently viewed section when page loads
         if (typeof recentlyViewedManager !== 'undefined') {
