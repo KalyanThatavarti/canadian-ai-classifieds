@@ -501,6 +501,146 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        // Report button and Modal Logic
+        const reportBtn = document.getElementById('reportBtn');
+        const reportBtnSidebar = document.getElementById('reportBtnSidebar');
+        const reportModal = document.getElementById('reportModal');
+        const closeReportModal = document.getElementById('closeReportModal');
+        const cancelReport = document.getElementById('cancelReport');
+        const reportForm = document.getElementById('reportForm');
+
+        function handleReportClick() {
+            console.log('🚩 Report button clicked');
+
+            if (!window.FirebaseAPI) {
+                console.error('❌ FirebaseAPI not found');
+                return;
+            }
+
+            const user = window.FirebaseAPI.getCurrentUser();
+            if (!user) {
+                console.log('ℹ️ User not logged in, showing notification');
+                if (window.UIComponents) {
+                    window.UIComponents.showInfoToast('Please sign in to report this listing.', 'Authentication Required');
+                } else {
+                    alert('Please sign in to report this listing.');
+                }
+                return;
+            }
+
+            if (reportModal) {
+                console.log('✅ Opening report modal');
+                reportModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } else {
+                console.error('❌ Report modal element not found');
+            }
+        }
+
+        if (reportBtn) {
+            reportBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleReportClick();
+            });
+        }
+
+        if (reportBtnSidebar) {
+            reportBtnSidebar.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleReportClick();
+            });
+        }
+
+        if (closeReportModal && reportModal) {
+            closeReportModal.addEventListener('click', () => {
+                reportModal.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+        }
+
+        if (cancelReport && reportModal) {
+            cancelReport.addEventListener('click', () => {
+                reportModal.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Handle Report Submission
+        if (reportForm) {
+            reportForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const reportType = document.getElementById('reportType').value;
+                const reportDetails = document.getElementById('reportDetails').value;
+                const user = window.FirebaseAPI.getCurrentUser();
+
+                if (!user || !listing) return;
+
+                const submitBtn = document.getElementById('submitReportBtn');
+                if (window.UIComponents) window.UIComponents.setButtonLoading(submitBtn);
+
+                try {
+                    // 1. Create report document
+                    const reportData = {
+                        listingId: listing.id,
+                        listingTitle: listing.title,
+                        reporterId: user.uid,
+                        reporterName: user.displayName || user.email,
+                        type: reportType,
+                        reason: reportDetails, // Renamed from details for compatibility
+                        status: 'pending',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        priority: reportType === 'scam' || reportType === 'prohibited' ? 'high' : 'medium'
+                    };
+
+                    await firebase.firestore().collection('reports').add(reportData);
+
+                    // 2. Update listing metadata
+                    await firebase.firestore().collection('listings').doc(listing.id).update({
+                        isFlagged: true, // Matching admin-listings.js field
+                        flagged: true, // Compatibility
+                        reportCount: firebase.firestore.FieldValue.increment(1),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    // 3. Log activity for admins
+                    if (window.logAdminAction) {
+                        await window.logAdminAction('user_report', {
+                            targetId: listing.id,
+                            targetName: listing.title,
+                            reason: `Listing reported for ${reportType} by ${user.email}`,
+                            details: reportDetails
+                        });
+                    } else {
+                        await firebase.firestore().collection('adminLogs').add({
+                            action: 'user_report',
+                            adminId: 'system',
+                            adminName: 'User Report',
+                            details: `Listing "${listing.title}" reported for ${reportType} by ${user.email}`,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+
+                    if (window.UIComponents) {
+                        window.UIComponents.showSuccessToast('Thank you. Our moderators will review this listing shortly.', 'Report Submitted');
+                    } else {
+                        alert('Report submitted successfully.');
+                    }
+
+                    reportModal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    reportForm.reset();
+
+                } catch (error) {
+                    console.error('Error submitting report:', error);
+                    if (window.UIComponents) {
+                        window.UIComponents.showErrorToast('Failed to submit report. Please try again.');
+                    }
+                } finally {
+                    if (window.UIComponents) window.UIComponents.removeButtonLoading(submitBtn);
+                }
+            });
+        }
+
         // Touch Swipe Navigation
         let touchstartX = 0;
         let touchendX = 0;

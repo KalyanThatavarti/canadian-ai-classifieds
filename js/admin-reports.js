@@ -111,7 +111,7 @@ function displayReports() {
     emptyState.style.display = 'none';
     tbody.innerHTML = filteredReports.map(report => {
         const reportDate = report.createdAt ?
-            new Date(report.createdAt.toDate()).toLocaleDateString() : 'N/A';
+            new Date(report.createdAt.toDate()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A';
 
         const statusBadge = getStatusBadge(report.status);
         const priorityBadge = getPriorityBadge(report.priority);
@@ -119,21 +119,28 @@ function displayReports() {
         return `
             <tr data-report-id="${report.id}">
                 <td>
-                    <div class="report-info">
-                        <span class="reporter-name">${report.reporterName}</span>
-                        <span class="report-reason">${truncateText(report.reason, 60)}</span>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <span style="font-weight: 700; color: #111827;">${report.reporterName}</span>
+                        <span style="font-size: 0.75rem; color: #64748b; font-family: monospace;">${report.id.substring(0, 8)}...</span>
                     </div>
                 </td>
                 <td>
-                    <a href="/pages/listing-detail.html?id=${report.listingId}" 
-                       class="listing-link" target="_blank" title="View Listing">
-                        ${truncateText(report.listingTitle, 30)}
-                    </a>
+                    <div style="display:flex; flex-direction:column; gap:2px;">
+                        <a href="/pages/listing-detail.html?id=${report.listingId}" 
+                           class="listing-link" target="_blank" style="font-weight: 600; color: #6366f1; text-decoration: none;">
+                            ${truncateText(report.listingTitle, 40)}
+                        </a>
+                        <span style="font-size: 0.8rem; color: #64748b; font-style: italic;">"${truncateText(report.reason, 50)}"</span>
+                    </div>
                 </td>
-                <td>${formatReportType(report.type)}</td>
+                <td>
+                    <span style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">
+                        ${formatReportType(report.type)}
+                    </span>
+                </td>
                 <td>${priorityBadge}</td>
                 <td>${statusBadge}</td>
-                <td>${reportDate}</td>
+                <td style="color: #64748b; font-weight: 500;">${reportDate}</td>
                 <td>
                     <div class="action-buttons">
                         <button onclick="viewReportDetails('${report.id}')" class="btn-icon" title="View Details">
@@ -141,10 +148,10 @@ function displayReports() {
                         </button>
                         ${report.status === 'pending' ? `
                             <button onclick="openResolveModal('${report.id}')" class="btn-icon btn-success" title="Resolve">
-                                <i class="fas fa-check"></i>
+                                <i class="fas fa-check-circle"></i>
                             </button>
                             <button onclick="openDismissModal('${report.id}')" class="btn-icon btn-warning" title="Dismiss">
-                                <i class="fas fa-times"></i>
+                                <i class="fas fa-times-circle"></i>
                             </button>
                         ` : ''}
                     </div>
@@ -159,9 +166,9 @@ function displayReports() {
  */
 function getStatusBadge(status) {
     const badges = {
-        pending: '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending</span>',
-        resolved: '<span class="status-badge status-resolved"><i class="fas fa-check-circle"></i> Resolved</span>',
-        dismissed: '<span class="status-badge status-dismissed"><i class="fas fa-times-circle"></i> Dismissed</span>'
+        pending: '<span class="status-badge status-pending" style="border: 1px solid #fde68a;"><i class="fas fa-clock"></i> Pending</span>',
+        resolved: '<span class="status-badge status-resolved" style="border: 1px solid #bdf2d5;"><i class="fas fa-check-circle"></i> Resolved</span>',
+        dismissed: '<span class="status-badge status-dismissed" style="border: 1px solid #e2e8f0; opacity: 0.7;"><i class="fas fa-times-circle"></i> Dismissed</span>'
     };
     return badges[status] || badges.pending;
 }
@@ -171,9 +178,9 @@ function getStatusBadge(status) {
  */
 function getPriorityBadge(priority) {
     const badges = {
-        high: '<span class="priority-badge priority-high"><i class="fas fa-exclamation-circle"></i> High</span>',
-        medium: '<span class="priority-badge priority-medium"><i class="fas fa-exclamation-triangle"></i> Medium</span>',
-        low: '<span class="priority-badge priority-low"><i class="fas fa-info-circle"></i> Low</span>'
+        high: '<span class="priority-badge priority-high" style="background: #fef2f2; color: #dc2626; padding: 4px 10px; border-radius: 8px; font-weight: 700; border: 1px solid #fecaca;"><i class="fas fa-exclamation-circle"></i> High</span>',
+        medium: '<span class="priority-badge priority-medium" style="background: #fffbeb; color: #d97706; padding: 4px 10px; border-radius: 8px; font-weight: 700; border: 1px solid #fde68a;"><i class="fas fa-exclamation-triangle"></i> Med</span>',
+        low: '<span class="priority-badge priority-low" style="background: #f0fdf4; color: #16a34a; padding: 4px 10px; border-radius: 8px; font-weight: 700; border: 1px solid #bdf2d5;"><i class="fas fa-info-circle"></i> Low</span>'
     };
     return badges[priority] || badges.low;
 }

@@ -138,12 +138,12 @@ async function toggleAdminUI() {
 
 /**
  * Log an admin action to Firebase
- * @param {string} action - The action performed (e.g., 'ban_user', 'delete_listing')
- * @param {string} targetId - ID of the affected resource
- * @param {string} reason - Reason for the action
- * @param {Object} metadata - Additional metadata (e.g., targetName, deletedListings)
+ * @param {string} action - The action performed
+ * @param {string|Object} target - ID of affected resource OR object containing all data
+ * @param {string} reason - Reason for action (optional if target is object)
+ * @param {Object} metadata - Metadata (optional)
  */
-async function logAdminAction(action, targetId, reason = '', metadata = {}) {
+async function logAdminAction(action, target, reason = '', metadata = {}) {
     const user = firebase.auth().currentUser;
 
     if (!user) {
@@ -152,22 +152,27 @@ async function logAdminAction(action, targetId, reason = '', metadata = {}) {
     }
 
     try {
-        await firebase.firestore()
-            .collection('adminLogs')
-            .add({
-                adminId: user.uid,
-                adminEmail: user.email,
-                action: action,
-                targetId: targetId,
-                targetName: metadata.targetUserName || metadata.targetListingName || targetId,
-                reason: reason,
-                metadata: metadata,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+        let logData = {
+            adminId: user.uid,
+            adminEmail: user.email,
+            adminName: user.displayName || user.email,
+            action: action,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
 
-        console.log(`📝 Admin action logged: ${action} on ${targetId}`);
+        if (typeof target === 'object') {
+            logData = { ...logData, ...target };
+        } else {
+            logData.targetId = target;
+            logData.reason = reason;
+            logData.details = reason; // Compatibility
+            logData.metadata = metadata;
+        }
+
+        await firebase.firestore().collection('adminLogs').add(logData);
+        console.log(`📝 Activity log created: ${action}`);
     } catch (error) {
-        console.error('❌ Error logging admin action:', error);
+        console.error('❌ Error logging activity:', error);
     }
 }
 

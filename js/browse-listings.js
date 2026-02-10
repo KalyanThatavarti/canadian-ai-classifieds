@@ -423,10 +423,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function createListingCard(listing) {
         const isNew = isListingNew(listing.createdAt);
         const timeAgo = getTimeAgo(listing.createdAt);
+        const fallbackImage = '../images/placeholder.jpg';
 
         return `
             <div class="listing-card" data-id="${listing.id}">
-                <img src="${listing.images[0]}" alt="${listing.title}" class="listing-image" loading="lazy">
+                <img src="${listing.images[0]}" 
+                     alt="${listing.title}" 
+                     class="listing-image" 
+                     onerror="this.src='${fallbackImage}'; this.onerror=null;">
                 <div class="listing-badges">
                     <div>
                         ${listing.featured ? '<span class="badge badge-featured">Featured</span>' : ''}

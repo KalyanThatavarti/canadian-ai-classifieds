@@ -86,54 +86,71 @@ function createListingRow(listing) {
         ? listing.images[0]
         : '/images/placeholder.png';
 
-    const statusClass = listing.status === 'active' ? 'status-active' :
-        listing.status === 'sold' ? 'status-sold' :
-            listing.isFlagged ? 'status-flagged' : 'status-active';
+    const statusBadge = getListingStatusBadge(listing);
+    const postedDate = listing.createdAt ? formatDate(listing.createdAt) : 'Unknown';
 
-    const statusText = listing.isFlagged ? 'flagged' : listing.status || 'active';
-
-    const postedDate = listing.createdAt
-        ? formatDate(listing.createdAt)
-        : 'Unknown';
+    const locationStr = typeof listing.location === 'object' && listing.location !== null
+        ? (listing.location.city ? `${listing.location.city}, ${listing.location.province || ''}` : listing.location.name || 'Canada')
+        : (listing.location || 'Canada');
 
     return `
         <tr>
             <td>
-                <img src="${imageUrl}" alt="${listing.title}" class="listing-image">
-            </td>
-            <td>
-                <div class="listing-title">${listing.title || 'Untitled'}</div>
-                <div class="listing-meta">
-                    ${listing.category || 'Uncategorized'} • ${listing.location || 'Unknown location'}
-                </div>
-                <div class="listing-meta">
-                    By: ${listing.userName || 'Unknown user'} (${listing.userId})
+                <div style="position: relative; width: 64px; height: 64px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
+                    <img src="${imageUrl}" alt="${listing.title}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
             </td>
             <td>
-                <div class="price">$${listing.price?.toLocaleString() || '0'}</div>
+                <div style="display:flex; flex-direction:column; gap: 4px;">
+                    <div style="font-weight: 700; color: #111827; font-size: 1.05rem; letter-spacing: -0.01em;">${listing.title || 'Untitled Listing'}</div>
+                    <div style="display:flex; align-items:center; gap: 8px; font-size: 0.8rem;">
+                        <span style="background: #eef2ff; color: #4338ca; padding: 2px 8px; border-radius: 6px; font-weight: 700;">${listing.category || 'Legacy'}</span>
+                        <span style="color: #64748b; font-weight: 500;"><i class="fas fa-map-marker-alt" style="margin-right: 4px; color: #94a3b8;"></i>${locationStr}</span>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">
+                        By <span style="font-weight: 600; color: #475569;">${listing.userName || 'Anonymous'}</span>
+                    </div>
+                </div>
             </td>
             <td>
-                <span class="status-badge ${statusClass}">
-                    ${statusText}
-                </span>
-                ${listing.isFlagged ? `<div class="listing-meta" style="margin-top: 4px;">Reports: ${listing.reportCount || 0}</div>` : ''}
+                <div style="font-weight: 800; color: #111827; font-size: 1.1rem; font-variant-numeric: tabular-nums;">
+                    $${listing.price?.toLocaleString() || '0'}
+                </div>
             </td>
             <td>
-                <div class="listing-meta">${postedDate}</div>
+                ${statusBadge}
+                ${listing.isFlagged ? `<div style="font-size: 0.7rem; color: #ea580c; font-weight: 600; margin-top: 6px;"><i class="fas fa-flag"></i> ${listing.reportCount || 0} Reports</div>` : ''}
+            </td>
+            <td>
+                <div style="font-size: 0.85rem; color: #64748b; font-weight: 500;">${postedDate}</div>
             </td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn-action btn-view" onclick="viewListing('${listing.id}')">
-                        View
+                    <button class="btn-icon" onclick="viewListing('${listing.id}')" title="View Details">
+                        <i class="fas fa-external-link-alt"></i>
                     </button>
-                    <button class="btn-action btn-delete" onclick="openDeleteModal('${listing.id}')">
-                        Delete
+                    <button class="btn-icon btn-danger" onclick="openDeleteModal('${listing.id}')" title="Delete Listing">
+                        <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
             </td>
         </tr>
     `;
+}
+
+/**
+ * Get listing status badge
+ */
+function getListingStatusBadge(listing) {
+    if (listing.isFlagged) {
+        return '<span class="status-badge status-flagged" style="border: 1px solid #fecaca;"><i class="fas fa-flag"></i> Flagged</span>';
+    }
+
+    if (listing.status === 'sold') {
+        return '<span class="status-badge status-sold" style="border: 1px solid #fde68a;"><i class="fas fa-tag"></i> Sold</span>';
+    }
+
+    return '<span class="status-badge status-active" style="border: 1px solid #bdf2d5;"><i class="fas fa-check-circle"></i> Active</span>';
 }
 
 /**
@@ -233,7 +250,11 @@ async function confirmDelete() {
         await db.collection('listings').doc(currentDeleteListingId).delete();
 
         // Log the action
-        await logAdminAction('delete_listing', currentDeleteListingId, reason);
+        await logAdminAction('delete_listing', {
+            targetId: currentDeleteListingId,
+            targetName: allListings.find(l => l.id === currentDeleteListingId)?.title || 'Unknown Listing',
+            reason: reason
+        });
 
         console.log(`✅ Listing ${currentDeleteListingId} deleted`);
 

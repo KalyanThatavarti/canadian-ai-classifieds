@@ -74,37 +74,38 @@ function displayUsers() {
     emptyState.style.display = 'none';
     tbody.innerHTML = filteredUsers.map(user => {
         const joinDate = user.createdAt ?
-            new Date(user.createdAt.toDate()).toLocaleDateString() : 'N/A';
+            new Date(user.createdAt.toDate()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
 
         const statusBadge = getStatusBadge(user.status);
         const isCurrentAdmin = user.isAdmin;
+        const initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : (user.email ? user.email.charAt(0).toUpperCase() : '?');
 
         return `
             <tr data-user-id="${user.id}">
                 <td>
                     <div class="user-info">
-                        <div class="user-avatar">
+                        <div class="user-avatar" style="background: ${isCurrentAdmin ? 'linear-gradient(135deg, #6366f1, #a855f7)' : '#e2e8f0'}; color: ${isCurrentAdmin ? 'white' : '#64748b'}; font-weight: 700;">
                             ${user.photoURL ?
                 `<img src="${user.photoURL}" alt="${user.displayName}">` :
-                `<i class="fas fa-user-circle"></i>`
+                `<span>${initial}</span>`
             }
                         </div>
-                        <div>
-                            <strong>${user.displayName || 'Unknown'}</strong>
-                            ${isCurrentAdmin ? '<span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>' : ''}
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-weight: 700; color: #111827;">${user.displayName || 'Anonymous User'}</span>
+                            ${isCurrentAdmin ? '<span class="admin-badge" style="width:fit-content; margin-top:2px;"><i class="fas fa-shield-alt"></i> admin</span>' : ''}
                         </div>
                     </div>
                 </td>
-                <td>${user.email}</td>
-                <td>${joinDate}</td>
+                <td style="font-family: monospace; color: #64748b;">${user.email}</td>
+                <td style="color: #64748b;">${joinDate}</td>
                 <td>
-                    <span class="count-badge">
-                        <i class="fas fa-box"></i> ${user.listingsCount || 0}
+                    <span class="count-badge" style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-box" style="color: #6366f1; margin-right: 4px;"></i> ${user.listingsCount || 0}
                     </span>
                 </td>
                 <td>
-                    <span class="count-badge ${user.reportCount > 0 ? 'warning' : ''}">
-                        <i class="fas fa-flag"></i> ${user.reportCount || 0}
+                    <span class="count-badge ${user.reportCount > 0 ? 'warning' : ''}" style="background: ${user.reportCount > 0 ? '#fff7ed' : '#f1f5f9'}; color: ${user.reportCount > 0 ? '#ea580c' : '#64748b'}; padding: 4px 10px; border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-flag" style="margin-right: 4px;"></i> ${user.reportCount || 0}
                     </span>
                 </td>
                 <td>${statusBadge}</td>
@@ -126,9 +127,9 @@ function displayUsers() {
  */
 function getStatusBadge(status) {
     const badges = {
-        active: '<span class="status-badge status-active"><i class="fas fa-check-circle"></i> Active</span>',
-        banned: '<span class="status-badge status-banned"><i class="fas fa-ban"></i> Banned</span>',
-        suspended: '<span class="status-badge status-suspended"><i class="fas fa-pause-circle"></i> Suspended</span>'
+        active: '<span class="status-badge status-active" style="border: 1px solid #bdf2d5;"><i class="fas fa-check-circle"></i> Active</span>',
+        banned: '<span class="status-badge status-banned" style="border: 1px solid #fecaca;"><i class="fas fa-ban"></i> Banned</span>',
+        suspended: '<span class="status-badge status-suspended" style="border: 1px solid #fde68a;"><i class="fas fa-pause-circle"></i> Suspended</span>'
     };
     return badges[status] || badges.active;
 }
@@ -140,7 +141,7 @@ function getActionButtons(user) {
     if (user.status === 'banned') {
         return `
             <button onclick="unbanUser('${user.id}')" class="btn-icon btn-success" title="Unban User">
-                <i class="fas fa-check"></i>
+                <i class="fas fa-undo"></i>
             </button>
         `;
     } else if (user.status === 'suspended') {
@@ -151,11 +152,11 @@ function getActionButtons(user) {
         `;
     } else {
         return `
-            <button onclick="openBanModal('${user.id}')" class="btn-icon btn-danger" title="Ban User">
-                <i class="fas fa-ban"></i>
-            </button>
             <button onclick="openSuspendModal('${user.id}')" class="btn-icon btn-warning" title="Suspend User">
                 <i class="fas fa-pause"></i>
+            </button>
+            <button onclick="openBanModal('${user.id}')" class="btn-icon btn-danger" title="Ban User">
+                <i class="fas fa-user-slash"></i>
             </button>
         `;
     }

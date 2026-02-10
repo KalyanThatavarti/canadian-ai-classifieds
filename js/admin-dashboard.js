@@ -223,7 +223,7 @@ async function loadRecentActivity() {
 
         // Get recent admin logs
         const logsSnapshot = await db.collection('adminLogs')
-            .orderBy('timestamp', 'desc')
+            .orderBy('createdAt', 'desc')
             .limit(10)
             .get();
 
@@ -252,16 +252,23 @@ async function loadRecentActivity() {
 function createActivityItem(log) {
     const li = document.createElement('li');
     li.className = 'activity-item';
+    li.style.display = 'flex';
+    li.style.alignItems = 'center';
+    li.style.gap = '16px';
+    li.style.padding = '12px 0';
+    li.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
 
     const icon = getActivityIcon(log.action);
     const text = getActivityText(log);
-    const time = formatTimeAgo(log.timestamp);
+    const time = formatTimeAgo(log.createdAt);
 
     li.innerHTML = `
-        <div class="activity-icon">${icon}</div>
-        <div class="activity-content">
-            <div class="activity-text">${text}</div>
-            <div class="activity-time">${time}</div>
+        <div class="activity-icon" style="width: 36px; height: 36px; background: rgba(255,255,255,0.5); backdrop-filter: blur(4px); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            ${icon}
+        </div>
+        <div class="activity-content" style="flex-grow: 1;">
+            <div class="activity-text" style="font-size: 0.95rem; font-weight: 500; color: #1e293b; line-height: 1.4;">${text}</div>
+            <div class="activity-time" style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">${time}</div>
         </div>
     `;
 
