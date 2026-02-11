@@ -133,6 +133,15 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Smart Scan Mock Logic (Simulates AI Vision)
     function triggerSmartScan(filename) {
+        // Usage Limit Check (3 Scans per session/day for demo)
+        let scanCount = parseInt(localStorage.getItem('aiScanCount') || '0');
+        if (scanCount >= 3) {
+            if (window.UIComponents) {
+                window.UIComponents.showErrorToast('You have reached the limit of 3 AI scans.', 'Limit Reached');
+            }
+            return;
+        }
+
         const name = filename.toLowerCase();
         let suggestedCategory = "";
         let suggestedTitle = "";
@@ -141,6 +150,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (window.UIComponents) {
             window.UIComponents.showInfoToast('AI is scanning your image...', 'Smart Scan');
         }
+
+        // Increment scan count
+        localStorage.setItem('aiScanCount', (scanCount + 1).toString());
 
         // Keywords (Expanded)
         const categories = {
@@ -312,6 +324,15 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // === AI Description Generator ===
     aiGenerateBtn.addEventListener('click', async () => {
+        // Usage Limit Check (3 Generations per session for demo)
+        let genCount = parseInt(localStorage.getItem('aiGenCount') || '0');
+        if (genCount >= 3) {
+            if (window.UIComponents) {
+                window.UIComponents.showErrorToast('You have reached the limit of 3 AI descriptions.', 'Limit Reached');
+            }
+            return;
+        }
+
         const title = adTitle.value.trim();
         const category = adCategory.value;
         const condition = document.querySelector('input[name="condition"]:checked').value;
@@ -326,6 +347,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             adTitle.focus();
             return;
         }
+
+        // Increment generation count
+        localStorage.setItem('aiGenCount', (genCount + 1).toString());
 
         // Simulating AI Loading
         aiGenerateBtn.classList.add('loading');
