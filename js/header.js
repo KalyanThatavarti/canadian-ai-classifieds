@@ -4,15 +4,14 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    // Determine relative path depth
+    const isInPages = window.location.pathname.includes('/pages/');
+    const isInMessages = window.location.pathname.includes('/pages/messages/');
+    const isInAdmin = window.location.pathname.includes('/pages/admin/');
+
     // Inject Header if placeholder exists
     const headerPlaceholder = document.getElementById('header-placeholder');
     if (headerPlaceholder) {
-        // Determine relative path depth
-        const pathDepth = window.location.pathname.split('/').length - 2; // Rough estimate or just use relative checks
-        // Better: Check based on current location to set correct links
-        const isInPages = window.location.pathname.includes('/pages/');
-        const isInMessages = window.location.pathname.includes('/pages/messages/');
-        const isInAdmin = window.location.pathname.includes('/pages/admin/');
 
         // Fix home link path based on location
         const homeLink = isInMessages ? '../../index.html' :
