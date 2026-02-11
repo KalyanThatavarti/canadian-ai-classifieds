@@ -212,18 +212,19 @@ document.addEventListener('DOMContentLoaded', function () {
     if (userMenuToggle) {
         // Create user dropdown menu
         const userDropdown = document.createElement('div');
-        userDropdown.className = 'user-dropdown';
+        userDropdown.id = 'userDropdown';
         userDropdown.style.cssText = `
             position: absolute;
             top: 100%;
             right: 0;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            min-width: 200px;
-            margin-top: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e5e7eb;
+            min-width: 220px;
+            margin-top: 1rem;
             display: none;
-            z-index: 100000;
+            z-index: 1000000;
         `;
 
         // Update menu based on auth state
@@ -290,9 +291,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // Add dropdown to DOM
-        userMenuToggle.style.position = 'relative';
-        userMenuToggle.appendChild(userDropdown);
+        // Add dropdown to DOM (Attach to parent for better layout stability)
+        const headerActions = userMenuToggle.parentElement;
+        if (headerActions) {
+            headerActions.style.position = 'relative';
+            headerActions.appendChild(userDropdown);
+        } else {
+            userMenuToggle.style.position = 'relative';
+            userMenuToggle.appendChild(userDropdown);
+        }
 
         // Toggle dropdown on click
         userMenuToggle.addEventListener('click', function (e) {
