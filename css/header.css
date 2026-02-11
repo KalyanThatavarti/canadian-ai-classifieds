@@ -62,10 +62,12 @@
     color: #4a90e2;
 }
 
-.location-icon,
-.help-icon {
+.site-header .location-icon,
+.site-header .help-icon {
+    position: static;
     width: 14px;
     height: 14px;
+    flex-shrink: 0;
 }
 
 
