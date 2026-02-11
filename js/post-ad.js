@@ -1,23 +1,23 @@
 // Post Ad Page Script
 document.addEventListener('DOMContentLoaded', async function () {
-    // Auth Check
-    const authCheckInterval = setInterval(async () => {
+    // Reliable Auth Check using onAuthStateChanged
+    const initAuth = () => {
         if (window.FirebaseAPI && window.FirebaseAPI.auth) {
-            clearInterval(authCheckInterval);
-
-            // Wait a moment for auth state to resolve
-            setTimeout(() => {
-                const user = window.FirebaseAPI.auth.currentUser;
+            window.FirebaseAPI.auth.onAuthStateChanged((user) => {
                 if (!user) {
                     // Not logged in
                     if (window.UIComponents) {
-                        window.UIComponents.showInfoToast('Please sign in to post an ad', 'Redrecting...');
+                        window.UIComponents.showInfoToast('Please sign in to post an ad', 'Redirecting...');
                     }
                     setTimeout(() => window.location.href = 'auth/login.html', 1500);
                 }
-            }, 500);
+            });
+        } else {
+            // Wait for FirebaseAPI to be available
+            setTimeout(initAuth, 100);
         }
-    }, 100);
+    };
+    initAuth();
 
     // Auto-Geolocation
     if (navigator.geolocation) {
@@ -133,11 +133,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Smart Scan Mock Logic (Simulates AI Vision)
     function triggerSmartScan(filename) {
-        // Usage Limit Check (3 Scans per session/day for demo)
+        // Usage Limit Check (3 Scans per day)
+        const today = new Date().toDateString();
+        const lastScanDate = localStorage.getItem('aiScanDate');
         let scanCount = parseInt(localStorage.getItem('aiScanCount') || '0');
+
+        // Reset if it's a new day
+        if (lastScanDate !== today) {
+            scanCount = 0;
+            localStorage.setItem('aiScanDate', today);
+        }
+
         if (scanCount >= 3) {
             if (window.UIComponents) {
-                window.UIComponents.showErrorToast('You have reached the limit of 3 AI scans.', 'Limit Reached');
+                window.UIComponents.showErrorToast('You have reached the limit of 3 AI scans for today.', 'Daily Limit Reached');
             }
             return;
         }
@@ -324,11 +333,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // === AI Description Generator ===
     aiGenerateBtn.addEventListener('click', async () => {
-        // Usage Limit Check (3 Generations per session for demo)
+        // Usage Limit Check (3 Generations per day)
+        const today = new Date().toDateString();
+        const lastGenDate = localStorage.getItem('aiGenDate');
         let genCount = parseInt(localStorage.getItem('aiGenCount') || '0');
+
+        // Reset if it's a new day
+        if (lastGenDate !== today) {
+            genCount = 0;
+            localStorage.setItem('aiGenDate', today);
+        }
+
         if (genCount >= 3) {
             if (window.UIComponents) {
-                window.UIComponents.showErrorToast('You have reached the limit of 3 AI descriptions.', 'Limit Reached');
+                window.UIComponents.showErrorToast('You have reached the limit of 3 AI descriptions for today.', 'Daily Limit Reached');
             }
             return;
         }
