@@ -37,11 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     </a>
                 </div>
                 <div class="top-bar-right">
-                    <div class="language-toggle">
-                        <span class="lang-option active-lang">EN</span>
-                        <span class="lang-divider">/</span>
-                        <span class="lang-option">FR</span>
-                    </div>
                     <a href="#" class="help-link">
                         <svg class="help-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -422,23 +417,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Language Toggle
-    const languageToggle = document.querySelector('.language-toggle');
-    if (languageToggle) {
-        languageToggle.addEventListener('click', function (e) {
-            if (e.target.classList.contains('lang-option')) {
-                // Remove active class from all
-                const allLangs = this.querySelectorAll('.lang-option');
-                allLangs.forEach(lang => lang.classList.remove('active-lang'));
 
-                // Add active to clicked
-                e.target.classList.add('active-lang');
-
-                // Future: Implement actual language switching
-                console.log('Language switched to:', e.target.textContent);
-            }
-        });
-    }
 
     // Smooth Scroll for Anchor Links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

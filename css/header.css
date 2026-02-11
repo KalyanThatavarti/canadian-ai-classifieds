@@ -68,19 +68,7 @@
     height: 14px;
 }
 
-.language-toggle {
-    font-weight: 500;
-}
 
-.language-toggle .lang-divider {
-    color: #999;
-    margin: 0 0.25rem;
-}
-
-.language-toggle .active-lang {
-    color: #4a90e2;
-    font-weight: 600;
-}
 
 /* Main Header */
 .main-header {
