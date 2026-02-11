@@ -227,6 +227,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update menu based on auth state
         async function updateUserMenu(user) {
+            const basePath = isInMessages ? '../../' : (isInAdmin ? '../../' : (isInPages ? '../' : ''));
+            const pagesPath = basePath + 'pages/';
+
             if (user) {
                 // Check if user is admin
                 let isAdmin = false;
@@ -251,19 +254,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">${user.email}</div>
                     </div>
                     <div style="padding: 0.5rem;">
-                        <a href="/pages/profile.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                        <a href="${pagesPath}profile.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             My Profile
                         </a>
-                        <a href="/pages/my-listings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                        <a href="${pagesPath}my-listings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             My Listings
                         </a>
-                        <a href="/pages/messages/index.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                        <a href="${pagesPath}messages/index.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             Messages
                         </a>
-                        <a href="/pages/notification-settings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                        <a href="${pagesPath}notification-settings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             📧 Notification Settings
                         </a>
-                        <a href="/pages/admin/index.html" id="adminMenuLink" style="display: ${isAdmin ? 'block' : 'none'}; padding: 0.75rem; color: #667eea; text-decoration: none; border-radius: 8px; transition: background 0.2s; font-weight: 600; border-top: 1px solid #e5e7eb; margin-top: 0.5rem; padding-top: 0.75rem;" onmouseover="this.style.background='#eef2ff'" onmouseout="this.style.background='transparent'">
+                        <a href="${pagesPath}admin/index.html" id="adminMenuLink" style="display: ${isAdmin ? 'block' : 'none'}; padding: 0.75rem; color: #667eea; text-decoration: none; border-radius: 8px; transition: background 0.2s; font-weight: 600; border-top: 1px solid #e5e7eb; margin-top: 0.5rem; padding-top: 0.75rem;" onmouseover="this.style.background='#eef2ff'" onmouseout="this.style.background='transparent'">
                             🛡️ Admin Dashboard
                         </a>
                         <a href="#" id="signOutBtn" style="display: block; padding: 0.75rem; color: #dc2626; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
@@ -275,10 +278,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 // User is not logged in - show login/signup
                 userDropdown.innerHTML = `
                     <div style="padding: 0.5rem;">
-                        <a href="/pages/auth/login.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                        <a href="${pagesPath}auth/login.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             Sign In
                         </a>
-                        <a href="/pages/auth/signup.html" style="display: block; padding: 0.75rem; color: #667eea; font-weight: 600; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#eef2ff'" onmouseout="this.style.background='transparent'">
+                        <a href="${pagesPath}auth/signup.html" style="display: block; padding: 0.75rem; color: #667eea; font-weight: 600; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#eef2ff'" onmouseout="this.style.background='transparent'">
                             Create Account
                         </a>
                     </div>
