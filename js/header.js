@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <a href="${pagesPath}my-listings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             My Listings
                         </a>
-                        <a href="${pagesPath}messages/index.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                        <a href="${pagesPath}messages/index.html" id="dropdownMessagesLink" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             Messages
                         </a>
                         <a href="${pagesPath}notification-settings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function updateStartMessagesCount(count) {
             // Update Dropdown Link
-            const messagesLink = document.querySelector('a[href*="pages/messages/index.html"]');
+            const messagesLink = document.getElementById('dropdownMessagesLink');
             if (messagesLink) {
                 if (count > 0) {
                     messagesLink.innerHTML = `Messages <span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; margin-left: 5px;">${count}</span>`;
