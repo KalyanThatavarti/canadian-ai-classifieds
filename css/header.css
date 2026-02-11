@@ -391,12 +391,6 @@
         gap: 1rem;
     }
 
-    .location-selector,
-    .language-toggle,
-    .help-link {
-        font-size: 0.75rem;
-    }
-
     .main-header {
         height: 60px;
     }
@@ -406,7 +400,7 @@
     }
 
     .logo-text {
-        font-size: 1.25rem;
+        font-size: 1.125rem;
     }
 
     .logo-tagline {
@@ -415,7 +409,6 @@
 
     .main-nav {
         display: none;
-        /* Hidden by default on mobile */
         position: fixed;
         top: 90px;
         left: 0;
@@ -431,7 +424,6 @@
         overflow-y: auto;
         overflow-x: hidden;
         z-index: 9999;
-        /* Ensure it's above everything */
         animation: slideInFromRight 0.3s ease;
     }
 
@@ -449,7 +441,6 @@
 
     .main-nav.active {
         display: flex;
-        /* Show when active */
     }
 
     .nav-menu {
@@ -474,21 +465,16 @@
         display: block;
     }
 
-    .search-toggle {
-        display: none;
+    .header-actions {
+        gap: 0.75rem;
     }
 
     .post-ad-btn {
-        padding: 0.625rem 1.25rem;
-        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
     }
 
     .post-ad-btn span {
         display: none;
-    }
-
-    .site-header.scrolled .top-bar {
-        height: 0;
     }
 
     .site-header.scrolled .main-header {
@@ -502,87 +488,33 @@
 }
 
 @media (max-width: 480px) {
-
-    /* Make top bar more compact on small mobile */
-    .top-bar {
-        height: 28px;
-        font-size: 0.7rem;
-    }
-
     .top-bar-container {
-        padding: 0 0.75rem;
+        padding: 0 0.5rem;
     }
 
-    .top-bar-left,
-    .top-bar-right {
+    .main-header-container {
+        padding: 0 0.5rem;
+    }
+
+    .header-actions {
         gap: 0.5rem;
     }
 
-    /* Location selector - abbreviate or hide location icon */
-    .location-selector {
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-    }
-
-    .location-icon {
-        width: 12px;
-        height: 12px;
-    }
-
-    /* Language toggle - make more compact */
-    .language-toggle {
-        font-size: 0.7rem;
-        gap: 0.25rem;
-    }
-
-    .lang-option {
-        padding: 0.125rem 0.25rem;
-    }
-
-    .lang-divider {
-        margin: 0 0.125rem;
-    }
-
-    /* Hide help link on very small screens */
-    .top-bar-right .help-link {
-        display: none;
-    }
-
-    /* Make logo smaller */
-    .logo-text {
-        font-size: 1.125rem;
-    }
-
-    .logo-icon {
-        font-size: 1.25rem;
-    }
-
-    /* Make user menu smaller */
-    .user-menu-toggle {
-        width: 36px;
-        height: 36px;
-    }
-
-    /* Make post ad button more compact */
     .post-ad-btn {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.8rem;
+        padding: 0.5rem;
     }
 
-    .post-icon {
-        width: 14px;
-        height: 14px;
+    .logo-text {
+        font-size: 1rem;
     }
 
-    /* Fix dropdown overflow on mobile */
-    .dropdown-menu,
-    .user-menu {
-        min-width: unset;
-        width: auto;
-        max-width: calc(100vw - 2rem);
-        left: auto;
-        right: 0;
-        z-index: 99999 !important;
-        /* Higher than mobile nav (9999) */
+    .user-menu-toggle {
+        width: 32px;
+        height: 32px;
+    }
+
+    .message-icon-header {
+        width: 20px;
+        height: 20px;
     }
 }

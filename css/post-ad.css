@@ -438,43 +438,50 @@ textarea:focus {
 /* Responsive */
 @media (max-width: 768px) {
     .post-ad-container {
-        padding: 100px 15px 40px;
+        padding: 90px 10px 30px;
         width: 100%;
+        max-width: 100vw;
         overflow-x: hidden;
+        box-sizing: border-box;
     }
 
     .post-form-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 1.25rem;
+        width: 100%;
     }
 
-    .form-column.left-col {
-        order: -1;
+    .form-column {
+        min-width: 0;
+        /* Allow grid items to shrink */
     }
 
     .post-header h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
 
     .section-card {
-        padding: 1.25rem;
-        border-radius: 15px;
+        padding: 1rem;
+        border-radius: 12px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .form-row {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
     .image-preview-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+        gap: 0.5rem;
     }
 
     .ai-controls {
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
+        gap: 0.75rem;
     }
 
     .tone-selector {
@@ -485,19 +492,23 @@ textarea:focus {
     .tone-btn {
         flex: 1;
         padding: 0.4rem 0.2rem;
+        font-size: 0.7rem;
     }
 
     .ai-generate-btn {
         width: 100%;
         justify-content: center;
+        font-size: 0.8rem;
     }
 
     .form-actions {
         flex-direction: column-reverse;
+        gap: 0.75rem;
     }
 
     .form-actions button {
         width: 100%;
+        padding: 0.75rem;
     }
 }
 
@@ -509,5 +520,16 @@ textarea:focus {
     .radio-group {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        gap: 0.4rem;
+    }
+
+    .radio-label {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.5rem;
+        text-align: center;
+    }
+
+    .image-upload-area {
+        padding: 2rem 1rem;
     }
 }
