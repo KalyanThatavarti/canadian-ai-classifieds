@@ -62,12 +62,12 @@
     color: #4a90e2;
 }
 
-.site-header .location-icon,
-.site-header .help-icon {
-    position: static;
+.location-icon,
+.help-icon {
     width: 14px;
     height: 14px;
     flex-shrink: 0;
+    display: inline-block;
 }
 
 
@@ -494,8 +494,22 @@
         padding: 0 0.5rem;
     }
 
+    .top-bar-left,
+    .top-bar-right {
+        gap: 0.625rem;
+    }
+
+    .location-icon {
+        width: 12px;
+        height: 12px;
+    }
+
     .main-header-container {
         padding: 0 0.5rem;
+    }
+
+    .logo-text {
+        font-size: 1rem;
     }
 
     .header-actions {
@@ -504,10 +518,6 @@
 
     .post-ad-btn {
         padding: 0.5rem;
-    }
-
-    .logo-text {
-        font-size: 1rem;
     }
 
     .user-menu-toggle {

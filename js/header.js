@@ -291,13 +291,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Add dropdown to DOM
-        userMenuToggle.parentElement.style.position = 'relative';
-        userMenuToggle.parentElement.appendChild(userDropdown);
+        userMenuToggle.style.position = 'relative';
+        userMenuToggle.appendChild(userDropdown);
 
         // Toggle dropdown on click
         userMenuToggle.addEventListener('click', function (e) {
+            console.log('👤 User menu clicked');
             e.stopPropagation();
             userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+            console.log('👤 User menu display set to:', userDropdown.style.display);
 
             // Close mobile menu if it's open
             if (userDropdown.style.display === 'block' && mainNav && mainNav.classList.contains('active')) {
