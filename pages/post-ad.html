@@ -123,14 +123,22 @@
                     <div class="form-group">
                         <div class="label-row">
                             <label for="adDescription">Description</label>
-                            <button type="button" class="ai-generate-btn" id="aiGenerateBtn">
-                                <svg class="sparkles-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                                    </path>
-                                </svg>
-                                AI Write
-                            </button>
+                            <div class="ai-controls">
+                                <div class="tone-selector">
+                                    <button type="button" class="tone-btn active"
+                                        data-tone="professional">Professional</button>
+                                    <button type="button" class="tone-btn" data-tone="friendly">Friendly</button>
+                                    <button type="button" class="tone-btn" data-tone="direct">Direct</button>
+                                </div>
+                                <button type="button" class="ai-generate-btn" id="aiGenerateBtn">
+                                    <svg class="sparkles-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                        </path>
+                                    </svg>
+                                    AI Write
+                                </button>
+                            </div>
                         </div>
                         <textarea id="adDescription" rows="6" placeholder="Describe your item... or let AI do it!"
                             required></textarea>

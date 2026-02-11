@@ -296,6 +296,42 @@ textarea:focus {
     margin-bottom: 0;
 }
 
+.ai-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tone-selector {
+    display: flex;
+    background: #f3f4f6;
+    padding: 3px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.tone-btn {
+    background: transparent;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: all 0.2s;
+}
+
+.tone-btn:hover {
+    color: #374151;
+}
+
+.tone-btn.active {
+    background: white;
+    color: #4a90e2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .ai-generate-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;

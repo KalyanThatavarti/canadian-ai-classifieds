@@ -19,6 +19,34 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }, 100);
 
+    // Auto-Geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            try {
+                // In a real app, use reverse geocoding. Here we'll mock it for Canadian regions.
+                // We'll default to a high-density area if we get a hit.
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                // Very basic box check for major Canadian Cities
+                let detectedLocation = "Toronto, ON"; // Default
+                if (lat > 49 && lat < 50 && lng > -124 && lng < -122) detectedLocation = "Vancouver, BC";
+                if (lat > 45 && lat < 46 && lng > -74 && lng < -73) detectedLocation = "Montreal, QC";
+                if (lat > 50 && lat < 52 && lng > -115 && lng < -113) detectedLocation = "Calgary, AB";
+
+                const adLocation = document.getElementById('adLocation');
+                if (adLocation && !adLocation.value) {
+                    adLocation.value = detectedLocation;
+                    if (window.UIComponents) {
+                        window.UIComponents.showInfoToast(`Detected location: ${detectedLocation}`, 'Smart Fill');
+                    }
+                }
+            } catch (err) {
+                console.warn('Geolocation failed:', err);
+            }
+        });
+    }
+
     // State
     const uploadedImages = []; // Stores File objects or base64 strings
 
@@ -90,12 +118,79 @@ document.addEventListener('DOMContentLoaded', async function () {
                 compressImage(file, 800, 0.7).then(base64 => {
                     uploadedImages.push(base64);
                     addImageToPreview(base64, uploadedImages.length - 1);
+
+                    // Trigger Smart Scan for the first image
+                    if (uploadedImages.length === 1) {
+                        triggerSmartScan(file.name);
+                    }
                 }).catch(err => {
                     console.error('Compression error:', err);
                     alert('Error processing image');
                 });
             }
         });
+    }
+
+    // Smart Scan Mock Logic (Simulates AI Vision)
+    function triggerSmartScan(filename) {
+        const name = filename.toLowerCase();
+        let suggestedCategory = "";
+        let suggestedTitle = "";
+
+        // Show "Scanning" toast for feedback
+        if (window.UIComponents) {
+            window.UIComponents.showInfoToast('AI is scanning your image...', 'Smart Scan');
+        }
+
+        // Keywords (Expanded)
+        const categories = {
+            electronics: ['iphone', 'samsung', 'phone', 'laptop', 'tablet', 'ipad', 'watch', 'camera', 'tv', 'sony', 'apple', '86d'], // 86d is common for iOS uploads
+            vehicles: ['car', 'honda', 'toyota', 'ford', 'suv', 'truck', 'bike', 'motorcycle', 'img'],
+            furniture: ['chair', 'table', 'sofa', 'desk', 'bed', 'shelf', 'couch'],
+            fashion: ['shirt', 'shoes', 'dress', 'jeans', 'watch', 'bag'],
+            realestate: ['house', 'condo', 'apartment', 'home', 'listing']
+        };
+
+        // Check for matches
+        for (const [cat, keywords] of Object.entries(categories)) {
+            if (keywords.some(kw => name.includes(kw))) {
+                suggestedCategory = cat;
+                break;
+            }
+        }
+
+        // Fallback for demo: If it's a generic mobile upload name like "IMG_" or "86D_", guess Electronics
+        if (!suggestedCategory && (name.includes('img') || name.includes('86d') || name.includes('photo'))) {
+            suggestedCategory = "electronics"; // High volume category for mobile users
+        }
+
+        if (suggestedCategory) {
+            // Pick a title based on category if one isn't matched
+            const titles = {
+                electronics: "Electronics Item",
+                vehicles: "Vehicle for Sale",
+                furniture: "Quality Furniture",
+                fashion: "Fashion Item",
+                realestate: "Property Listing"
+            };
+            suggestedTitle = titles[suggestedCategory] || "New Listing";
+
+            setTimeout(() => {
+                adCategory.value = suggestedCategory;
+                if (!adTitle.value) adTitle.value = suggestedTitle;
+
+                if (window.UIComponents) {
+                    window.UIComponents.showSuccessToast(`Smart Scan identified: ${suggestedCategory}`, 'AI Magic');
+                }
+            }, 1500); // Slightly longer for "AI Thinking" feel
+        } else {
+            // Even if it fails, show that it tried
+            setTimeout(() => {
+                if (window.UIComponents) {
+                    window.UIComponents.showInfoToast('Scan complete. Please select category manually.', 'Smart Scan');
+                }
+            }, 1200);
+        }
     }
 
     // Client-side Image Compression
@@ -203,11 +298,24 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
 
+    // Tone Selection Logic
+    const toneBtns = document.querySelectorAll('.tone-btn');
+    let selectedTone = 'professional';
+
+    toneBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            toneBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedTone = btn.dataset.tone;
+        });
+    });
+
     // === AI Description Generator ===
     aiGenerateBtn.addEventListener('click', async () => {
         const title = adTitle.value.trim();
         const category = adCategory.value;
         const condition = document.querySelector('input[name="condition"]:checked').value;
+        const location = document.getElementById('adLocation').value || "your area";
 
         if (!title) {
             if (window.UIComponents) {
@@ -230,16 +338,25 @@ document.addEventListener('DOMContentLoaded', async function () {
         adDescription.setAttribute('placeholder', 'AI is thinking...');
 
         // Artificial Delay for realism
-        await new Promise(r => setTimeout(r, 1500));
+        await new Promise(r => setTimeout(r, 1200));
 
-        // Mock AI Logic based on inputs
-        const templates = [
-            `Selling my ${condition.toLowerCase()} ${title}. It's in great shape and ready for a new owner. Send me a message if interested!`,
-            `Check out this ${title}! Condition is ${condition}. Perfectly maintained and works flawlessly. Asking for a reasonable price.`,
-            `Ideally located in the city, this ${title} is a must-see. ${condition} condition. Serious buyers only please.`
-        ];
+        // Enhanced AI Logic based on Tone
+        const toneTemplates = {
+            professional: [
+                `Up for sale is a ${title} in ${condition.toLowerCase()} condition. This item has been meticulously maintained and functions perfectly. Ideal for those seeking high-quality performance. Available for pickup in ${location}.`,
+                `Professional-grade ${title} available. Rated ${condition}. Includes all original components and features. Excellent value for the price. Location: ${location}.`
+            ],
+            friendly: [
+                `Hi there! I'm selling my ${title}. It's served me well and is currently in ${condition.toLowerCase()} condition. Really hoping it finds a good new home! Let me know if you have any questions. Local pickup in ${location} preferred.`,
+                `Selling this great ${title}! It's ${condition.toLowerCase()} and ready for someone else to enjoy. A really nice addition to any home. Message me if you're interested!`
+            ],
+            direct: [
+                `${title} for sale. Condition: ${condition}. Price is firm. Pickup in ${location}.`,
+                `${condition} ${title}. Works as expected. Cash only. DM if interested.`
+            ]
+        };
 
-        // Pick a random template appropriate for the mock
+        const templates = toneTemplates[selectedTone] || toneTemplates.professional;
         const generatedText = templates[Math.floor(Math.random() * templates.length)];
 
         adDescription.value = generatedText;
