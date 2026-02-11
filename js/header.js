@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function updateStartMessagesCount(count) {
             // Update Dropdown Link
-            const messagesLink = document.querySelector('a[href*="/pages/messages/index.html"]');
+            const messagesLink = document.querySelector('a[href*="pages/messages/index.html"]');
             if (messagesLink) {
                 if (count > 0) {
                     messagesLink.innerHTML = `Messages <span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; margin-left: 5px;">${count}</span>`;
