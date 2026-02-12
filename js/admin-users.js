@@ -73,8 +73,25 @@ function displayUsers() {
 
     emptyState.style.display = 'none';
     tbody.innerHTML = filteredUsers.map(user => {
-        const joinDate = user.createdAt ?
-            new Date(user.createdAt.toDate()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
+        let joinDate = 'N/A';
+        try {
+            if (user.createdAt) {
+                // Handle Firestore Timestamp
+                if (typeof user.createdAt.toDate === 'function') {
+                    joinDate = user.createdAt.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+                // Handle Date object
+                else if (user.createdAt instanceof Date) {
+                    joinDate = user.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+                // Handle string or number
+                else {
+                    joinDate = new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+            }
+        } catch (e) {
+            console.warn('Error formatting date for user:', user.id, e);
+        }
 
         const statusBadge = getStatusBadge(user.status);
         const isCurrentAdmin = user.isAdmin;
@@ -536,6 +553,31 @@ function viewUserDetails(userId) {
                 </dl>
             </div>
 
+            <div class="detail-section">
+                <h4><i class="fas fa-sliders-h"></i> User Limits</h4>
+                <div class="form-group-row" style="display: flex; gap: 1rem; margin-top: 10px;">
+                    <div style="flex: 1;">
+                        <label for="customAdLimit" style="font-size: 0.85rem; color: #64748b;">Daily Ad Limit:</label>
+                        <input type="number" id="customAdLimit" value="${user.customAdLimit || ''}" placeholder="Default" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="customScanLimit" style="font-size: 0.85rem; color: #64748b;">Daily Scan Limit:</label>
+                        <input type="number" id="customScanLimit" value="${user.customScanLimit || ''}" placeholder="Default" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                    </div>
+                </div>
+                <button onclick="saveUserLimits('${user.id}')" class="btn-primary" style="margin-top: 15px; width: 100%;">
+                    <i class="fas fa-save"></i> Save User Limits
+                </button>
+            </div>
+
+            <div class="detail-section" style="border-top: 1px solid #fee2e2; margin-top: 2rem; padding-top: 1.5rem;">
+                <h4 style="color: #dc2626;"><i class="fas fa-trash-alt"></i> Debug / Reset</h4>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Resetting usage allows you to test limits from zero for the current day.</p>
+                <button onclick="resetUserUsage('${user.id}')" class="btn-secondary" style="width: 100%; border-color: #fecaca; color: #dc2626;">
+                    <i class="fas fa-redo"></i> Reset Today's Usage
+                </button>
+            </div>
+
             ${user.status !== 'active' ? `
                 <div class="detail-section warning">
                     <h4><i class="fas fa-exclamation-triangle"></i> Moderation Info</h4>
@@ -570,6 +612,87 @@ function viewUserDetails(userId) {
  */
 function closeUserDetailsModal() {
     document.getElementById('userDetailsModal').style.display = 'none';
+}
+
+/**
+ * Save custom user limits
+ */
+async function saveUserLimits(userId) {
+    const adLimitInput = document.getElementById('customAdLimit');
+    const scanLimitInput = document.getElementById('customScanLimit');
+
+    const adLimit = adLimitInput.value ? parseInt(adLimitInput.value) : null;
+    const scanLimit = scanLimitInput.value ? parseInt(scanLimitInput.value) : null;
+
+    try {
+        const user = allUsers.find(u => u.id === userId);
+        if (!user) return;
+
+        const updates = {
+            customAdLimit: adLimit,
+            customScanLimit: scanLimit
+        };
+
+        console.log(`🛡️ Admin: Saving limits for user ${userId}:`, updates);
+
+        // Remove field if null
+        if (adLimit === null) updates.customAdLimit = firebase.firestore.FieldValue.delete();
+        if (scanLimit === null) updates.customScanLimit = firebase.firestore.FieldValue.delete();
+
+        await db.collection('users').doc(userId).update(updates);
+
+        // Log admin action
+        await logAdminAction('update_user_limits', {
+            targetUserId: userId,
+            targetUserName: user.displayName || user.email,
+            adLimit: adLimit,
+            scanLimit: scanLimit
+        });
+
+        if (window.UIComponents) {
+            window.UIComponents.showSuccessToast('User limits updated successfully.', 'Limits Saved', 10000);
+            await loadUsers(); // Refresh data
+            // Delay updating the detail view slightly to let user read the toast
+            setTimeout(() => viewUserDetails(userId), 2500);
+        } else {
+            alert('User limits updated successfully.');
+            await loadUsers();
+            viewUserDetails(userId);
+        }
+
+    } catch (error) {
+        console.error('Error updating user limits:', error);
+        alert('Failed to update user limits. Please try again.');
+    }
+}
+
+/**
+ * Reset user's usage for today
+ */
+async function resetUserUsage(userId) {
+    if (!confirm('Are you sure you want to reset this user\'s usage counts for today? This cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const usageId = `${userId}_${today}`;
+
+        await db.collection('usage_tracking').doc(usageId).delete();
+
+        if (window.UIComponents) {
+            window.UIComponents.showSuccessToast('Usage counts reset for today.', 'Usage Reset');
+        } else {
+            alert('Usage counts reset for today.');
+        }
+
+        // Refresh details
+        viewUserDetails(userId);
+
+    } catch (error) {
+        console.error('Error resetting user usage:', error);
+        alert('Failed to reset usage. Please try again.');
+    }
 }
 
 /**

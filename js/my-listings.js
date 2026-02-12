@@ -203,7 +203,12 @@ document.addEventListener('DOMContentLoaded', async function () {
                     </div>
                     
                     <!-- Actions -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; position: relative; z-index: 10;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; position: relative; z-index: 10;">
+                        ${listing.status !== 'deleted' ? `
+                            <button class="action-btn edit-listing-btn" data-id="${listing.id}" style="padding: 0.5rem; background: #EEF2FF; color: #4338CA; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.875rem; pointer-events: auto; position: relative; z-index: 100;">
+                                Edit
+                            </button>
+                        ` : ''}
                         ${listing.status === 'active' ? `
                             <button class="action-btn mark-sold-btn" data-id="${listing.id}" style="padding: 0.5rem; background: #FFF3E0; color: #E65100; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.875rem; pointer-events: auto; position: relative; z-index: 100;">
                                 Mark Sold
@@ -225,6 +230,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     function attachListingActions() {
         console.log('attachListingActions called');
+
+        // Edit Listing
+        const editBtns = document.querySelectorAll('.edit-listing-btn');
+        editBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const listingId = btn.dataset.id;
+                window.location.href = `/pages/post-ad.html?edit=${listingId}`;
+            });
+        });
 
         // Mark as sold
         const markSoldBtns = document.querySelectorAll('.mark-sold-btn');
@@ -272,6 +288,16 @@ document.addEventListener('DOMContentLoaded', async function () {
                 } else {
                     await softDeleteListing(listingId);
                 }
+            });
+        });
+
+        // Card click - Redirect to details
+        const cards = document.querySelectorAll('.listing-card');
+        cards.forEach(card => {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => {
+                const listingId = card.dataset.id;
+                window.location.href = `/pages/listing-detail.html?id=${listingId}`;
             });
         });
 

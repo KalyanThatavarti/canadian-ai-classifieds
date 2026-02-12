@@ -7,9 +7,9 @@ service cloud.firestore {
       // Anyone can read user profiles
       allow read: if true;
       
-      // Users can only create/update their own profile
+      // Users can update their own profile; Admins can update any user (moderation/limits)
       allow create: if request.auth != null && request.auth.uid == userId;
-      allow update: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && (request.auth.uid == userId || isAdmin());
       
       // Only admins can delete users (handled server-side)
       allow delete: if false;
@@ -101,6 +101,21 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null && 
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Global Platform Settings
+    match /system_settings/limits {
+      // Anyone logged in can read global limits
+      allow read: if request.auth != null;
+      // Only Admins can modify global limits
+      allow write: if isAdmin();
+    }
+
+    // Usage Tracking
+    match /usage_tracking/{usageId} {
+      // Users can only read/write their own daily usage records
+      // Admins can manage any usage records (e.g. for resetting/debugging)
+      allow read, write: if request.auth != null && (usageId.split('_')[0] == request.auth.uid || isAdmin());
     }
   }
 }

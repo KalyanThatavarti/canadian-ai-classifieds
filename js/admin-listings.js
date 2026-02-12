@@ -108,7 +108,7 @@ function createListingRow(listing) {
                         <span style="color: #64748b; font-weight: 500;"><i class="fas fa-map-marker-alt" style="margin-right: 4px; color: #94a3b8;"></i>${locationStr}</span>
                     </div>
                     <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">
-                        By <span style="font-weight: 600; color: #475569;">${listing.userName || 'Anonymous'}</span>
+                        By <span style="font-weight: 600; color: #475569;">${listing.seller?.name || listing.userName || 'Anonymous'}</span>
                     </div>
                 </div>
             </td>
@@ -214,7 +214,7 @@ function viewListing(listingId) {
 function openDeleteModal(listingId) {
     currentDeleteListingId = listingId;
     document.getElementById('deleteReason').value = '';
-    document.getElementById('deleteModal').classList.add('active');
+    document.getElementById('deleteModal').style.display = 'block';
 }
 
 /**
@@ -222,7 +222,7 @@ function openDeleteModal(listingId) {
  */
 function closeDeleteModal() {
     currentDeleteListingId = null;
-    document.getElementById('deleteModal').classList.remove('active');
+    document.getElementById('deleteModal').style.display = 'none';
 }
 
 /**

@@ -11,7 +11,7 @@
  * @param {string} title - Optional title
  * @param {number} duration - Duration in ms (default: 3000)
  */
-function showToast(message, type = 'info', title = '', duration = 3000) {
+function showToast(message, type = 'info', title = '', duration = 5000) {
     // Create container if it doesn't exist
     let container = document.querySelector('.toast-container');
     if (!container) {
@@ -75,29 +75,29 @@ function dismissToast(toast) {
 /**
  * Show success toast
  */
-function showSuccessToast(message, title = 'Success') {
-    return showToast(message, 'success', title);
+function showSuccessToast(message, title = 'Success', duration = 10000) {
+    return showToast(message, 'success', title, duration);
 }
 
 /**
  * Show error toast
  */
-function showErrorToast(message, title = 'Error') {
-    return showToast(message, 'error', title);
+function showErrorToast(message, title = 'Error', duration = 60000) {
+    return showToast(message, 'error', title, duration);
 }
 
 /**
  * Show warning toast
  */
-function showWarningToast(message, title = 'Warning') {
-    return showToast(message, 'warning', title);
+function showWarningToast(message, title = 'Warning', duration = 60000) {
+    return showToast(message, 'warning', title, duration);
 }
 
 /**
  * Show info toast
  */
-function showInfoToast(message, title = '') {
-    return showToast(message, 'info', title);
+function showInfoToast(message, title = '', duration = 10000) {
+    return showToast(message, 'info', title, duration);
 }
 
 // ===== Loading Spinner System =====

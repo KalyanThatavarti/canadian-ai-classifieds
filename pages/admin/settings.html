@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Settings - Canadian AI Classifieds Admin</title>
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="admin-container">
+        <div class="admin-header">
+            <a href="/pages/admin/index.html"
+                style="display: inline-flex; align-items: center; gap: 8px; color: #6366f1; text-decoration: none; font-weight: 600; margin-bottom: 1rem;">←
+                Back to Dashboard</a>
+            <h1><i class="fas fa-cog"></i> Platform Settings</h1>
+            <p>Configure global limits and system-wide settings</p>
+        </div>
+
+        <div class="settings-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <!-- Usage Limits Section -->
+            <div class="stat-card" style="display: block; padding: 2rem; text-align: left;">
+                <h2 style="margin-bottom: 1.5rem; color: #111827; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-sliders-h" style="color: #6366f1;"></i> Usage Limits
+                </h2>
+                <p style="color: #64748b; margin-bottom: 2rem; font-size: 0.9rem;">
+                    These are default daily limits that apply to all users unless specifically overridden in User
+                    Management.
+                </p>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="defaultDailyAdLimit"
+                        style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">
+                        Default Daily Ad Posting Limit:
+                    </label>
+                    <input type="number" id="defaultDailyAdLimit" class="filter-input" style="width: 100%;"
+                        placeholder="e.g. 5">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label for="defaultDailyScanLimit"
+                        style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">
+                        Default Daily AI Scan Limit:
+                    </label>
+                    <input type="number" id="defaultDailyScanLimit" class="filter-input" style="width: 100%;"
+                        placeholder="e.g. 3">
+                </div>
+
+                <button id="saveLimitsBtn" class="btn-primary" style="width: 100%; padding: 12px; font-size: 1rem;">
+                    <i class="fas fa-save"></i> Save Global Limits
+                </button>
+            </div>
+
+            <!-- More settings can be added here later -->
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="../../js/firebase-config.js"></script>
+    <script src="../../js/header.js"></script>
+    <script src="../../js/admin-auth.js"></script>
+    <script src="../../js/admin-settings.js"></script>
+</body>
+
+</html>

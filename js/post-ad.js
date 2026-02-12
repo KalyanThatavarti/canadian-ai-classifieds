@@ -1,15 +1,26 @@
 // Post Ad Page Script
 document.addEventListener('DOMContentLoaded', async function () {
+    // State
+    const uploadedImages = []; // Stores File objects or base64 strings
+    let editListingId = null;
+
     // Reliable Auth Check using onAuthStateChanged
     const initAuth = () => {
         if (window.FirebaseAPI && window.FirebaseAPI.auth) {
-            window.FirebaseAPI.auth.onAuthStateChanged((user) => {
+            window.FirebaseAPI.auth.onAuthStateChanged(async (user) => {
                 if (!user) {
                     // Not logged in
                     if (window.UIComponents) {
                         window.UIComponents.showInfoToast('Please sign in to post an ad', 'Redirecting...');
                     }
                     setTimeout(() => window.location.href = 'auth/login.html', 1500);
+                } else {
+                    // Check for Edit Mode
+                    const urlParams = new URLSearchParams(window.location.search);
+                    editListingId = urlParams.get('edit');
+                    if (editListingId) {
+                        await loadListingData(editListingId);
+                    }
                 }
             });
         } else {
@@ -18,6 +29,54 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     };
     initAuth();
+
+    async function loadListingData(listingId) {
+        try {
+            console.log('Loading listing for edit:', listingId);
+            const doc = await window.FirebaseAPI.db.collection('listings').doc(listingId).get();
+            if (!doc.exists) {
+                window.UIComponents.showErrorToast('Listing not found', 'Error');
+                return;
+            }
+            const data = doc.data();
+
+            // Check ownership
+            const user = window.FirebaseAPI.auth.currentUser;
+            if (data.userId !== user.uid) {
+                window.UIComponents.showErrorToast('You do not have permission to edit this listing', 'Unauthorized');
+                setTimeout(() => window.location.href = 'my-listings.html', 2000);
+                return;
+            }
+
+            // Update UI
+            document.getElementById('pageTitle').textContent = 'Edit Your Listing';
+            document.getElementById('pageSubtitle').textContent = 'Update your listing details below';
+            document.getElementById('submitBtn').innerHTML = 'Save Changes';
+
+            // Fill Form
+            document.getElementById('adTitle').value = data.title || '';
+            document.getElementById('adCategory').value = data.category || '';
+            document.getElementById('adPrice').value = data.price || '';
+            document.getElementById('adDescription').value = data.description || '';
+            document.getElementById('adLocation').value = data.location?.city || '';
+
+            // Condition
+            if (data.condition) {
+                const radio = document.querySelector(`input[name="condition"][value="${data.condition}"]`);
+                if (radio) radio.checked = true;
+            }
+
+            // Load Images
+            if (data.images && Array.isArray(data.images)) {
+                data.images.forEach(img => uploadedImages.push(img));
+                renderPreviews();
+            }
+
+        } catch (error) {
+            console.error('Error loading listing:', error);
+            window.UIComponents.showErrorToast('Failed to load listing data', 'Error');
+        }
+    }
 
     // Auto-Geolocation
     if (navigator.geolocation) {
@@ -30,9 +89,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 // Very basic box check for major Canadian Cities
                 let detectedLocation = "Toronto, ON"; // Default
-                if (lat > 49 && lat < 50 && lng > -124 && lng < -122) detectedLocation = "Vancouver, BC";
-                if (lat > 45 && lat < 46 && lng > -74 && lng < -73) detectedLocation = "Montreal, QC";
-                if (lat > 50 && lat < 52 && lng > -115 && lng < -113) detectedLocation = "Calgary, AB";
+                if (lat > 43.1 && lat < 43.4 && lng > -80.0 && lng < -79.7) detectedLocation = "Hamilton, ON";
+                else if (lat > 43.5 && lat < 44.0 && lng > -79.6 && lng < -79.2) detectedLocation = "Toronto, ON";
+                else if (lat > 49 && lat < 50 && lng > -124 && lng < -122) detectedLocation = "Vancouver, BC";
+                else if (lat > 45 && lat < 46 && lng > -74 && lng < -73) detectedLocation = "Montreal, QC";
+                else if (lat > 50 && lat < 52 && lng > -115 && lng < -113) detectedLocation = "Calgary, AB";
 
                 const adLocation = document.getElementById('adLocation');
                 if (adLocation && !adLocation.value) {
@@ -47,8 +108,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
-    // State
-    const uploadedImages = []; // Stores File objects or base64 strings
 
     // DOM Elements
     const dropZone = document.getElementById('dropZone');
@@ -132,21 +191,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // Smart Scan Mock Logic (Simulates AI Vision)
-    function triggerSmartScan(filename) {
-        // Usage Limit Check (3 Scans per day)
-        const today = new Date().toDateString();
-        const lastScanDate = localStorage.getItem('aiScanDate');
-        let scanCount = parseInt(localStorage.getItem('aiScanCount') || '0');
+    async function triggerSmartScan(filename) {
+        const user = window.FirebaseAPI.auth.currentUser;
+        if (!user) return;
 
-        // Reset if it's a new day
-        if (lastScanDate !== today) {
-            scanCount = 0;
-            localStorage.setItem('aiScanDate', today);
-        }
-
-        if (scanCount >= 3) {
+        // Firestore Usage Limit Check
+        const scanCheck = await window.UsageLimits.canPerformScan(user.uid);
+        if (!scanCheck.allowed) {
             if (window.UIComponents) {
-                window.UIComponents.showErrorToast('You have reached the limit of 3 AI scans for today.', 'Daily Limit Reached');
+                // Modified message to be less intrusive for automatic scans but stay long
+                window.UIComponents.showInfoToast(`AI Smart Scan skipped (Daily limit reached: ${scanCheck.limit}). You can still fill details manually.`, 'Scan Limit Reached', 60000);
             }
             return;
         }
@@ -160,16 +214,16 @@ document.addEventListener('DOMContentLoaded', async function () {
             window.UIComponents.showInfoToast('AI is scanning your image...', 'Smart Scan');
         }
 
-        // Increment scan count
-        localStorage.setItem('aiScanCount', (scanCount + 1).toString());
+        // Increment scan count in Firestore
+        await window.UsageLimits.incrementUsage(user.uid, 'scan');
 
-        // Keywords (Expanded)
+        // Keywords (Expanded simulation)
         const categories = {
-            electronics: ['iphone', 'samsung', 'phone', 'laptop', 'tablet', 'ipad', 'watch', 'camera', 'tv', 'sony', 'apple', '86d'], // 86d is common for iOS uploads
-            vehicles: ['car', 'honda', 'toyota', 'ford', 'suv', 'truck', 'bike', 'motorcycle', 'img'],
-            furniture: ['chair', 'table', 'sofa', 'desk', 'bed', 'shelf', 'couch'],
-            fashion: ['shirt', 'shoes', 'dress', 'jeans', 'watch', 'bag'],
-            realestate: ['house', 'condo', 'apartment', 'home', 'listing']
+            electronics: ['iphone', 'samsung', 'phone', 'laptop', 'tablet', 'ipad', 'watch', 'camera', 'tv', 'sony', 'apple', '86d', 'screenshot', 'electronic'],
+            vehicles: ['car', 'honda', 'toyota', 'ford', 'suv', 'truck', 'bike', 'motorcycle', 'vehicle', 'automotive'],
+            furniture: ['chair', 'table', 'sofa', 'desk', 'bed', 'shelf', 'couch', 'furniture', 'decor'],
+            fashion: ['shirt', 'shoes', 'dress', 'jeans', 'watch', 'bag', 'clothing', 'fashion', 'accessory'],
+            realestate: ['house', 'condo', 'apartment', 'home', 'listing', 'property', 'land']
         };
 
         // Check for matches
@@ -333,20 +387,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // === AI Description Generator ===
     aiGenerateBtn.addEventListener('click', async () => {
-        // Usage Limit Check (3 Generations per day)
-        const today = new Date().toDateString();
-        const lastGenDate = localStorage.getItem('aiGenDate');
-        let genCount = parseInt(localStorage.getItem('aiGenCount') || '0');
+        const user = window.FirebaseAPI.auth.currentUser;
+        if (!user) return;
 
-        // Reset if it's a new day
-        if (lastGenDate !== today) {
-            genCount = 0;
-            localStorage.setItem('aiGenDate', today);
-        }
-
-        if (genCount >= 3) {
+        // Firestore Usage Limit Check
+        const aiCheck = await window.UsageLimits.canPerformScan(user.uid);
+        if (!aiCheck.allowed) {
             if (window.UIComponents) {
-                window.UIComponents.showErrorToast('You have reached the limit of 3 AI descriptions for today.', 'Daily Limit Reached');
+                window.UIComponents.showInfoToast(`AI feature limit reached (${aiCheck.limit}). You can still write your description manually.`, 'AI Limit Reached', 60000);
             }
             return;
         }
@@ -366,8 +414,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             return;
         }
 
-        // Increment generation count
-        localStorage.setItem('aiGenCount', (genCount + 1).toString());
+        // Increment usage count in Firestore
+        await window.UsageLimits.incrementUsage(user.uid, 'scan');
 
         // Simulating AI Loading
         aiGenerateBtn.classList.add('loading');
@@ -437,6 +485,17 @@ document.addEventListener('DOMContentLoaded', async function () {
             return;
         }
 
+        // Firestore Daily Ad Limit Check - Skip for Edits
+        if (!editListingId) {
+            const adCheck = await window.UsageLimits.canPostAd(user.uid);
+            if (!adCheck.allowed) {
+                if (window.UIComponents) {
+                    window.UIComponents.showErrorToast(`Daily ad posting limit reached (${adCheck.limit}). Please try again tomorrow.`, 'Ad Posting Limit', 60000);
+                }
+                return;
+            }
+        }
+
         // Prepare Data
         const listingData = {
             userId: user.uid,
@@ -455,11 +514,15 @@ document.addEventListener('DOMContentLoaded', async function () {
                 city: document.getElementById('adLocation').value,
                 province: 'ON' // Hardcoded for MVP or extract from input
             },
-            images: uploadedImages, // In real app, upload to Storage and get URLs. Here storing Base64 (CAUTION: Size limits)
-            createdAt: new Date().toISOString(),
-            views: 0,
-            featured: false
+            images: uploadedImages,
+            updatedAt: new Date().toISOString()
         };
+
+        if (!editListingId) {
+            listingData.createdAt = new Date().toISOString();
+            listingData.views = 0;
+            listingData.featured = false;
+        }
 
         // UI Loading
         submitBtn.disabled = true;
@@ -467,16 +530,24 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         try {
             // Save to Firestore
-            await window.FirebaseAPI.db.collection('listings').add(listingData);
-
-            if (window.UIComponents) {
-                window.UIComponents.showSuccessToast('Your ad is now live!', 'Success');
+            if (editListingId) {
+                await window.FirebaseAPI.db.collection('listings').doc(editListingId).update(listingData);
+                if (window.UIComponents) {
+                    window.UIComponents.showSuccessToast('Listing updated successfully!', 'Updated', 4000);
+                }
+            } else {
+                await window.FirebaseAPI.db.collection('listings').add(listingData);
+                // Increment Ad count in Firestore
+                await window.UsageLimits.incrementUsage(user.uid, 'ad');
+                if (window.UIComponents) {
+                    window.UIComponents.showSuccessToast('Your ad is now live!', 'Success', 4000);
+                }
             }
 
-            // Redirect
+            // Redirect after allowing user to read the toast
             setTimeout(() => {
-                window.location.href = '../index.html'; // Or my-listings.html
-            }, 1000);
+                window.location.href = editListingId ? 'my-listings.html' : '../index.html';
+            }, 4500);
 
         } catch (error) {
             console.error('Error posting ad:', error);
