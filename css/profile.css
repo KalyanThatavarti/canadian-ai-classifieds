@@ -190,10 +190,18 @@
 .profile-section {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 16px;
     padding: 2rem;
     margin-bottom: 2rem;
     border: 1px solid rgba(229, 221, 213, 0.3);
+}
+
+@media (max-width: 768px) {
+    .profile-section {
+        padding: 1.25rem !important;
+        /* Reduced padding for mobile */
+    }
 }
 
 .section-title {
@@ -274,6 +282,13 @@
     gap: 0.5rem;
     margin-bottom: 2rem;
     border-bottom: 2px solid rgba(229, 221, 213, 0.5);
+    white-space: nowrap;
+    /* Prevent tabs from wrapping */
+    overflow-x: auto;
+    /* Enable horizontal scroll */
+    -webkit-overflow-scrolling: touch;
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
 
 .tab-btn {
@@ -289,6 +304,8 @@
     transition: all 0.3s ease;
     position: relative;
     margin-bottom: -2px;
+    flex-shrink: 0;
+    /* Prevent tabs from squishing on mobile */
 }
 
 .tab-btn:hover {
@@ -345,8 +362,63 @@
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     border: none;
+}
+
+/* Unified Action Buttons for Listings */
+.action-btn {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.action-btn-primary {
+    background: linear-gradient(135deg, #2F5D3A, #4a90e2);
+    color: white;
+    box-shadow: 0 4px 12px rgba(47, 93, 58, 0.15);
+}
+
+.action-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(47, 93, 58, 0.25);
+}
+
+.action-btn-secondary {
+    background: white;
+    color: #4a90e2;
+    border: 1px solid #e1e7ef;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.action-btn-secondary:hover {
+    border-color: #4a90e2;
+    background: #f0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.1);
+}
+
+.action-btn-danger {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+.action-btn-danger:hover {
+    background: #c53030;
+    color: white;
+    border-color: #c53030;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(197, 48, 48, 0.2);
 }
 
 .btn svg {
@@ -386,6 +458,18 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Profiles Tabs - Scrollbar Removal */
+.profile-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.profile-tabs {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
 /* Responsive */
@@ -432,6 +516,8 @@
     .profile-tabs {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        /* Space for active border */
     }
 
     .tab-btn {

@@ -150,6 +150,10 @@ function getListingStatusBadge(listing) {
         return '<span class="status-badge status-sold" style="border: 1px solid #fde68a;"><i class="fas fa-tag"></i> Sold</span>';
     }
 
+    if (listing.status === 'draft') {
+        return '<span class="status-badge status-draft" style="border: 1px solid #d1d5db; background: #f3f4f6; color: #4b5563;"><i class="fas fa-file-alt"></i> Draft</span>';
+    }
+
     return '<span class="status-badge status-active" style="border: 1px solid #bdf2d5;"><i class="fas fa-check-circle"></i> Active</span>';
 }
 

@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const snapshot = await window.FirebaseAPI.db.collection('listings')
+                .where('status', '==', 'active')
                 .orderBy('createdAt', 'desc')
                 .limit(50)
                 .get();

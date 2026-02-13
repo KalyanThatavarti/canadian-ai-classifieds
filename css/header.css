@@ -201,6 +201,13 @@
     gap: 1.5rem;
 }
 
+@media (max-width: 400px) {
+    .header-actions {
+        gap: 0.5rem !important;
+        /* Tighter gap for small phones */
+    }
+}
+
 .messages-icon-link {
     display: flex;
     /* Hidden by default until JS checks auth? No, visible is fine, redirect to login if not */

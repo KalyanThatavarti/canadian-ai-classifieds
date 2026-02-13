@@ -49,9 +49,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             // Update UI
-            document.getElementById('pageTitle').textContent = 'Edit Your Listing';
-            document.getElementById('pageSubtitle').textContent = 'Update your listing details below';
-            document.getElementById('submitBtn').innerHTML = 'Save Changes';
+            document.getElementById('pageTitle').textContent = data.status === 'draft' ? 'Resume Your Draft' : 'Edit Your Listing';
+            document.getElementById('pageSubtitle').textContent = data.status === 'draft' ? 'Finish and post your ad below' : 'Update your listing details below';
+            document.getElementById('submitBtn').innerHTML = data.status === 'draft' ? 'Post My Ad' : 'Save Changes';
 
             // Fill Form
             document.getElementById('adTitle').value = data.title || '';
@@ -120,6 +120,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const adDescription = document.getElementById('adDescription');
     const submitBtn = document.getElementById('submitBtn');
     const previewBtn = document.getElementById('previewBtn');
+    const saveDraftBtn = document.getElementById('saveDraftBtn');
     const previewModal = document.getElementById('previewModal');
     const closePreviewBtn = document.getElementById('closePreviewBtn');
     const publishFromPreviewBtn = document.getElementById('publishFromPreviewBtn');
@@ -577,6 +578,81 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // === Form Submission ===
+    if (saveDraftBtn) {
+        saveDraftBtn.addEventListener('click', handleSaveDraft);
+    }
+
+    async function handleSaveDraft(e) {
+        e.preventDefault();
+
+        // Minimal validation for drafts
+        if (!adTitle.value && uploadedImages.length === 0) {
+            if (window.UIComponents) {
+                window.UIComponents.showInfoToast('Please add at least a title or a photo to save a draft.', 'Draft Required');
+            }
+            return;
+        }
+
+        const user = window.FirebaseAPI.auth.currentUser;
+        if (!user) return;
+
+        // Prepare Data
+        const listingData = {
+            userId: user.uid,
+            seller: {
+                name: user.displayName || 'Anonymous User',
+                avatar: user.photoURL || 'https://ui-avatars.com/api/?name=User',
+                rating: 5.0,
+                verified: true
+            },
+            title: adTitle.value || 'Untitled Draft',
+            price: parseFloat(document.getElementById('adPrice').value) || 0,
+            description: adDescription.value || '',
+            category: adCategory.value || 'other',
+            condition: document.querySelector('input[name="condition"]:checked')?.value || 'Used - Good',
+            location: {
+                city: document.getElementById('adLocation').value || 'Unknown',
+                province: 'ON'
+            },
+            images: uploadedImages,
+            status: 'draft',
+            updatedAt: new Date().toISOString()
+        };
+
+        if (!editListingId) {
+            listingData.createdAt = new Date().toISOString();
+        }
+
+        // UI Loading
+        saveDraftBtn.disabled = true;
+        saveDraftBtn.innerHTML = 'Saving...';
+
+        try {
+            if (editListingId) {
+                await window.FirebaseAPI.db.collection('listings').doc(editListingId).update(listingData);
+            } else {
+                await window.FirebaseAPI.db.collection('listings').add(listingData);
+            }
+
+            if (window.UIComponents) {
+                window.UIComponents.showSuccessToast('Draft saved successfully!', 'Saved');
+            }
+
+            // Redirect to My Listings
+            setTimeout(() => {
+                window.location.href = 'my-listings.html';
+            }, 2000);
+
+        } catch (error) {
+            console.error('Error saving draft:', error);
+            if (window.UIComponents) {
+                window.UIComponents.showErrorToast('Failed to save draft. Please try again.', 'Error');
+            }
+            saveDraftBtn.disabled = false;
+            saveDraftBtn.innerHTML = 'Save as Draft';
+        }
+    }
+
     postAdForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -626,6 +702,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 province: 'ON' // Hardcoded for MVP or extract from input
             },
             images: uploadedImages,
+            status: 'active',
             updatedAt: new Date().toISOString()
         };
 
@@ -655,9 +732,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
             }
 
-            // Redirect after allowing user to read the toast
+            // Always redirect to Browse Listings to see the live ad
             setTimeout(() => {
-                window.location.href = editListingId ? 'my-listings.html' : 'browse-listings.html';
+                window.location.href = 'browse-listings.html';
             }, 4500);
 
         } catch (error) {

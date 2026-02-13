@@ -47,6 +47,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         images: data.images || ['../images/placeholder.jpg'],
                         price: Number(data.price)
                     };
+
+                    // Protect drafts from unauthorized access
+                    if (listing.status === 'draft') {
+                        const user = window.FirebaseAPI.auth.currentUser;
+                        if (!user || listing.userId !== user.uid) {
+                            console.warn('Unauthorized access to draft listing');
+                            window.UIComponents.showErrorToast('This listing is private.', 'Unauthorized');
+                            setTimeout(() => window.location.href = 'browse-listings.html', 1500);
+                            return;
+                        }
+                    }
                 }
             } catch (err) {
                 console.error('Error fetching listing:', err);

@@ -109,16 +109,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function updateCounts() {
-        const active = allListings.filter(l => l.status === 'active').length;
+        const active = allListings.filter(l => l.status === 'active' || !l.status).length;
         const sold = allListings.filter(l => l.status === 'sold').length;
+        const draft = allListings.filter(l => l.status === 'draft').length;
         const deleted = allListings.filter(l => l.status === 'deleted').length;
+        const allManagement = allListings.filter(l => l.status !== 'deleted').length;
 
-        console.log('updateCounts - Total:', allListings.length, 'Active:', active, 'Sold:', sold, 'Deleted:', deleted);
-        console.log('updateCounts - Listing statuses:', allListings.map(l => `${l.id}: ${l.status}`));
+        console.log('updateCounts - Total:', allListings.length, 'Management Total:', allManagement);
 
-        document.getElementById('allCount').textContent = `(${allListings.length})`;
+        document.getElementById('allCount').textContent = `(${allManagement})`;
         document.getElementById('activeCount').textContent = `(${active})`;
         document.getElementById('soldCount').textContent = `(${sold})`;
+        document.getElementById('draftsCount').textContent = `(${draft})`;
         document.getElementById('deletedCount').textContent = `(${deleted})`;
 
         console.log('updateCounts - DOM updated');
@@ -131,7 +133,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Filter listings
         let filtered = allListings;
-        if (filter !== 'all') {
+        if (filter === 'all') {
+            // "All" should show everything EXCEPT deleted
+            filtered = allListings.filter(l => l.status !== 'deleted');
+        } else if (filter === 'active') {
+            // Treat missing status as active
+            filtered = allListings.filter(l => l.status === 'active' || !l.status);
+        } else {
             filtered = allListings.filter(l => l.status === filter);
         }
 
@@ -163,6 +171,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const statusBadge = {
             'active': '<span style="background: #E8F5E9; color: #2F5D3A; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Active</span>',
             'sold': '<span style="background: #FFF3E0; color: #E65100; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Sold</span>',
+            'draft': '<span style="background: #F3F4F6; color: #4B5563; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Draft</span>',
             'deleted': '<span style="background: #FFEBEE; color: #C62828; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Deleted</span>'
         };
 
@@ -171,7 +180,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 <div style="position: relative;">
                     <img src="${imageUrl}" alt="${listing.title}" style="width: 100%; height: 200px; object-fit: cover;">
                     <div style="position: absolute; top: 0.75rem; right: 0.75rem;">
-                        ${statusBadge[listing.status] || ''}
+                        ${statusBadge[listing.status] || statusBadge['active']}
                     </div>
                 </div>
                 <div style="padding: 1rem;">
@@ -205,21 +214,26 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <!-- Actions -->
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; position: relative; z-index: 10;">
                         ${listing.status !== 'deleted' ? `
-                            <button class="action-btn edit-listing-btn" data-id="${listing.id}" style="padding: 0.5rem; background: #EEF2FF; color: #4338CA; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.875rem; pointer-events: auto; position: relative; z-index: 100;">
+                            <button class="action-btn action-btn-primary edit-listing-btn" data-id="${listing.id}">
                                 Edit
                             </button>
                         ` : ''}
-                        ${listing.status === 'active' ? `
-                            <button class="action-btn mark-sold-btn" data-id="${listing.id}" style="padding: 0.5rem; background: #FFF3E0; color: #E65100; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.875rem; pointer-events: auto; position: relative; z-index: 100;">
+                        ${(listing.status === 'active' || !listing.status) ? `
+                            <button class="action-btn action-btn-secondary mark-sold-btn" data-id="${listing.id}">
                                 Mark Sold
                             </button>
                         ` : ''}
+                        ${listing.status === 'draft' ? `
+                            <button class="action-btn action-btn-primary edit-listing-btn" data-id="${listing.id}">
+                                Resume Draft
+                            </button>
+                        ` : ''}
                         ${listing.status === 'sold' || listing.status === 'deleted' ? `
-                            <button class="action-btn reactivate-btn" data-id="${listing.id}" style="padding: 0.5rem; background: #E8F5E9; color: #2F5D3A; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.875rem; pointer-events: auto; position: relative; z-index: 100;">
+                            <button class="action-btn action-btn-secondary reactivate-btn" data-id="${listing.id}">
                                 Reactivate
                             </button>
                         ` : ''}
-                        <button class="action-btn delete-btn" data-id="${listing.id}" style="padding: 0.5rem; background: #FFEBEE; color: #C62828; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.875rem; pointer-events: auto; position: relative; z-index: 100;">
+                        <button class="action-btn action-btn-danger delete-btn" data-id="${listing.id}">
                             ${listing.status === 'deleted' ? 'Delete Forever' : 'Delete'}
                         </button>
                     </div>
@@ -427,17 +441,27 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     async function permanentlyDeleteListing(listingId) {
-        // Remove from local array
-        allListings = allListings.filter(l => l.id !== listingId);
+        try {
+            // Remove from Firestore
+            await window.FirebaseAPI.hardDeleteListing(listingId);
 
-        // Save to localStorage for persistence
-        saveListingsToLocalStorage();
+            // Remove from local array
+            allListings = allListings.filter(l => l.id !== listingId);
 
-        updateCounts();
-        renderListings(currentFilter);
+            // Save to localStorage
+            saveListingsToLocalStorage();
 
-        if (window.UIComponents) {
-            window.UIComponents.showSuccessToast('Listing permanently deleted', 'Deleted');
+            updateCounts();
+            renderListings(currentFilter);
+
+            if (window.UIComponents) {
+                window.UIComponents.showSuccessToast('Listing permanently deleted', 'Deleted');
+            }
+        } catch (error) {
+            console.error('Error in permanent delete:', error);
+            if (window.UIComponents) {
+                window.UIComponents.showErrorToast('Failed to permanently delete listing', 'Error');
+            }
         }
     }
 
