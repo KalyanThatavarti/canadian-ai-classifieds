@@ -34,11 +34,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         try {
             profileUser = await window.FirebaseAPI.getUserProfile(targetUserId);
             renderProfile(profileUser, isOwnProfile);
-            await loadListings(targetUserId);
 
-            if (isOwnProfile) {
-                await loadFavorites(targetUserId);
-            }
+            // Load basic statistics (without listings)
+            await loadStatistics(targetUserId);
         } catch (error) {
             console.error('Error loading profile:', error);
             alert('Failed to load profile. Please try again.');
@@ -62,15 +60,26 @@ document.addEventListener('DOMContentLoaded', async function () {
         let locationText = 'Location not specified';
         if (user.location) {
             const parts = [];
-            if (user.location.street) parts.push(user.location.street);
-            if (user.location.apartment) parts.push(user.location.apartment);
-            if (user.location.city && user.location.province) {
-                parts.push(`${user.location.city}, ${user.location.province}`);
-            }
-            if (user.location.postalCode) parts.push(user.location.postalCode);
+            const addressLine1 = [];
+            const addressLine2 = [];
 
-            if (parts.length > 0) {
-                locationText = parts.join(', ');
+            // First line: street and apartment
+            if (user.location.street) addressLine1.push(user.location.street);
+            if (user.location.apartment) addressLine1.push(user.location.apartment);
+
+            // Second line: city, province, postal code
+            if (user.location.city && user.location.province) {
+                addressLine2.push(`${user.location.city}, ${user.location.province}`);
+            }
+            if (user.location.postalCode) addressLine2.push(user.location.postalCode);
+
+            // Combine with line break for better mobile display
+            if (addressLine1.length > 0 && addressLine2.length > 0) {
+                locationText = addressLine1.join(', ') + ', ' + addressLine2.join(', ');
+            } else if (addressLine1.length > 0) {
+                locationText = addressLine1.join(', ');
+            } else if (addressLine2.length > 0) {
+                locationText = addressLine2.join(', ');
             }
         }
         document.getElementById('profileLocation').textContent = locationText;
@@ -131,170 +140,37 @@ document.addEventListener('DOMContentLoaded', async function () {
             document.getElementById('uploadAvatarBtn').style.display = 'flex';
         }
 
-        // Hide favorites tab if viewing someone else's profile
-        if (!isOwn) {
-            const favoritesTab = document.querySelector('[data-tab="favorites"]');
-            if (favoritesTab) {
-                favoritesTab.style.display = 'none';
-            }
-        }
+        // Tabs removed - no longer needed
     }
 
-    async function loadStatistics(userId, allListings = []) {
-        // Calculate real-time statistics from listings
-        const activeListings = allListings.filter(l => l.status === 'active').length;
-        const soldListings = allListings.filter(l => l.status === 'sold').length;
-        const totalListings = allListings.length;
-
-        console.log('loadStatistics - Total:', totalListings, 'Active:', activeListings, 'Sold:', soldListings);
-
-        // Set statistics
-        document.getElementById('statListings').textContent = totalListings;
-        document.getElementById('statSales').textContent = soldListings;
-        document.getElementById('statRating').textContent = profileUser.rating ? profileUser.rating.toFixed(1) : '-';
-        document.getElementById('statTrust').textContent = profileUser.trustScore || 0;
-    }
-
-    async function loadListings(userId) {
+    async function loadStatistics(userId) {
         try {
-            let allListings = [];
+            // Fetch user's listings to calculate statistics
+            const allListings = await window.FirebaseAPI.getUserListings(userId, 'all');
+            const activeListings = allListings.filter(l => l.status === 'active').length;
+            const soldListings = allListings.filter(l => l.status === 'sold').length;
+            const totalListings = allListings.length;
 
-            // Check localStorage first (for current user only)
-            if (userId === currentUser.uid) {
-                try {
-                    const storageKey = `myListings_${userId}`;
-                    const stored = localStorage.getItem(storageKey);
-                    if (stored) {
-                        allListings = JSON.parse(stored);
-                        console.log('Loading listings from localStorage');
-                    }
-                } catch (e) {
-                    console.log('localStorage check failed:', e);
-                }
-            }
+            console.log('loadStatistics - Total:', totalListings, 'Active:', activeListings, 'Sold:', soldListings);
 
-            // If no localStorage data, fetch from Firestore
-            if (allListings.length === 0) {
-                allListings = await window.FirebaseAPI.getUserListings(userId, 'all');
-
-                // If no listings in Firestore, use sample data for testing
-                if (allListings.length === 0 && typeof sampleListings !== 'undefined') {
-                    console.log('No Firestore listings, using sample data');
-                    allListings = sampleListings.slice(0, 3).map(listing => ({
-                        ...listing,
-                        userId: userId
-                    }));
-                }
-            }
-
-            // Separate by status
-            const activeListings = allListings.filter(l => l.status === 'active');
-            const soldListings = allListings.filter(l => l.status === 'sold');
-
-            // Update counts
-            document.getElementById('activeCount').textContent = `(${activeListings.length})`;
-            document.getElementById('soldCount').textContent = `(${soldListings.length})`;
-
-            // Update statistics with real listing data
-            await loadStatistics(userId, allListings);
-
-            // Render active listings
-            renderListingsGrid(activeListings, 'activeListings', 'activeEmpty');
-
-            // Render sold listings
-            renderListingsGrid(soldListings, 'soldListings', 'soldEmpty');
-
+            // Set statistics
+            document.getElementById('statListings').textContent = totalListings;
+            document.getElementById('statSales').textContent = soldListings;
+            document.getElementById('statRating').textContent = profileUser?.rating ? profileUser.rating.toFixed(1) : '-';
+            document.getElementById('statTrust').textContent = profileUser?.trustScore || 0;
         } catch (error) {
-            console.error('Error loading listings:', error);
-            // Show empty state on error
-            document.getElementById('activeCount').textContent = '(0)';
-            document.getElementById('soldCount').textContent = '(0)';
+            console.log('Could not load statistics:', error);
+            // Show default values
+            document.getElementById('statListings').textContent = 0;
+            document.getElementById('statSales').textContent = 0;
+            document.getElementById('statRating').textContent = '-';
+            document.getElementById('statTrust').textContent = 0;
         }
     }
 
-    async function loadFavorites(userId) {
-        try {
-            const favorites = await window.FirebaseAPI.getUserFavorites(userId);
-
-            // Update count
-            document.getElementById('favoritesCount').textContent = `(${favorites.length})`;
-
-            // Render favorites
-            renderListingsGrid(favorites, 'favoriteListings', 'favoritesEmpty');
-
-        } catch (error) {
-            // Silently handle permissions errors (expected if Firestore rules not set up)
-            console.log('Could not load favorites (this is normal if Firestore rules are not configured)');
-
-            // Show empty state
-            const favCount = document.getElementById('favoritesCount');
-            const favListings = document.getElementById('favoriteListings');
-            const favEmpty = document.getElementById('favoritesEmpty');
-
-            if (favCount) favCount.textContent = '(0)';
-            if (favListings) favListings.style.display = 'none';
-            if (favEmpty) favEmpty.style.display = 'block';
-        }
-    }
-
-    function renderListingsGrid(listings, containerID, emptyID) {
-        const container = document.getElementById(containerID);
-        const emptyState = document.getElementById(emptyID);
-
-        if (listings.length === 0) {
-            container.style.display = 'none';
-            emptyState.style.display = 'block';
-            return;
-        }
-
-        container.style.display = 'grid';
-        emptyState.style.display = 'none';
-
-        container.innerHTML = listings.map(listing => createListingCard(listing)).join('');
-
-        // Add click handlers
-        container.querySelectorAll('.listing-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                // Don't navigate if clicking favorite button
-                if (!e.target.closest('.listing-card-favorite-btn')) {
-                    const listingId = card.dataset.id;
-                    window.location.href = `listing-detail.html?id=${listingId}`;
-                }
-            });
-        });
-
-        // Attach favorite button handlers using utility function
-        if (window.Utils && window.Utils.attachFavoriteHandlers) {
-            window.Utils.attachFavoriteHandlers(container);
-        }
-    }
-
-    function createListingCard(listing) {
-        const categoryData = categories[listing.category] || { icon: '📦', name: 'Other' };
-        // Use listing's first image if available, otherwise use a consistent fallback based on listing ID
-        const imageUrl = listing.images && listing.images[0] ? listing.images[0] : `https://picsum.photos/400/300?seed=${listing.id}`;
-
-        return `
-            <div class="listing-card" data-id="${listing.id}" style="background: white; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(229, 221, 213, 0.3); position: relative;">
-                <img src="${imageUrl}" alt="${listing.title}" style="width: 100%; height: 200px; object-fit: cover;">
-                ${window.Utils ? window.Utils.createFavoriteButton(listing.id, false) : ''}
-                <div style="padding: 1rem;">
-                    <div style="font-size: 0.75rem; color: #4a90e2; text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">
-                        ${categoryData.icon} ${categoryData.name}
-                    </div>
-                    <h3 style="font-size: 1rem; font-weight: 600; color: #2C2C2C; margin: 0 0 0.5rem 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                        ${listing.title}
-                    </h3>
-                    <div style="font-size: 1.25rem; font-weight: 600; color: #2F5D3A; margin: 0.5rem 0;">
-                        $${listing.price.toLocaleString()}
-                    </div>
-                    <div style="font-size: 0.875rem; color: #666; margin-top: 0.5rem;">
-                        ${listing.location.city}, ${listing.location.province}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
+    // Tabs removed - loadListings, loadFavorites, renderListingsGrid, and createListingCard no longer needed
+    // User listings are now managed in my-listings.html page
+    // User favorites are now managed in favorites.html page
 
     // ===== Event Listeners =====
 
@@ -335,14 +211,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             avatarInput.addEventListener('change', handleAvatarUpload);
         }
 
-        // Tab navigation
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabName = btn.dataset.tab;
-                switchTab(tabName);
-            });
-        });
+        // Tab navigation removed - tabs no longer exist on profile page
 
         // Postal code auto-formatting
         const postalCodeInput = document.getElementById('editPostalCode');
@@ -493,24 +362,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('bioCount').textContent = bio.length;
     }
 
-    function switchTab(tabName) {
-        // Update tab buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-
-        // Update tab content
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        document.getElementById(`${tabName}Tab`).classList.add('active');
-
-        // Reload favorites when switching to favorites tab
-        if (tabName === 'favorites' && isOwnProfile && currentUser) {
-            loadFavorites(currentUser.uid);
-        }
-    }
+    // switchTab function removed - tabs no longer exist on profile page
 
     // ===== Helper Functions =====
 

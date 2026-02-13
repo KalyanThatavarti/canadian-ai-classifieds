@@ -102,6 +102,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     </a>
 
+                    <!-- Favorites Icon (Visible when logged in) -->
+                    <a href="${isInMessages ? '../favorites.html' : (isInAdmin ? '../favorites.html' : (isInPages ? 'favorites.html' : 'pages/favorites.html'))}" class="favorites-icon-link" aria-label="Favorites">
+                        <svg class="favorites-icon-header" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </a>
+
                     <!-- Search Toggle -->
                     <button class="search-toggle" aria-label="Search">
                         <svg class="search-icon-header" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,6 +147,11 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </header>
         `;
+
+        // Setup mobile menu toggle AFTER injection
+        setTimeout(() => {
+            setupMobileMenu();
+        }, 0);
     }
 
     // Sticky Header on Scroll
@@ -157,46 +170,60 @@ document.addEventListener('DOMContentLoaded', function () {
         lastScroll = currentScroll;
     });
 
-    // Mobile Menu Toggle
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    const body = document.body;
+    // Setup Mobile Menu Toggle - Works for both injected and static headers
+    function setupMobileMenu() {
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const mainNav = document.querySelector('.main-nav');
+        const body = document.body;
 
-    if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', function () {
-            mainNav.classList.toggle('active');
-            body.classList.toggle('menu-open');
+        if (mobileMenuToggle && mainNav) {
+            // Remove existing listeners to prevent duplicates
+            const newToggle = mobileMenuToggle.cloneNode(true);
+            mobileMenuToggle.parentNode.replaceChild(newToggle, mobileMenuToggle);
 
-            // Toggle hamburger icon to X
-            const icon = this.querySelector('.hamburger-icon');
-            if (mainNav.classList.contains('active')) {
-                icon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                `;
-            } else {
-                icon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                `;
-            }
-        });
+            newToggle.addEventListener('click', function () {
+                console.log('📱 Mobile menu toggle clicked');
+                mainNav.classList.toggle('active');
+                body.classList.toggle('menu-open');
+
+                // Toggle hamburger icon to X
+                const icon = this.querySelector('.hamburger-icon');
+                if (mainNav.classList.contains('active')) {
+                    icon.innerHTML = `
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    `;
+                } else {
+                    icon.innerHTML = `
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    `;
+                }
+            });
+
+            // Close mobile menu when clicking nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    if (window.innerWidth <= 768) {
+                        mainNav.classList.remove('active');
+                        body.classList.remove('menu-open');
+                        const icon = newToggle.querySelector('.hamburger-icon');
+                        if (icon) {
+                            icon.innerHTML = `
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            `;
+                        }
+                    }
+                });
+            });
+
+            console.log('✅ Mobile menu initialized');
+        }
     }
 
-    // Close mobile menu when clicking nav links
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function () {
-            if (window.innerWidth <= 768) {
-                mainNav.classList.remove('active');
-                body.classList.remove('menu-open');
+    // Call setup for static headers immediately
+    setupMobileMenu();
 
-                // Reset hamburger icon
-                const icon = mobileMenuToggle.querySelector('.hamburger-icon');
-                icon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                `;
-            }
-        });
-    });
+    // Mobile Menu Toggle - Now handled inside header injection block above
 
     // Search Toggle (placeholder for future implementation)
     const searchToggle = document.querySelector('.search-toggle');
@@ -265,6 +292,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         <a href="${pagesPath}messages/index.html" id="dropdownMessagesLink" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             Messages
                         </a>
+                        <a href="${pagesPath}favorites.html" id="dropdownFavoritesLink" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                            Favorites
+                        </a>
                         <a href="${pagesPath}notification-settings.html" style="display: block; padding: 0.75rem; color: #374151; text-decoration: none; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
                             📧 Notification Settings
                         </a>
@@ -276,6 +306,29 @@ document.addEventListener('DOMContentLoaded', function () {
                         </a>
                     </div>
                 `;
+
+                // Initialize favorites count immediately after dropdown is created
+                const initializeFavoritesInDropdown = (attempts = 0) => {
+                    if (window.FavoritesAPI) {
+                        console.log('🔄 Initializing favorites count for dropdown');
+                        const favLink = document.getElementById('dropdownFavoritesLink');
+                        if (favLink) {
+                            window.FavoritesAPI.getCount(user.uid).then(count => {
+                                console.log('❤️ Initial Favorites Count (in updateUserMenu):', count);
+                                updateFavoritesCount(count);
+                            }).catch(err => {
+                                console.error('❌ Error getting initial favorites count:', err);
+                            });
+                        }
+                    } else if (attempts < 20) {
+                        // Wait up to 2 seconds (100ms * 20)
+                        setTimeout(() => initializeFavoritesInDropdown(attempts + 1), 100);
+                    } else {
+                        console.warn('⚠️ FavoritesAPI not available after waiting');
+                    }
+                };
+
+                initializeFavoritesInDropdown();
             } else {
                 // User is not logged in - show login/signup
                 userDropdown.innerHTML = `
@@ -307,16 +360,6 @@ document.addEventListener('DOMContentLoaded', function () {
             e.stopPropagation();
             userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
             console.log('👤 User menu display set to:', userDropdown.style.display);
-
-            // Close mobile menu if it's open
-            if (userDropdown.style.display === 'block' && mainNav && mainNav.classList.contains('active')) {
-                mainNav.classList.remove('active');
-                body.classList.remove('menu-open');
-                const icon = mobileMenuToggle?.querySelector('.hamburger-icon');
-                if (icon) {
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>`;
-                }
-            }
         });
 
         // Close dropdown when clicking outside
@@ -387,6 +430,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (messagesIconLink) {
                         messagesIconLink.style.display = user ? 'block' : 'none';
                     }
+
+                    // Setup real-time listener for favorites count changes
+                    const setupFavoritesListener = (attempts = 0) => {
+                        if (user && window.FavoritesAPI) {
+                            window.FavoritesAPI.listen(user.uid, (count) => {
+                                console.log('❤️ Favorites Count Updated (real-time):', count);
+                                updateFavoritesCount(count);
+                            });
+
+                            // Toggle Favorites Icon visibility based on auth state
+                            const favoritesIconLink = document.querySelector('.favorites-icon-link');
+                            if (favoritesIconLink) {
+                                favoritesIconLink.style.display = 'block';
+                            }
+                        } else if (user && attempts < 20) {
+                            setTimeout(() => setupFavoritesListener(attempts + 1), 100);
+                        } else if (!user) {
+                            updateFavoritesCount(0);
+                            const favoritesIconLink = document.querySelector('.favorites-icon-link');
+                            if (favoritesIconLink) {
+                                favoritesIconLink.style.display = 'none';
+                            }
+                        }
+                    };
+
+                    setupFavoritesListener();
                 }).catch(err => {
                     console.error('Error updating user menu:', err);
                     if (user) {
@@ -417,6 +486,35 @@ document.addEventListener('DOMContentLoaded', function () {
                     headerMsgBadge.style.display = 'none';
                 }
             }
+        }
+
+        function updateFavoritesCount(count) {
+            // Update Dropdown Link
+            const favoritesLink = document.getElementById('dropdownFavoritesLink');
+            if (favoritesLink) {
+                if (count > 0) {
+                    favoritesLink.innerHTML = `Favorites <span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; margin-left: 5px;">${count}</span>`;
+                } else {
+                    favoritesLink.textContent = 'Favorites';
+                }
+            }
+
+            // Update Header Icon (if exists)
+            const headerFavoritesBadge = document.getElementById('header-favorites-badge');
+            if (headerFavoritesBadge) {
+                if (count > 0) {
+                    headerFavoritesBadge.style.display = 'flex';
+                    headerFavoritesBadge.textContent = count > 99 ? '99+' : count;
+                } else {
+                    headerFavoritesBadge.style.display = 'none';
+                }
+            }
+        }
+
+        // Initialize favorites count (will be updated by favorites tracking system)
+        if (window.FirebaseAPI) {
+            // Expose function globally for favorites tracking
+            window.updateFavoritesCount = updateFavoritesCount;
         }
     }
 

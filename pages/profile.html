@@ -17,7 +17,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/profile.css?v=4">
     <link rel="stylesheet" href="../css/toast.css">
     <link rel="stylesheet" href="../css/loading.css">
 </head>
@@ -293,50 +293,6 @@
                 </form>
             </div>
 
-            <!-- Tabs Navigation -->
-            <div class="profile-tabs">
-                <button class="tab-btn active" data-tab="active">
-                    Active Listings
-                    <span class="tab-count" id="activeCount">(0)</span>
-                </button>
-                <button class="tab-btn" data-tab="sold">
-                    Sold Items
-                    <span class="tab-count" id="soldCount">(0)</span>
-                </button>
-                <button class="tab-btn" data-tab="favorites">
-                    Favorites
-                    <span class="tab-count" id="favoritesCount">(0)</span>
-                </button>
-            </div>
-
-            <!-- Tab Content -->
-            <div class="tab-content active" id="activeTab">
-                <div id="activeListings" class="listings-grid">
-                    <!-- Populated by JavaScript -->
-                </div>
-                <div id="activeEmpty" class="empty-state" style="display: none;">
-                    <p>No active listings yet.</p>
-                </div>
-            </div>
-
-            <div class="tab-content" id="soldTab">
-                <div id="soldListings" class="listings-grid">
-                    <!-- Populated by JavaScript -->
-                </div>
-                <div id="soldEmpty" class="empty-state" style="display: none;">
-                    <p>No sold items yet.</p>
-                </div>
-            </div>
-
-            <div class="tab-content" id="favoritesTab">
-                <div id="favoriteListings" class="listings-grid">
-                    <!-- Populated by JavaScript -->
-                </div>
-                <div id="favoritesEmpty" class="empty-state" style="display: none;">
-                    <p>No favorites yet. Start browsing listings!</p>
-                </div>
-            </div>
-
         </div>
     </main>
 
@@ -350,8 +306,9 @@
     <script src="../js/utils.js"></script>
     <script src="../js/ui-components.js"></script>
     <script src="../js/firebase-config.js?v=3"></script>
+    <script src="../js/favorites-utils.js?v=9"></script>
     <script src="../js/sample-data.js"></script>
-    <script src="../js/header.js"></script>
+    <script src="../js/header.js?v=11"></script>
     <script src="../js/profile.js"></script>
 </body>
 

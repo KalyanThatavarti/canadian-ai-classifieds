@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your Favorite Listings | Canadian AI Classifieds">
+    <title>My Favorites | Canadian AI Classifieds</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <link rel="stylesheet" href="../css/loading.css">
+    <style>
+        .favorites-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: white;
+            color: #2F5D3A;
+            border: 2px solid #2F5D3A;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .back-btn:hover {
+            background: #2F5D3A;
+            color: white;
+        }
+
+        .favorites-title {
+            margin: 0;
+            font-size: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .favorites-header {
+                gap: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .back-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .back-btn svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .favorites-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .favorites-title {
+                font-size: 1.2rem;
+            }
+
+            .back-btn span {
+                display: none;
+                /* Hide text on very small screens, keep icon */
+            }
+
+            .back-btn {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Placeholder (injected by header.js) -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="profile-page">
+        <div class="profile-container">
+
+            <!-- Page Header -->
+            <div class="profile-section">
+                <div class="favorites-header">
+                    <a href="browse-listings.html" class="back-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        <span>Back to Listings</span>
+                    </a>
+                    <h1 class="favorites-title">❤️ My Favorites</h1>
+                </div>
+                <p style="color: #666; margin-bottom: 1.5rem;">Browse and manage your favorite listings</p>
+            </div>
+
+            <!-- Favorites Grid -->
+            <div id="favoritesContainer" class="listings-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="profile-section" style="display: none; text-align: center; padding: 4rem 2rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">💔</div>
+                <h2 style="color: #666; margin-bottom: 0.5rem;">No favorites yet</h2>
+                <p style="color: #999; margin-bottom: 2rem;">Start browsing and save items you love!</p>
+                <a href="browse-listings.html" class="btn btn-primary">Browse Listings</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/ui-components.js"></script>
+    <script src="../js/firebase-config.js?v=3"></script>
+    <script src="../js/favorites-utils.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/favorites.js?v=3"></script>
+</body>
+
+</html>
