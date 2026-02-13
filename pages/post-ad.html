@@ -89,6 +89,7 @@
                                 <option value="jobs">Jobs</option>
                                 <option value="services">Services</option>
                                 <option value="fashion">Fashion</option>
+                                <option value="hobbies">Hobbies</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
@@ -160,11 +161,29 @@
 
                     <div class="form-actions">
                         <button type="button" class="btn-cancel" onclick="window.history.back()">Cancel</button>
+                        <button type="button" class="btn-preview" id="previewBtn">Preview Listing</button>
                         <button type="submit" class="btn-post" id="submitBtn">Post My Ad</button>
                     </div>
                 </div>
             </div>
         </form>
+
+        <!-- Ad Preview Modal -->
+        <div id="previewModal" class="preview-modal">
+            <div class="preview-modal-content">
+                <div class="preview-modal-header">
+                    <h3>Listing Preview</h3>
+                    <div class="preview-modal-actions">
+                        <button type="button" class="btn-finish-preview" id="closePreviewBtn">Back to Editing</button>
+                        <button type="button" class="btn-publish-preview" id="publishFromPreviewBtn">Publish
+                            Now</button>
+                    </div>
+                </div>
+                <div class="preview-modal-body" id="previewContent">
+                    <!-- This will be populated by post-ad.js with content from listing-detail.html -->
+                </div>
+            </div>
+        </div>
     </main>
 
     <div id="toastContainer"></div>

@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Render listing information
     function renderListing() {
         // Category
-        const categoryData = categories[listing.category];
+        const categoryData = categories[listing.category] || categories['other'];
         document.getElementById('listingCategory').textContent =
             `${categoryData.icon} ${categoryData.name}`;
 
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function createListingCard(item) {
         const isNew = isListingNew(item.createdAt);
         const timeAgo = getTimeAgo(item.createdAt);
-        const categoryData = categories[item.category];
+        const categoryData = categories[item.category] || categories['other'];
 
         return `
             <div class="listing-card" data-id="${item.id}" style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(229, 221, 213, 0.3); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update breadcrumb
     function updateBreadcrumb() {
-        const categoryData = categories[listing.category];
+        const categoryData = categories[listing.category] || categories['other'];
         document.getElementById('breadcrumbCategory').textContent = categoryData.name;
         document.getElementById('breadcrumbTitle').textContent =
             listing.title.length > 40 ? listing.title.substring(0, 40) + '...' : listing.title;

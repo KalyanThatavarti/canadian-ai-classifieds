@@ -439,7 +439,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 ${window.Utils ? window.Utils.createFavoriteButton(listing.id, false) : ''}
                 <div class="listing-info">
-                    <div class="listing-category">${categories[listing.category].icon} ${categories[listing.category].name}</div>
+                    <div class="listing-category">
+                        ${(categories[listing.category] || categories['other']).icon} 
+                        ${(categories[listing.category] || categories['other']).name}
+                    </div>
                     <h3 class="listing-title">${listing.title}</h3>
                     <div class="listing-price">$${listing.price.toLocaleString()}</div>
                     <div class="listing-location">

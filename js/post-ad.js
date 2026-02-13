@@ -119,6 +119,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     const adCategory = document.getElementById('adCategory');
     const adDescription = document.getElementById('adDescription');
     const submitBtn = document.getElementById('submitBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    const previewModal = document.getElementById('previewModal');
+    const closePreviewBtn = document.getElementById('closePreviewBtn');
+    const publishFromPreviewBtn = document.getElementById('publishFromPreviewBtn');
+    const previewContent = document.getElementById('previewContent');
 
     // === Image Upload Handling ===
 
@@ -218,25 +223,33 @@ document.addEventListener('DOMContentLoaded', async function () {
         await window.UsageLimits.incrementUsage(user.uid, 'scan');
 
         // Keywords (Expanded simulation)
-        const categories = {
-            electronics: ['iphone', 'samsung', 'phone', 'laptop', 'tablet', 'ipad', 'watch', 'camera', 'tv', 'sony', 'apple', '86d', 'screenshot', 'electronic'],
-            vehicles: ['car', 'honda', 'toyota', 'ford', 'suv', 'truck', 'bike', 'motorcycle', 'vehicle', 'automotive'],
-            furniture: ['chair', 'table', 'sofa', 'desk', 'bed', 'shelf', 'couch', 'furniture', 'decor'],
-            fashion: ['shirt', 'shoes', 'dress', 'jeans', 'watch', 'bag', 'clothing', 'fashion', 'accessory'],
-            realestate: ['house', 'condo', 'apartment', 'home', 'listing', 'property', 'land']
+        const scanCategories = {
+            electronics: ['iphone', 'samsung', 'phone', 'laptop', 'tablet', 'ipad', 'watch', 'camera', 'tv', 'sony', 'apple', '86d', 'screenshot', 'electronic', 'macbook', 'mouse', 'keyboard', 'monitor', 'headphones', 'earbuds', 'gaming', 'console', 'pc', 'speaker'],
+            vehicles: ['car', 'honda', 'toyota', 'ford', 'suv', 'truck', 'bike', 'motorcycle', 'vehicle', 'automotive', 'tire', 'rim', 'bmw', 'mercedes', 'tesla', 'audi', 'jeep'],
+            furniture: ['chair', 'table', 'sofa', 'desk', 'bed', 'shelf', 'couch', 'furniture', 'decor', 'dining', 'lamp', 'rug', 'cabinet', 'dresser'],
+            fashion: ['shirt', 'shoes', 'dress', 'jeans', 'watch', 'bag', 'clothing', 'fashion', 'accessory', 'jacket', 'boots', 'sneakers', 'hoodie', 'hat'],
+            realestate: ['house', 'condo', 'apartment', 'home', 'listing', 'property', 'land', 'rent', 'lease'],
+            hobbies: ['guitar', 'piano', 'instrument', 'game', 'playstation', 'xbox', 'nintendo', 'book', 'sport', 'gym', 'toy', 'board game', 'bicycle'],
+            services: ['repair', 'cleaning', 'plumbing', 'moving', 'consulting', 'tutor', 'service', 'help', 'handyman'],
+            jobs: ['hiring', 'work', 'job', 'recruitment', 'career', 'resume', 'apply']
         };
 
         // Check for matches
-        for (const [cat, keywords] of Object.entries(categories)) {
+        for (const [cat, keywords] of Object.entries(scanCategories)) {
             if (keywords.some(kw => name.includes(kw))) {
                 suggestedCategory = cat;
                 break;
             }
         }
 
-        // Fallback for demo: If it's a generic mobile upload name like "IMG_" or "86D_", guess Electronics
-        if (!suggestedCategory && (name.includes('img') || name.includes('86d') || name.includes('photo'))) {
-            suggestedCategory = "electronics"; // High volume category for mobile users
+        // Expanded Fallback Mechanism
+        if (!suggestedCategory) {
+            if (name.includes('img') || name.includes('86d') || name.includes('photo') || name.includes('image')) {
+                suggestedCategory = "electronics"; // Generic mobile upload default
+            } else {
+                // If it's a completely unknown name, default to 'other' so the field is populated
+                suggestedCategory = "other";
+            }
         }
 
         if (suggestedCategory) {
@@ -246,18 +259,25 @@ document.addEventListener('DOMContentLoaded', async function () {
                 vehicles: "Vehicle for Sale",
                 furniture: "Quality Furniture",
                 fashion: "Fashion Item",
-                realestate: "Property Listing"
+                realestate: "Property Listing",
+                hobbies: "Hobby Item",
+                services: "Professional Service",
+                jobs: "Job Opportunity",
+                other: "New Listing"
             };
             suggestedTitle = titles[suggestedCategory] || "New Listing";
 
             setTimeout(() => {
                 adCategory.value = suggestedCategory;
+                // Explicitly trigger change event so any listeners (or UI browsers) catch it
+                adCategory.dispatchEvent(new Event('change', { bubbles: true }));
+
                 if (!adTitle.value) adTitle.value = suggestedTitle;
 
                 if (window.UIComponents) {
                     window.UIComponents.showSuccessToast(`Smart Scan identified: ${suggestedCategory}`, 'AI Magic');
                 }
-            }, 1500); // Slightly longer for "AI Thinking" feel
+            }, 1000);
         } else {
             // Even if it fails, show that it tried
             setTimeout(() => {
@@ -465,6 +485,97 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
+    // === Ad Preview Logic ===
+
+    previewBtn.addEventListener('click', showAdPreview);
+    closePreviewBtn.addEventListener('click', () => previewModal.classList.remove('active'));
+    publishFromPreviewBtn.addEventListener('click', () => {
+        previewModal.classList.remove('active');
+        postAdForm.dispatchEvent(new Event('submit'));
+    });
+
+    async function showAdPreview() {
+        const title = adTitle.value.trim();
+        const price = document.getElementById('adPrice').value;
+        const description = adDescription.value.trim();
+        const category = adCategory.value;
+        const condition = document.querySelector('input[name="condition"]:checked').value;
+        const location = document.getElementById('adLocation').value.trim();
+
+        if (!title || !price || !category || uploadedImages.length === 0) {
+            window.UIComponents.showInfoToast('Please add a title, price, category, and at least one photo to preview', 'Incomplete Form');
+            return;
+        }
+
+        const user = window.FirebaseAPI.auth.currentUser;
+        const formattedPrice = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(price);
+        const categoryLabel = adCategory.options[adCategory.selectedIndex].text;
+
+        // Populate Preview Content
+        previewContent.innerHTML = `
+            <div class="detail-content">
+                <!-- Main Column -->
+                <div class="main-column">
+                    <!-- Image Gallery -->
+                    <div class="image-gallery">
+                        <div class="main-image-container">
+                            <img src="${uploadedImages[0]}" alt="Preview" class="main-image" id="previewMainImage">
+                            <div class="image-counter" id="previewImageCounter">1 / ${uploadedImages.length}</div>
+                        </div>
+                        ${uploadedImages.length > 1 ? `
+                        <div style="display: flex; gap: 10px; margin-top: 10px; overflow-x: auto; padding-bottom: 5px;">
+                            ${uploadedImages.map((img, i) => `
+                                <img src="${img}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid ${i === 0 ? '#4a90e2' : 'transparent'}" 
+                                     onclick="document.getElementById('previewMainImage').src='${img}'; document.getElementById('previewImageCounter').innerText='${i + 1} / ${uploadedImages.length}'; this.parentElement.querySelectorAll('img').forEach(el=>el.style.borderColor='transparent'); this.style.borderColor='#4a90e2'">
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Listing Information -->
+                    <div class="listing-information">
+                        <div class="listing-category">${categoryLabel}</div>
+                        <h1 class="listing-title">${title}</h1>
+                        <div class="price">${formattedPrice}</div>
+
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Condition</span>
+                                <span class="detail-value">${condition}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Location</span>
+                                <span class="detail-value">${location || 'Canada'}</span>
+                            </div>
+                        </div>
+
+                        <div class="description-section">
+                            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Description</h2>
+                            <div class="description-text">${description || 'No description provided.'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar-column">
+                    <div class="seller-card">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Seller Information</h3>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <img src="${user ? (user.photoURL || 'https://ui-avatars.com/api/?name=' + (user.displayName || 'User')) : 'https://ui-avatars.com/api/?name=User'}" style="width: 50px; height: 50px; border-radius: 50%;">
+                            <div>
+                                <div style="font-weight: 600;">${user ? (user.displayName || 'You') : 'You'}</div>
+                                <div style="font-size: 0.8rem; color: #666;">Member since today</div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        `;
+
+        // Show Modal
+        previewModal.classList.add('active');
+    }
+
     // === Form Submission ===
     postAdForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -546,7 +657,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             // Redirect after allowing user to read the toast
             setTimeout(() => {
-                window.location.href = editListingId ? 'my-listings.html' : '../index.html';
+                window.location.href = editListingId ? 'my-listings.html' : 'browse-listings.html';
             }, 4500);
 
         } catch (error) {

@@ -462,6 +462,11 @@ const categories = {
         name: 'Hobbies',
         icon: '🎮',
         subcategories: ['musical-instruments', 'sports', 'books', 'collectibles', 'art']
+    },
+    'other': {
+        name: 'Other',
+        icon: '📦',
+        subcategories: ['general', 'miscellaneous']
     }
 };
 

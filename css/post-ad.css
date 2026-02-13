@@ -435,6 +435,208 @@ textarea:focus {
     box-shadow: 0 6px 16px rgba(47, 93, 58, 0.4);
 }
 
+.btn-preview {
+    background: white;
+    border: 1px solid #4a90e2;
+    color: #4a90e2;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-preview:hover {
+    background: #f0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+}
+
+/* Ad Preview Modal */
+.preview-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 20000;
+    /* Must be higher than site-header (10000) */
+    display: none;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.preview-modal.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.preview-modal-content {
+    background: #f8f9fa;
+    max-width: 1200px;
+    margin: 40px auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    width: 95%;
+    /* Responsive width */
+}
+
+.preview-modal-header {
+    background: white;
+    padding: 1.25rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.preview-modal-header h3 {
+    font-family: 'Playfair Display', serif;
+    color: #2C2C2C;
+    margin: 0;
+}
+
+.preview-modal-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-finish-preview {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-publish-preview {
+    background: linear-gradient(135deg, #2F5D3A 0%, #4a90e2 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.preview-modal-body {
+    padding: 2rem;
+    background: radial-gradient(ellipse at top, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Scoped Listing Detail Styles for Preview */
+.preview-modal .detail-content {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+}
+
+.preview-modal .image-gallery {
+    background: white;
+    border-radius: 16px;
+    padding: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.preview-modal .main-image-container {
+    height: 450px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f3f4f6;
+    position: relative;
+}
+
+.preview-modal .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-modal .listing-information {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.preview-modal .listing-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.preview-modal .listing-category {
+    color: #4a90e2;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.preview-modal .price {
+    font-size: 2rem;
+    color: #2F5D3A;
+    font-weight: 700;
+    margin: 1rem 0;
+}
+
+.preview-modal .description-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.preview-modal .description-text {
+    line-height: 1.6;
+    color: #4b5563;
+    white-space: pre-wrap;
+}
+
+.preview-modal .details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.preview-modal .detail-label {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.preview-modal .detail-value {
+    font-weight: 600;
+}
+
+.preview-modal .seller-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .post-ad-container {
@@ -477,6 +679,12 @@ textarea:focus {
         gap: 0.5rem;
     }
 
+    .label-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
     .ai-controls {
         flex-direction: column;
         align-items: flex-start;
@@ -487,28 +695,95 @@ textarea:focus {
     .tone-selector {
         width: 100%;
         justify-content: space-between;
+        background: #fdfdfd;
+        border: 1px solid #eee;
     }
 
     .tone-btn {
         flex: 1;
-        padding: 0.4rem 0.2rem;
-        font-size: 0.7rem;
+        padding: 0.6rem 0.2rem;
+        font-size: 0.75rem;
     }
 
     .ai-generate-btn {
         width: 100%;
         justify-content: center;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
+        padding: 0.751rem;
     }
 
     .form-actions {
         flex-direction: column-reverse;
         gap: 0.75rem;
+        margin-bottom: 2rem;
     }
 
     .form-actions button {
         width: 100%;
+        padding: 0.851rem;
+    }
+
+    /* Ad Preview Mobile Fixes */
+    .preview-modal-content {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .preview-modal-header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .preview-modal-header h3 {
+        font-size: 1.25rem;
+    }
+
+    .preview-modal-actions {
+        width: 100%;
+    }
+
+    .preview-modal-actions button {
+        flex: 1;
         padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .preview-modal-body {
+        padding: 1rem;
+    }
+
+    .preview-modal .detail-content {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .preview-modal .main-image-container {
+        height: 280px;
+    }
+
+    .preview-modal .listing-information {
+        padding: 1.25rem;
+    }
+
+    .preview-modal .listing-title {
+        font-size: 1.6rem;
+    }
+
+    .preview-modal .price {
+        font-size: 1.5rem;
+    }
+
+    .preview-modal .details-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .preview-modal .sidebar-column {
+        width: 100%;
     }
 }
 
@@ -520,13 +795,17 @@ textarea:focus {
     .radio-group {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0.4rem;
+        gap: 0.6rem;
     }
 
     .radio-label {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.5rem;
+        font-size: 0.85rem;
+        padding: 0.75rem 0.5rem;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
     }
 
     .image-upload-area {
